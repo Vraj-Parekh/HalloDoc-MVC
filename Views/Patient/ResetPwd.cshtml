@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewData["Title"] = "ResetPwdPage";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+@section style{
+    <link rel="stylesheet" href="~/css/reset_password.css" asp-append-version="true" />
+}
+<div class="main">
+    <a href="#" class="mb-2">< Back</a>
+
+    <h1 class="mb-4 text-center">Reset Your Password</h1>
+
+    <form action="/" class="login-form-control">
+        <div class="form-floating input-group mb-3">
+            <input type="text"
+                   class="form-control border-end-0 bg-transparent border-focus-none"
+                   id="floatingInput"
+                   placeholder="username" />
+            <label for="floatingInput">Username</label>
+            <span class="input-group-text bg-transparent">
+                <i class="bi bi-person-circle"></i>
+            </span>
+        </div>
+
+        <button type="button" class="btn btn-primary custom-btn mb-4">
+            Reset Password
+        </button>
+
+        <a asp-action="PatientLogin" asp-controller="Patient" class="d-flex justify-content-center">< Back to login</a>
+    </form>
+</div>

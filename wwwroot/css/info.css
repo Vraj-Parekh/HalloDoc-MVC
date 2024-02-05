@@ -1,0 +1,50 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgba(65, 65, 65, 0.089);
+}
+
+.header_nav {
+    box-shadow: 0px 6px 4px -4px rgba(0, 0, 0, 0.25);
+    background-color: white;
+}
+
+    .header_nav img {
+        height: 80px;
+    }
+
+.iti {
+    width: 100%;
+}
+
+.bg {
+    background-color: white;
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 6px -6px 6px -4px rgba(0, 0, 0, 0.25);
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+
+#fileLoader {
+    position: absolute;
+    left: -9999px;
+}
+
+.footer {
+    position:relative;
+    height: 40px;
+    background-color: black;
+    padding-right: 10px;
+    font-size: 14px;
+    color: white;
+}
+.footer a {
+    text-decoration: none;
+    font-weight: 100;
+    color: white;
+}

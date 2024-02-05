@@ -1,0 +1,200 @@
+﻿@{
+    ViewData["Title"] = "Business Information";
+}
+@section style{
+    <link rel="stylesheet" href="~/css/info.css" asp-append-version="true" />
+}
+
+<div class="d-flex justify-content-end">
+    <a asp-action="SubmitRequest" asp-controller="Patient">
+        <button type="button" class="btn btn-outline-info mt-4" id="back_btn">
+            < Back
+        </button>
+    </a>
+</div>
+
+<div class="bg mt-2 mb-3">
+    <div class="row">
+        <h4 class="mb-4">Business Information</h4>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="text"
+                       class="form-control"
+                       id="floatingInput"
+                       placeholder="name@example.com" />
+                <label for="floatingInput">Your First Name</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="password"
+                       class="form-control"
+                       id="floatingPassword"
+                       placeholder="Password" />
+                <label for="floatingPassword">Your Last Name</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3 z-3">
+            <input type="tel"
+                   class="form-control"
+                   id="phone"
+                   placeholder="(201) 555-0123"
+                   style="height: 58px" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="email"
+                       class="form-control"
+                       id="floatingInput"
+                       placeholder="name@example.com" />
+                <label for="floatingInput">Your Email</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="text"
+                       class="form-control"
+                       id="dob"
+                       placeholder=" " />
+                <label for="floatingPassword">Business/Property Name</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="text"
+                       class="form-control"
+                       id="dob"
+                       placeholder=" " />
+                <label for="floatingPassword">Case number (Optional)</label>
+            </div>
+        </div>
+
+        <h4 class="mb-4 mt-4">Patient Information</h4>
+
+        <div class="mb-3">
+            <div class="form-floating">
+                <textarea class="form-control"
+                          placeholder=" "
+                          id="floatingTextarea2"
+                          style="height: 100px"></textarea>
+                <label for="floatingTextarea2">Enter Brief Details of Symptoms (Optional)</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="text"
+                       class="form-control"
+                       id="floatingInput"
+                       placeholder="name@example.com" />
+                <label for="floatingInput">First Name</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="password"
+                       class="form-control"
+                       id="floatingPassword"
+                       placeholder="Password" />
+                <label for="floatingPassword">Last Name</label>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-floating">
+                <input type="date"
+                       class="form-control"
+                       id="dob"
+                       placeholder=" " />
+                <label for="floatingPassword">Date of Birth</label>
+            </div>
+        </div>
+
+        <h4 class="mb-4 mt-4">Patient Contact Information</h4>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="email"
+                       class="form-control"
+                       id="floatingInput"
+                       placeholder="name@example.com" />
+                <label for="floatingInput">Email</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3 z-3">
+            <input type="tel"
+                   class="form-control"
+                   id="phone1"
+                   placeholder="(201) 555-0123"
+                   style="height: 58px" />
+        </div>
+
+        <h4 class="mb-4 mt-4">Patient Location</h4>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="text"
+                       class="form-control"
+                       id="floatingInput"
+                       placeholder="name@example.com" />
+                <label for="floatingInput">Street</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="text"
+                       class="form-control"
+                       id="floatingInput"
+                       placeholder="name@example.com" />
+                <label for="floatingInput">City</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="text"
+                       class="form-control"
+                       id="floatingInput"
+                       placeholder="name@example.com" />
+                <label for="floatingInput">State</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="text"
+                       class="form-control"
+                       id="floatingInput"
+                       placeholder="name@example.com" />
+                <label for="floatingInput">Zip code</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="" placeholder=" " />
+                <label for="floatingPassword">Room # / Suite (Optional)</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button type="button"
+                class="btn btn-info me-3 text-light"
+                id="submit_btn">
+            Submit
+        </button>
+        <button type="button" class="btn btn-outline-info" id="cancel_btn">
+            Cancel
+        </button>
+    </div>
+</div>

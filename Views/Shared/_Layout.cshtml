@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HalloDoc_Project</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/css/submit_request.css" rel="stylesheet" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/HalloDoc_Project.styles.css" asp-append-version="true" /> *@
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    @await RenderSectionAsync("style", required: false)
+</head>
+<body>
+    <header>
+        <div class="header_nav d-flex justify-content-between align-items-center ps-3 pe-3">
+            <img src="~/img/hallodoc_img.png" class="img-fluid" alt="logo_img" />
+            <button type="button" class="btn btn-outline-info">
+                <i class="bi bi-moon"></i>
+            </button>
+        </div>
+    </header>
+    <div class="container">
+        
+            @RenderBody()
+       
+    </div>
+
+    <footer >
+        <div class="footer d-flex justify-content-end align-items-center gap-2 pe-2">
+            <a href="#">Terms and condition</a>
+            |
+            <a href="#">Privacy policy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
