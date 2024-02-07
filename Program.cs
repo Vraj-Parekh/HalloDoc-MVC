@@ -1,7 +1,11 @@
+global using HalloDoc_Project.DataContext;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<HalloDocDbContext>();
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
-﻿@*
+﻿@model HalloDoc_Project.DTO.LoginDTO
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -12,9 +13,11 @@
 
     <h1 class="mb-4 text-center">Login to your account</h1>
 
-    <form action="/" class="login-form-control">
+    <form asp-action="PatientLogin" class="login-form-control">
+       
         <div class="form-floating input-group mb-3">
             <input type="email"
+                   asp-for="Email"
                    class="form-control border-end-0 bg-transparent border-focus-none"
                    id="floatingInput"
                    placeholder="email" />
@@ -23,10 +26,10 @@
                 <i class="bi bi-person-circle"></i>
             </span>
         </div>
-
+        <span asp-validation-for="Email" class="text-danger"></span>
         <div class="form-floating input-group mb-3">
             <input type="password"
-                   class="form-control border-end-0 bg-transparent border-focus-none"
+                   asp-for="Password"                   class="form-control border-end-0 bg-transparent border-focus-none"
                    id="floatingPassword"
                    placeholder="password" />
             <label for="floatingPassword">Password</label>
@@ -34,11 +37,12 @@
                 <i class="bi bi-eye"></i>
             </span>
         </div>
-
-        <button type="button" class="btn btn-primary custom-btn mb-4">
+        <span asp-validation-for="Password" class="text-danger"></span>
+        <button class="btn btn-primary custom-btn mb-4">
             Login
         </button>
 
         <a asp-action ="ResetPwd" asp-controller="Patient" class="d-flex justify-content-center">Forgot Password ?</a>
     </form>
+
 </div>
