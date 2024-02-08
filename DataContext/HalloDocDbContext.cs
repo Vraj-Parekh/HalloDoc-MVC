@@ -406,8 +406,6 @@ public partial class HalloDocDbContext : DbContext
         {
             entity.HasKey(e => e.Userid).HasName("User_pkey");
 
-            entity.Property(e => e.Userid).ValueGeneratedNever();
-
             entity.HasOne(d => d.Aspnetuser).WithMany(p => p.Users).HasConstraintName("fk_aspnetusers_aspnetuserid");
         });
 

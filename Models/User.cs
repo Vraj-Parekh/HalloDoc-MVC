@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -34,8 +33,8 @@ public partial class User
     [StringLength(20)]
     public string? Mobile { get; set; }
 
-    [Column("ismobile", TypeName = "bit(1)")]
-    public BitArray? Ismobile { get; set; }
+    [Column("ismobile")]
+    public bool? Ismobile { get; set; }
 
     [Column("street")]
     [StringLength(100)]
@@ -83,15 +82,15 @@ public partial class User
     [Column("status")]
     public short? Status { get; set; }
 
-    [Column("isdeleted", TypeName = "bit(1)")]
-    public BitArray? Isdeleted { get; set; }
+    [Column("isdeleted")]
+    public bool? Isdeleted { get; set; }
 
     [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [Column("isrequestwithemail", TypeName = "bit(1)")]
-    public BitArray? Isrequestwithemail { get; set; }
+    [Column("isrequestwithemail")]
+    public bool? Isrequestwithemail { get; set; }
 
     [ForeignKey("Aspnetuserid")]
     [InverseProperty("Users")]

@@ -29,6 +29,19 @@ body {
 .form-control:focus {
     box-shadow: none;
 }
+.form-control:focus {
+    box-shadow: none;
+}
+
+.form-floating.input-group:focus-within {
+    border: 1px solid #01bce9;
+    border-radius: var(--bs-border-radius);
+}
+
+    .form-floating.input-group:focus-within label {
+        color: #01bce9;
+    }
+
 
 #fileLoader {
     position: absolute;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -46,17 +45,17 @@ public partial class Physician
     [StringLength(500)]
     public string? Adminnotes { get; set; }
 
-    [Column("isagreementdoc", TypeName = "bit(1)")]
-    public BitArray? Isagreementdoc { get; set; }
+    [Column("isagreementdoc")]
+    public bool? Isagreementdoc { get; set; }
 
-    [Column("isbackgrounddoc", TypeName = "bit(1)")]
-    public BitArray? Isbackgrounddoc { get; set; }
+    [Column("isbackgrounddoc")]
+    public bool? Isbackgrounddoc { get; set; }
 
-    [Column("istrainingdoc", TypeName = "bit(1)")]
-    public BitArray? Istrainingdoc { get; set; }
+    [Column("istrainingdoc")]
+    public bool? Istrainingdoc { get; set; }
 
-    [Column("isnondisclosuredoc", TypeName = "bit(1)")]
-    public BitArray? Isnondisclosuredoc { get; set; }
+    [Column("isnondisclosuredoc")]
+    public bool? Isnondisclosuredoc { get; set; }
 
     [Column("address1")]
     [StringLength(500)]
@@ -106,8 +105,8 @@ public partial class Physician
     [StringLength(200)]
     public string Businesswebsite { get; set; } = null!;
 
-    [Column("isdeleted", TypeName = "bit(1)")]
-    public BitArray? Isdeleted { get; set; }
+    [Column("isdeleted")]
+    public bool? Isdeleted { get; set; }
 
     [Column("roleid")]
     public int? Roleid { get; set; }
@@ -116,18 +115,18 @@ public partial class Physician
     [StringLength(500)]
     public string? Npinumber { get; set; }
 
-    [Column("islicensedoc", TypeName = "bit(1)")]
-    public BitArray? Islicensedoc { get; set; }
+    [Column("islicensedoc")]
+    public bool? Islicensedoc { get; set; }
 
     [Column("signature")]
     [StringLength(100)]
     public string? Signature { get; set; }
 
-    [Column("iscredentialdoc", TypeName = "bit(1)")]
-    public BitArray? Iscredentialdoc { get; set; }
+    [Column("iscredentialdoc")]
+    public bool? Iscredentialdoc { get; set; }
 
-    [Column("istokengenerate", TypeName = "bit(1)")]
-    public BitArray? Istokengenerate { get; set; }
+    [Column("istokengenerate")]
+    public bool? Istokengenerate { get; set; }
 
     [Column("syncemailaddress")]
     [StringLength(50)]

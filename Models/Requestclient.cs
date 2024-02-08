@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -66,8 +65,8 @@ public partial class Requestclient
     [Column("intdate")]
     public int? Intdate { get; set; }
 
-    [Column("ismobile", TypeName = "bit(1)")]
-    public BitArray? Ismobile { get; set; }
+    [Column("ismobile")]
+    public bool? Ismobile { get; set; }
 
     [Column("street")]
     [StringLength(100)]

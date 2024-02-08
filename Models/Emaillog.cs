@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,8 +11,7 @@ public partial class Emaillog
 {
     [Key]
     [Column("emaillogid")]
-    [Precision(9, 0)]
-    public decimal Emaillogid { get; set; }
+    public int Emaillogid { get; set; }
 
     [Column("emailtemplate")]
     public string Emailtemplate { get; set; } = null!;
@@ -51,8 +49,8 @@ public partial class Emaillog
     [Column("sentdate", TypeName = "timestamp without time zone")]
     public DateTime? Sentdate { get; set; }
 
-    [Column("isemailsent", TypeName = "bit(1)")]
-    public BitArray? Isemailsent { get; set; }
+    [Column("isemailsent")]
+    public bool? Isemailsent { get; set; }
 
     [Column("senttries")]
     public int? Senttries { get; set; }

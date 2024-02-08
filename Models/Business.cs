@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,9 +16,6 @@ public partial class Business
     [Column("name")]
     [StringLength(100)]
     public string Name { get; set; } = null!;
-
-    [Column("businesstypeid")]
-    public int? Businesstypeid { get; set; }
 
     [Column("address1")]
     [StringLength(500)]
@@ -48,8 +44,8 @@ public partial class Business
     [StringLength(20)]
     public string? Faxnumber { get; set; }
 
-    [Column("isregistered", TypeName = "bit(1)")]
-    public BitArray? Isregistered { get; set; }
+    [Column("isregistered")]
+    public bool? Isregistered { get; set; }
 
     [Column("createdby")]
     [StringLength(128)]
@@ -68,8 +64,8 @@ public partial class Business
     [Column("status")]
     public short? Status { get; set; }
 
-    [Column("isdeleted", TypeName = "bit(1)")]
-    public BitArray? Isdeleted { get; set; }
+    [Column("isdeleted")]
+    public bool? Isdeleted { get; set; }
 
     [Column("ip")]
     [StringLength(20)]

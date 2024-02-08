@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -32,8 +31,8 @@ public partial class Shiftdetail
     [Column("status")]
     public short Status { get; set; }
 
-    [Column("isdeleted", TypeName = "bit(1)")]
-    public BitArray Isdeleted { get; set; } = null!;
+    [Column("isdeleted")]
+    public bool Isdeleted { get; set; }
 
     [Column("modifiedby")]
     [StringLength(128)]
@@ -49,8 +48,8 @@ public partial class Shiftdetail
     [StringLength(100)]
     public string? Eventid { get; set; }
 
-    [Column("issync", TypeName = "bit(1)")]
-    public BitArray? Issync { get; set; }
+    [Column("issync")]
+    public bool? Issync { get; set; }
 
     [ForeignKey("Modifiedby")]
     [InverseProperty("Shiftdetails")]

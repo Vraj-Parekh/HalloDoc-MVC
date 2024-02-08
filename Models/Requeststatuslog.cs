@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -40,8 +39,8 @@ public partial class Requeststatuslog
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [Column("transtoadmin", TypeName = "bit(1)")]
-    public BitArray? Transtoadmin { get; set; }
+    [Column("transtoadmin")]
+    public bool? Transtoadmin { get; set; }
 
     [ForeignKey("Adminid")]
     [InverseProperty("Requeststatuslogs")]

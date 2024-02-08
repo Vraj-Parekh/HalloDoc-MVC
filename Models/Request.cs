@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -49,8 +48,8 @@ public partial class Request
     [Column("createddate", TypeName = "timestamp without time zone")]
     public DateTime Createddate { get; set; }
 
-    [Column("isdeleted", TypeName = "bit(1)")]
-    public BitArray? Isdeleted { get; set; }
+    [Column("isdeleted")]
+    public bool? Isdeleted { get; set; }
 
     [Column("modifieddate", TypeName = "timestamp without time zone")]
     public DateTime? Modifieddate { get; set; }
@@ -59,20 +58,20 @@ public partial class Request
     [StringLength(250)]
     public string? Declinedby { get; set; }
 
-    [Column("isurgentemailsent", TypeName = "bit(1)")]
-    public BitArray? Isurgentemailsent { get; set; }
+    [Column("isurgentemailsent")]
+    public bool? Isurgentemailsent { get; set; }
 
     [Column("lastwellnessdate", TypeName = "timestamp without time zone")]
     public DateTime? Lastwellnessdate { get; set; }
 
-    [Column("ismobile", TypeName = "bit(1)")]
-    public BitArray? Ismobile { get; set; }
+    [Column("ismobile")]
+    public bool? Ismobile { get; set; }
 
     [Column("calltype")]
     public short? Calltype { get; set; }
 
-    [Column("completedbyphysician", TypeName = "bit(1)")]
-    public BitArray? Completedbyphysician { get; set; }
+    [Column("completedbyphysician")]
+    public bool? Completedbyphysician { get; set; }
 
     [Column("lastreservationdate", TypeName = "timestamp without time zone")]
     public DateTime? Lastreservationdate { get; set; }

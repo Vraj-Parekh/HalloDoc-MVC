@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -33,24 +32,24 @@ public partial class Requestwisefile
     [Column("doctype")]
     public short? Doctype { get; set; }
 
-    [Column("isfrontside", TypeName = "bit(1)")]
-    public BitArray? Isfrontside { get; set; }
+    [Column("isfrontside")]
+    public bool? Isfrontside { get; set; }
 
-    [Column("iscompensation", TypeName = "bit(1)")]
-    public BitArray? Iscompensation { get; set; }
+    [Column("iscompensation")]
+    public bool? Iscompensation { get; set; }
 
     [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [Column("isfinalize", TypeName = "bit(1)")]
-    public BitArray? Isfinalize { get; set; }
+    [Column("isfinalize")]
+    public bool? Isfinalize { get; set; }
 
-    [Column("isdeleted", TypeName = "bit(1)")]
-    public BitArray? Isdeleted { get; set; }
+    [Column("isdeleted")]
+    public bool? Isdeleted { get; set; }
 
-    [Column("ispatientrecords", TypeName = "bit(1)")]
-    public BitArray? Ispatientrecords { get; set; }
+    [Column("ispatientrecords")]
+    public bool? Ispatientrecords { get; set; }
 
     [ForeignKey("Adminid")]
     [InverseProperty("Requestwisefiles")]
