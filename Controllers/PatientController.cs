@@ -15,7 +15,8 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
-        public IActionResult PatientLogin() {
+        public IActionResult PatientLogin()
+        {
             return View();
         }
 
@@ -33,7 +34,7 @@ namespace HalloDoc_Project.Controllers
             {
                 return RedirectToAction("PatientLogin");
             }
-           
+
         }
 
         public IActionResult ResetPwd()

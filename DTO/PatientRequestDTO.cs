@@ -24,13 +24,12 @@ namespace HalloDoc_Project.DTO
 
         public string Street { get; set; }
 
-        
+
         public string City { get; set; }
 
-       
+
         public string State { get; set; }
 
-        [DataType(DataType.PostalCode)]
         public string ZipCode { get; set; }
 
         public string RoomOrSuite { get; set; }

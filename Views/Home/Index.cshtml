@@ -1,8 +1,25 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+@section style{
+    <link rel="stylesheet" href="~/css/patient_site.css" asp-append-version="true" />
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+
+    <div class="d-flex justify-content-center">
+
+
+        <div class="col-md-6 ">
+            <a asp-action="SubmitRequest" asp-controller="Request" class="btn c-btn btn1 btn-info w-100 mb-4">
+                Submit A Request
+            </a>
+
+
+
+            <a asp-action="PatientLogin" asp-controller="Patient" class="btn c-btn btn2 btn-danger w-100">
+                Registered Patients
+            </a>
+        </div>
+    </div>
 </div>

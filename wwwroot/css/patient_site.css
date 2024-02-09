@@ -1,0 +1,51 @@
+﻿* {
+    box-sizing: border-box;
+}
+    
+
+.logo-img {
+    height: 130px;
+}
+
+.theme_btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.btn1 {
+    background-color: #01bce9;
+}
+.btn1:hover {
+    background-color: #01bce9;
+}
+
+.btn2 {
+    background-color: #0d1556;
+}
+.btn2:hover {
+    background-color: #0d1556;
+}
+.c-btn{
+    color:white;
+    border:none;
+    height:50px;
+}
+    .c-btn a:hover {
+        color: white;
+    }
+.container{
+    margin-top : 50px;
+}
+.footer {
+    height: 40px;
+    padding-right: 10px;
+    font-size: 18px;
+    color: dimgray;
+}
+
+    .footer a {
+        text-decoration: none;
+        font-weight: 100;
+        color: dimgray;
+    }
