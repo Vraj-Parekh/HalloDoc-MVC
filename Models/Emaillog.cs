@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_Project.Models;
 
@@ -8,7 +11,8 @@ public partial class Emaillog
 {
     [Key]
     [Column("emaillogid")]
-    public int Emaillogid { get; set; }
+    [Precision(9, 0)]
+    public decimal Emaillogid { get; set; }
 
     [Column("emailtemplate")]
     public string Emailtemplate { get; set; } = null!;

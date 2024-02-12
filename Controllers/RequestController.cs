@@ -1,18 +1,19 @@
 ﻿using HalloDoc_Project.DTO;
 using HalloDoc_Project.Models;
 using Microsoft.AspNetCore.Mvc;
-using static Npgsql.PostgresTypes.PostgresCompositeType;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace HalloDoc_Project.Controllers
 {
     public class RequestController : Controller
     {
         private readonly HalloDocDbContext _context;
+        private readonly IWebHostEnvironment env;
 
-        public RequestController(HalloDocDbContext context)
+        public RequestController(HalloDocDbContext context,IWebHostEnvironment env)
         {
             _context = context;
+            this.env = env;
         }
 
         public IActionResult Index()
@@ -36,11 +37,13 @@ namespace HalloDoc_Project.Controllers
             {
                 var request = new Request
                 {
+                    Requesttypeid = 2,
                     Firstname = data.FirstName,
                     Lastname = data.LastName,
+                    Phonenumber = data.PhoneNumber,
                     Email = data.Email,
-                    Requesttypeid = 2,
-                    Status = 0
+                    Status = (int)RequestStatus.Unassigned,
+                    Createddate = DateTime.Now
                 };
 
                 var requestClient = new Requestclient
@@ -52,14 +55,52 @@ namespace HalloDoc_Project.Controllers
                     City = data.City,
                     State = data.State,
                     Zipcode = data.ZipCode,
-                };
-
+                }; 
+                
                 request.Requestclients.Add(requestClient);
                 
+                var user = new User
+                {
+                    Firstname = data.FirstName,
+                    Lastname = data.LastName,
+                    Mobile = data.PhoneNumber,
+                    Email = data.Email,
+                    Street = data.Street,
+                    City = data.City,
+                    State = data.State,
+                    Zipcode = data.ZipCode,
+                    Createddate = DateTime.Now,
+                    Createdby = "patient",
+                };
+
+                var file = data.File;
+                var uniqueFileName = GetUniqueFileName(file.FileName);
+                var uploads = Path.Combine(env.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploads, uniqueFileName);
+                file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                var requestWiseFile = new Requestwisefile
+                {
+                    Createddate = DateTime.Now,
+                    Filename = uniqueFileName
+                };
+
+                request.Requestwisefiles.Add(requestWiseFile);
+
+                var aspNetUser = new Aspnetuser
+                {
+                    Aspnetuserid = Guid.NewGuid().ToString(),
+                    Username = data.Email,
+                    Createddate = DateTime.Now,
+                };
+
                 try
                 {
-                    _context.Requestclients.Add(requestClient);
                     _context.Requests.Add(request);
+                    _context.Requestclients.Add(requestClient);
+                    _context.Users.Add(user);
+                    _context.Requestwisefiles.Add(requestWiseFile);
+                    _context.Aspnetusers.Add(aspNetUser);
                     _context.SaveChanges();
    
                     return RedirectToAction("SubmitRequest", "Request");
@@ -70,96 +111,109 @@ namespace HalloDoc_Project.Controllers
                     return RedirectToAction("FamilyInfo", "Request");
                 }
             }
-            return RedirectToAction("PatientLogin", "Patient");
+            return View(data);
+
         }
         public IActionResult FamilyInfo()
         {
             return View();
         }
+
+        [HttpPost]
         public IActionResult FamilyInfo(FamilyRequestDTO data)
-        {
-            
-                if (ModelState.IsValid)
-                {
-                    var request = new Request
-                    {
-                        Firstname = data.FirstName,
-                        Lastname = data.LastName,
-                        Email = data.Email,
-                        Requesttypeid = 0,
-                        Status = 0
-                    };
-
-                   
-
-                    int requestId = request.Requestid;
-
-                    var requestClient = new Requestclient
-                    {
-                        Requestid = requestId,
-                        Firstname = data.FirstName,
-                        Lastname = data.LastName,
-                        Phonenumber = data.Phone,
-                        Location = $"{data.City}, {data.State}, {data.ZipCode}",
-                        Email = data.Email,
-                        Street = data.Street,
-                        City = data.City,
-                        State = data.State,
-                        Zipcode = data.ZipCode,
-
-                    };
-                   
-                    var requestWiseFile = new Requestwisefile
-                    {
-                        Requestid = requestId,
-                        Filename = "example.txt",
-                        Createddate = DateTime.Now,
-
-                    };
-
-                    _context.Requests.Add(request);
-                    _context.Requestclients.Add(requestClient);
-                    _context.Requestwisefiles.Add(requestWiseFile);
-                    _context.SaveChanges();
-
-                    return RedirectToAction("PatientsiteLogin", "Patient");
-                }
-
-                return View(data);
-            
-
-    }
-    public IActionResult ConciergeInfo(ConciergeRequestDTO data)
         {
             if (ModelState.IsValid)
             {
                 var request = new Request
                 {
-                    Firstname = data.PatientFirstName,
-                    Lastname = data.PatientLastName,
+                    Requesttypeid = 3,
+                    Firstname = data.FirstName,
+                    Lastname = data.LastName,
                     Phonenumber = data.Phone,
                     Email = data.Email,
-                    Createddate = DateTime.Now,
-                    Status = 0
+                    Status = (int)RequestStatus.Unassigned,
+                    Createddate = DateTime.Now
                 };
-                _context.Requests.Add(request);
-
-                int requestId = request.Requestid;
 
                 var requestClient = new Requestclient
                 {
                     Firstname = data.PatientFirstName,
                     Lastname = data.PatientLastName,
-                    Phonenumber = data.Phone,
-                    Location = $"{data.City}, {data.State}, {data.ZipCode}",
-                    Email = data.Email,
+                    Email = data.PatientEmail,
                     Street = data.Street,
                     City = data.City,
                     State = data.State,
-                    Zipcode = data.ZipCode
+                    Zipcode = data.ZipCode,
                 };
-                _context.Requestclients.Add(requestClient);
+
                 request.Requestclients.Add(requestClient);
+                
+                var file = data.File;
+                var uniqueFileName = GetUniqueFileName(file.FileName);
+                var uploads = Path.Combine(env.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploads, uniqueFileName);
+                file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                var requestWiseFile = new Requestwisefile
+                {
+                    Createddate = DateTime.Now,
+                    Filename = uniqueFileName
+                };
+                
+                request.Requestwisefiles.Add(requestWiseFile);
+
+                try
+                {
+                    _context.Requests.Add(request);
+                    _context.Requestclients.Add(requestClient);
+                    _context.Requestwisefiles.Add(requestWiseFile);
+                    _context.SaveChanges();
+
+                    return RedirectToAction("SubmitRequest", "Request");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An error occurred while processing your request.");
+                    return RedirectToAction("FamilyInfo", "Request");
+                }
+            }
+            return View(data);
+        }
+
+        public IActionResult ConciergeInfo()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ConciergeInfo(ConciergeRequestDTO data)
+        {
+            if (ModelState.IsValid)
+            {
+                var request = new Request
+                {
+                    Requesttypeid = 4,
+                    Firstname = data.FirstName,
+                    Lastname = data.LastName,
+                    Phonenumber = data.Phone,
+                    Email = data.Email,
+                    Status = (int)RequestStatus.Unassigned,
+                    Createddate = DateTime.Now
+                };
+
+                var requestClient = new Requestclient
+                {
+                    Firstname = data.PatientFirstName,
+                    Lastname = data.PatientLastName,
+                    Email = data.PatientEmail,
+                    Street = data.Street,
+                    City = data.City,
+                    State = data.State,
+                    Zipcode = data.ZipCode,
+                };
+
+                request.Requestclients.Add(requestClient);
+
                 var concierge = new Concierge
                 {
                     Conciergename = data.FirstName,
@@ -168,39 +222,48 @@ namespace HalloDoc_Project.Controllers
                     State = data.State,
                     Zipcode = data.ZipCode,
                     Createddate = DateTime.Now,
-                    Regionid = 1
+                    Regionid = 1,
                 };
-                _context.Concierges.Add(concierge);
-
-                int conciergeId = concierge.Conciergeid;
-
+                
                 var requestConcierge = new Requestconcierge
                 {
-
-                    Ip = "IPAddress"
+                    Ip = "Ip",
+                    Concierge = concierge
                 };
-                concierge.Requestconcierges.Add(requestConcierge);
+
+
                 request.Requestconcierges.Add(requestConcierge);
-                _context.Requestconcierges.Add(requestConcierge);
+                concierge.Requestconcierges.Add(requestConcierge);
 
-                var requestWiseFile = new Requestwisefile
+                try
                 {
+                    _context.Requests.Add(request);
+                    _context.Requestclients.Add(requestClient);
+                    _context.SaveChanges();
 
-                    Filename = "example.txt",
-                    Createddate = DateTime.Now
-                };
-                //requestWiseFile.Requestid=request.Requestid;
-                request.Requestwisefiles.Add(requestWiseFile);
-                _context.Requestwisefiles.Add(requestWiseFile);
-                _context.SaveChanges();
-
-                return RedirectToAction("PatientsiteLogin", "Patient");
+                    return RedirectToAction("SubmitRequest", "Request");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An error occurred while processing your request.");
+                    return RedirectToAction("FamilyInfo", "Request");
+                }
             }
             return View(data);
+
         }
         public IActionResult BusinessInfo()
         {
             return View();
         }
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 6)
+                      + Path.GetExtension(fileName);
+        }
+
     }
 }

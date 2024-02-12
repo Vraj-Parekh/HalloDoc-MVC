@@ -1,0 +1,70 @@
+﻿@model List<HalloDoc_Project.DTO.PatientRequestList>
+@{
+    ViewData["Title"] = "Patient Dashboard";
+}
+@section style{
+    <link rel="stylesheet" href="~/css/patient_dashboard.css" asp-append-version="true" />
+}
+
+<div class="container-fluid">
+
+<ul class="nav nav-underline ps-4 pe-4 bg-white ">
+    <li class="nav-item">
+        <a class="nav-link active fs-5 fw-medium" aria-current="page" href="#">Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link fs-5 fw-normal" href="#">Profile</a>
+    </li>
+</ul>
+
+<h4 class="mt-5 mb-3">Medical History</h4>
+
+<div class="container">
+
+<div class="bg">
+    <div class="row justify-content-end">
+        <div class="col-auto">
+            <button type="button" class="btn btn-outline-info">
+                <a href="">Create New Request</a>
+            </button>
+        </div>
+
+        <table class="table mt-3">
+            <thead class="table-light">
+                <tr>
+                    <td>
+                        Current Date
+                        <i class="bi bi-arrow-down-short"></i>
+                    </td>
+                    <td>Current Status</td>
+                    <td>Document</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in Model)
+                        {
+              
+                    <tr>
+                        <td>
+                            @item.CreatedDate.ToString("MMM dd, yyyy")
+                        </td>
+
+                        <td>
+                            @item.CurrentStatus
+                        </td>
+
+                        <td>
+                                    <button type="button" class="btn btn-outline-info">
+                                        <a href="">@item.Document Download</a>
+                                    </button>
+                        </td>
+                    </tr>
+                            
+                        }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+</div>

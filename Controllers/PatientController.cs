@@ -1,5 +1,6 @@
 ﻿using HalloDoc_Project.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -28,7 +29,7 @@ namespace HalloDoc_Project.Controllers
 
             if (user != null && user.Passwordhash == data.Password)
             {
-                return RedirectToAction("SubmitRequest", "Request");
+                return RedirectToAction("PatientDashboard", "Patient");
             }
             else
             {
@@ -40,6 +41,26 @@ namespace HalloDoc_Project.Controllers
         public IActionResult ResetPwd()
         {
             return View();
+        }
+
+        public IActionResult PatientDashboard()
+        {
+            string email = "vraj@gmail.com";
+            List<PatientRequestList> data = new List<PatientRequestList>();
+            var patientData = _context.Requests.Where(a => a.Email == email).Include(a=>a.Requestwisefiles);
+
+            foreach (var patientRequest in patientData)
+            {
+                PatientRequestList obj = new PatientRequestList()
+                {
+                    CreatedDate = patientRequest.Createddate,
+                    CurrentStatus = (RequestStatus)patientRequest.Status,
+                    Document = patientRequest.Requestwisefiles.Count
+                };
+                data.Add(obj);
+            }
+
+            return View(data);
         }
     }
 }

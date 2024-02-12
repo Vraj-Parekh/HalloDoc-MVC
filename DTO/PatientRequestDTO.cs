@@ -34,5 +34,6 @@ namespace HalloDoc_Project.DTO
 
         public string RoomOrSuite { get; set; }
 
+        public IFormFile File { get; set; }
     }
 }

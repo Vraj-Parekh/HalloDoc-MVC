@@ -35,5 +35,6 @@ namespace HalloDoc_Project.DTO
         public string State { get; set; }
         public string ZipCode { get; set; }
         public string RoomOrSuite { get; set; }
+        public IFormFile File { get; set; }
     }
 }
