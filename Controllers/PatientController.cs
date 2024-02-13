@@ -1,4 +1,5 @@
 ﻿using HalloDoc_Project.DTO;
+using HalloDoc_Project.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -59,8 +60,15 @@ namespace HalloDoc_Project.Controllers
                 };
                 data.Add(obj);
             }
-
             return View(data);
+
+            /* var result = patientData.Select<Request, PatientRequestList>(a => new() { CreatedDate = a.Createddate, CurrentStatus = (RequestStatus)a.Status, Document = a.Requestwisefiles.Count }).ToList();*/
+            //return View(result);
+        }
+
+        public IActionResult ViewDocument()
+        {
+            return View();
         }
     }
 }

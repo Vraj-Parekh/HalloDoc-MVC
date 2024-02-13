@@ -6,9 +6,8 @@
     <link rel="stylesheet" href="~/css/patient_dashboard.css" asp-append-version="true" />
 }
 
-<div class="container-fluid">
 
-<ul class="nav nav-underline ps-4 pe-4 bg-white ">
+<ul class="nav nav-underline ps-4 pe-4 bg-white">
     <li class="nav-item">
         <a class="nav-link active fs-5 fw-medium" aria-current="page" href="#">Dashboard</a>
     </li>
@@ -17,16 +16,14 @@
     </li>
 </ul>
 
-<h4 class="mt-5 mb-3">Medical History</h4>
 
 <div class="container">
+<h4 class="mt-5 mb-3">Medical History</h4>
 
 <div class="bg">
     <div class="row justify-content-end">
         <div class="col-auto">
-            <button type="button" class="btn btn-outline-info">
-                <a href="">Create New Request</a>
-            </button>
+                <a class="btn btn-outline-info"> Create New Request </a>
         </div>
 
         <table class="table mt-3">
@@ -34,7 +31,7 @@
                 <tr>
                     <td>
                         Current Date
-                        <i class="bi bi-arrow-down-short"></i>
+                        <i class="bi bi-arrow-down-short fs-4"></i>
                     </td>
                     <td>Current Status</td>
                     <td>Document</td>
@@ -42,29 +39,21 @@
             </thead>
             <tbody>
                 @foreach(var item in Model)
-                        {
-              
-                    <tr>
-                        <td>
-                            @item.CreatedDate.ToString("MMM dd, yyyy")
-                        </td>
-
-                        <td>
-                            @item.CurrentStatus
-                        </td>
-
-                        <td>
-                                    <button type="button" class="btn btn-outline-info">
-                                        <a href="">@item.Document Download</a>
-                                    </button>
-                        </td>
-                    </tr>
-                            
-                        }
-
+                {
+                <tr>
+                    <td>
+                        @item.CreatedDate.ToString("MMM dd, yyyy")
+                    </td>
+                    <td>
+                        @item.CurrentStatus
+                    </td
+                    <td>
+                        <a class="btn btn-outline-info">(@item.Document) Download</a>
+                    </td>
+                </tr>   
+                }
             </tbody>
         </table>
     </div>
-</div>
 </div>
 </div>
