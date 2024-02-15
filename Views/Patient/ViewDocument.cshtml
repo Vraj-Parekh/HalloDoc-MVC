@@ -1,4 +1,4 @@
-﻿
+﻿@model HalloDoc_Project.DTO.ViewDocumentList;
 @{
     ViewData["Title"] = "View Documents";
 }
@@ -24,7 +24,7 @@
 
     <div class="bg">
         Patient Name
-        <h5><span> Testing Test </span>(MDDSKFI234I23I)</h5>
+        <h5><span> @Model.Name </span> (@Model.ConfirmationNumber) </h5>
         <p>
             Check here for any files that you or the doctors of your subsequents
             requestors have attached for you to review.
@@ -46,6 +46,39 @@
 
             <a class="btn btn-outline-info"> Download All </a>
         </div>
+        <table class="table mt-3">
+            <thead class="table-light">
+                <tr>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td>
+                        Uploader 
+                    </td>
+                    <td>Upload Date <i class="bi bi-arrow-up-short fs-4"></i> </td>
+                    <td>Actions</td>
+                </tr>
+            </thead>
+            <tbody>
+                 @foreach (var item in Model.Document)
+                {
+                    <tr>
+                        <td>
+                            @item.FileName
+                        </td>
+                        <td>
+                            @item.CreatedBy
+                        </td>
+                        <td>
+                            @item.CreatedDate.ToString("MMM dd, yyyy")
+                        </td>
+                        <td>
+                            <a asp-route-download="@item.DocumentId" asp-action="Download" class="btn btn-outline-info"><i class="bi bi-cloud-arrow-down fs-4"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 

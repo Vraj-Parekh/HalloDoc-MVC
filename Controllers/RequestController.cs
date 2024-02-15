@@ -43,7 +43,7 @@ namespace HalloDoc_Project.Controllers
                     Phonenumber = data.PhoneNumber,
                     Email = data.Email,
                     Status = (int)RequestStatus.Unassigned,
-                    Createddate = DateTime.Now
+                    Createddate = DateTime.Now,
                 };
 
                 var requestClient = new Requestclient

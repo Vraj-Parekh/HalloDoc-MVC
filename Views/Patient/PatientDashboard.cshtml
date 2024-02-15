@@ -30,7 +30,7 @@
             <thead class="table-light">
                 <tr>
                     <td>
-                        Current Date
+                        Created Date
                         <i class="bi bi-arrow-down-short fs-4"></i>
                     </td>
                     <td>Current Status</td>
@@ -46,9 +46,10 @@
                     </td>
                     <td>
                         @item.CurrentStatus
-                    </td
+                    </td>
                     <td>
-                        <a class="btn btn-outline-info">(@item.Document) Download</a>
+                  <a class="btn btn-outline-info" asp-action="ViewDocument" asp-route-requestId="@item.RequestId">(@item.Document) Download</a> 
+                             
                     </td>
                 </tr>   
                 }

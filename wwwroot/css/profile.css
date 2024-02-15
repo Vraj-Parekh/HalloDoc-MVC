@@ -15,6 +15,10 @@ body {
         height: 80px;
     }
 
+.iti {
+    width: 100%;
+}
+
 .bg {
     background-color: white;
     border-radius: 5px;
@@ -22,40 +26,43 @@ body {
     box-shadow: 6px -6px 6px -4px rgba(0, 0, 0, 0.25);
 }
 
-    .bg a {
-        text-decoration: none;
+.form-control:focus {
+    box-shadow: none;
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+
+.form-floating.input-group:focus-within {
+    border: 1px solid #01bce9;
+    border-radius: var(--bs-border-radius);
+}
+
+    .form-floating.input-group:focus-within label {
         color: #01bce9;
     }
 
-.nav-link {
-    color: black;
+
+.form-floating > .form-select {
+     padding-top: 0; 
+     padding-bottom: 0; 
 }
 
-.nav-underline .nav-link.active,
-.nav-underline .show > .nav-link {
-    color: #01bce9;
+.map{
+height: 58px;
+width: 100px;
+line-height:42px;
 }
 
-.btn :hover {
-    color: black;
-}
-
-#fileLoader {
-    position: absolute;
-    left: -9999px;
-}
-
-td a{
-    width : 35px;
-    height:35px;
-}
-.bi-cloud-arrow-down::before {
-    position: relative;
-    left: -7px;
-    top: -10px;
+.edit-btn {
+    width: 85px;
+    height: 45px;
+    line-height: 30px;
 }
 
 .footer {
+    position: relative;
     height: 40px;
     background-color: black;
     padding-right: 10px;

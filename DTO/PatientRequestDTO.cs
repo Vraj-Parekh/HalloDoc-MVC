@@ -15,8 +15,8 @@ namespace HalloDoc_Project.DTO
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
 
         [Phone(ErrorMessage = "Invalid phone number")]

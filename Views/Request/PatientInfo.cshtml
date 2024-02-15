@@ -1,10 +1,10 @@
-﻿@{
+﻿@model HalloDoc_Project.DTO.PatientRequestDTO
+@{
     ViewData["Title"] = "Patient Information";
 }
 @section style{
     <link rel="stylesheet" href="~/css/info.css" asp-append-version="true" />
 }
-@model HalloDoc_Project.DTO.PatientRequestDTO
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
@@ -18,7 +18,7 @@
     </div>
 
     <div class="bg mt-2 mb-3">
-    <form asp-action="PatientInfo" class="login-form-control">
+    <form asp-action="PatientInfo" enctype="multipart/form-data" class="login-form-control">
 
         <div class="row">
             <h4 class="mb-4">Patient Information</h4>
@@ -152,7 +152,7 @@
                     </svg>
                     <label for="fileLoader" class="h-100 upl-btn">Upload</label>
                 </label>
-                <input type="file" id="fileLoader" />
+                <input asp-for="File" type="file" id="fileLoader" />
             </div>
         </div>
 
@@ -173,6 +173,8 @@
 <script>
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {
+        autoInsertDialCode: true,
+        nationalMode: false,
         utilsScript:
             "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });

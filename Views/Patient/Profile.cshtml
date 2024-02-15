@@ -1,0 +1,175 @@
+﻿@model HalloDoc_Project.DTO.PatientProfileDTO;
+@{
+    ViewData["Title"] = "Patient Profile";
+}
+@section style{
+    <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+
+<ul class="nav nav-underline ps-4 pe-4 bg-white">
+    <li class="nav-item">
+        <a class="nav-link active fs-5 fw-medium" aria-current="page" href="#">Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link fs-5 fw-normal" href="#">Profile</a>
+    </li>
+</ul>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>User Profile</h4>
+
+        <a asp-controller="Patient" asp-action="PatientDashboard" class="btn btn-outline-info"> < Back </a>
+    </div>
+
+    <div class="bg mt-2 mb-3">
+        <form asp-action="Profile" class="login-form-control">
+           
+        <div class="row">
+            <h4 class="mb-4">General Information</h4>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           class="form-control"
+                           id="floatingInput"
+                           placeholder="First Name" 
+                           disabled/>
+                    <label for="floatingInput">First Name</label>
+                </div>
+                <span  class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           class="form-control"
+                           id="floatingInput"
+                            placeholder="Last name"
+                            disabled />
+                    <label for="floatingPassword">Last Name</label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input  type="date"
+                           class="form-control"
+                           id="dob"
+                               placeholder="dob"
+                               disabled />
+                    <label for="floatingPassword">Date of Birth</label>
+                </div>
+                <span  class="text-danger"></span>
+            </div>
+
+            <h4 class="mb-4 mt-4">Contact Informatio</h4>
+
+                <div class="col-md-2 mb-3 z-3">
+                    <div class="form-floating">
+                        <select class="form-select form-select-lg" aria-label="Large select example"
+                                disabled>
+                            <option selected>Mobile</option>
+                            <option value="1">Phone</option>
+                            <option value="2">Landline</option>
+                        </select>
+                    </div>
+            </div>
+
+             <div class="col-md-4 mb-3 z-3 form-floating">
+                    <input type="tel"
+                           class="form-control"
+                           id="phone"
+                           placeholder=""
+                           style="height: 58px"
+                           disabled />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="email"
+                           class="form-control"
+                           id="floatingInput"
+                               placeholder="name@example.com"
+                               disabled />
+                    <label for="floatingInput">Email</label>
+                </div>
+                <span class="text-danger"></span>
+            </div>
+
+
+            <h4 class="mb-4 mt-4">Location Information</h4>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           class="form-control"
+                           id="floatingInput"
+                               placeholder="name@example.com"
+                               disabled />
+                    <label for="floatingInput">Street</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           class="form-control"
+                           id="floatingInput"
+                               placeholder="city"
+                               disabled />
+                    <label for="floatingInput">City</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           class="form-control"
+                           id="floatingInput"
+                               placeholder="state"
+                               disabled />
+                    <label for="floatingInput">State</label>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           class="form-control"
+                           id="floatingInput"
+                               placeholder="zip code"
+                               disabled />
+                    <label for="floatingInput">Zip code</label>
+                </div>
+            </div>
+
+            <div class="col-md-2 mb-3">
+                <div class="form-floating">
+                        <a class="btn btn-outline-info map"><i class="bi bi-geo-alt">Map</i> </a>
+                </div>
+            </div>
+
+        </div>
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <a class="btn btn-info edit-btn text-white"> Edit </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        autoInsertDialCode: true,
+        nationalMode: false,
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+</script>
