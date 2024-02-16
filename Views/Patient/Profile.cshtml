@@ -6,15 +6,17 @@
     <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
 }
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17`.0.8/js/intlTelInput.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 <ul class="nav nav-underline ps-4 pe-4 bg-white">
     <li class="nav-item">
-        <a class="nav-link active fs-5 fw-medium" aria-current="page" href="#">Dashboard</a>
+        <a class="nav-link fs-5 fw-normal" aria-current="page" asp-action="PatientDashboard">Dashboard</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link fs-5 fw-normal" href="#">Profile</a>
+        <a class="nav-link active fs-5 fw-medium" asp-action="Profile">Profile</a>
     </li>
 </ul>
 
@@ -27,46 +29,49 @@
 
     <div class="bg mt-2 mb-3">
         <form asp-action="Profile" class="login-form-control">
-           
-        <div class="row">
-            <h4 class="mb-4">General Information</h4>
 
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    <input type="text"
-                           class="form-control"
-                           id="floatingInput"
-                           placeholder="First Name" 
-                           disabled/>
-                    <label for="floatingInput">First Name</label>
-                </div>
-                <span  class="text-danger"></span>
-            </div>
+            <div class="row">
+                <h4 class="mb-4">General Information</h4>
 
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    <input type="text"
-                           class="form-control"
-                           id="floatingInput"
-                            placeholder="Last name"
-                            disabled />
-                    <label for="floatingPassword">Last Name</label>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-floating">
-                    <input  type="date"
-                           class="form-control"
-                           id="dob"
-                               placeholder="dob"
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               class="form-control"
+                               id="floatingInput"
+                               placeholder="First Name"
+                               value="@Model.FirstName"
                                disabled />
-                    <label for="floatingPassword">Date of Birth</label>
+                        <label for="floatingInput">First Name</label>
+                    </div>
+                    <span class="text-danger"></span>
                 </div>
-                <span  class="text-danger"></span>
-            </div>
 
-            <h4 class="mb-4 mt-4">Contact Informatio</h4>
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               class="form-control"
+                               id="floatingInput"
+                               placeholder="Last name"
+                               value="@Model.LastName"
+                               disabled />
+                        <label for="floatingPassword">Last Name</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="date"
+                               class="form-control"
+                               id="dob"
+                               placeholder="dob"
+                               value="@Model.DateOfBirth"
+                               disabled />
+                        <label for="floatingPassword">Date of Birth</label>
+                    </div>
+                    <span class="text-danger"></span>
+                </div>
+
+                <h4 class="mb-4 mt-4">Contact Informatio</h4>
 
                 <div class="col-md-2 mb-3 z-3">
                     <div class="form-floating">
@@ -77,92 +82,98 @@
                             <option value="2">Landline</option>
                         </select>
                     </div>
-            </div>
+                </div>
 
-             <div class="col-md-4 mb-3 z-3 form-floating">
+                <div class="col-md-4 mb-3 z-3 form-floating">
                     <input type="tel"
                            class="form-control"
                            id="phone"
                            placeholder=""
                            style="height: 58px"
+                           value="@Model.PhoneNumber"
                            disabled />
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    <input type="email"
-                           class="form-control"
-                           id="floatingInput"
-                               placeholder="name@example.com"
-                               disabled />
-                    <label for="floatingInput">Email</label>
                 </div>
-                <span class="text-danger"></span>
-            </div>
 
-
-            <h4 class="mb-4 mt-4">Location Information</h4>
-
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    <input type="text"
-                           class="form-control"
-                           id="floatingInput"
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="email"
+                               class="form-control"
+                               id="floatingInput"
                                placeholder="name@example.com"
+                               value="@Model.Email"
                                disabled />
-                    <label for="floatingInput">Street</label>
+                        <label for="floatingInput">Email</label>
+                    </div>
+                    <span class="text-danger"></span>
                 </div>
-            </div>
 
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    <input type="text"
-                           class="form-control"
-                           id="floatingInput"
+
+                <h4 class="mb-4 mt-4">Location Information</h4>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               class="form-control"
+                               id="floatingInput"
+                               placeholder="street"
+                               value="@Model.Street"
+                               disabled />
+                        <label for="floatingInput">Street</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               class="form-control"
+                               id="floatingInput"
                                placeholder="city"
+                               value="@Model.City"
                                disabled />
-                    <label for="floatingInput">City</label>
+                        <label for="floatingInput">City</label>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    <input type="text"
-                           class="form-control"
-                           id="floatingInput"
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               class="form-control"
+                               id="floatingInput"
                                placeholder="state"
+                               value="@Model.State"
                                disabled />
-                    <label for="floatingInput">State</label>
+                        <label for="floatingInput">State</label>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-md-4 mb-3">
-                <div class="form-floating">
-                    <input type="text"
-                           class="form-control"
-                           id="floatingInput"
+                <div class="col-md-4 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               class="form-control"
+                               id="floatingInput"
                                placeholder="zip code"
+                               value="@Model.ZipCode"
                                disabled />
-                    <label for="floatingInput">Zip code</label>
+                        <label for="floatingInput">Zip code</label>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-md-2 mb-3">
-                <div class="form-floating">
-                        <a class="btn btn-outline-info map"><i class="bi bi-geo-alt">Map</i> </a>
+                <div class="col-md-2 mb-3">
+                    <div class="form-floating">
+                        <a class="btn btn-outline-info map btn-map"><i class="bi bi-geo-alt">Map</i> </a>
+                    </div>
                 </div>
-            </div>
 
-        </div>
+            </div>
             <div class="row justify-content-end">
                 <div class="col-auto">
-                    <a class="btn btn-info edit-btn text-white"> Edit </a>
+                    <button class="btn btn-info c-btn text-white btn-edit"> Edit </button>
+                    <button class="btn btn-info c-btn text-white btn-save">Save</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
-
 
 <script>
     const phoneInputField = document.querySelector("#phone");
@@ -171,5 +182,20 @@
         nationalMode: false,
         utilsScript:
             "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+
+    $(document).ready(function () {
+        // Disable all input fields initially
+        $('input, select,.btn-map').prop('disabled', true);
+        $('.btn-save').hide();
+
+        // Handle click event for the Edit button
+        $('.btn-edit').click(function () {
+            // Enable all input fields
+            console.log("vrqaj");
+            $('input, select,.btn-map').prop('disabled', false);
+            $('.btn-save').show();
+        });
     });
 </script>

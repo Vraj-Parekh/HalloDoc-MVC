@@ -91,8 +91,11 @@ namespace HalloDoc_Project.Controllers
                 {
                     Aspnetuserid = Guid.NewGuid().ToString(),
                     Username = data.Email,
+                    Email = data.Email,
                     Createddate = DateTime.Now,
                 };
+
+                user.Aspnetuser = aspNetUser;
 
                 try
                 {

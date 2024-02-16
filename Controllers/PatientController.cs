@@ -33,6 +33,7 @@ namespace HalloDoc_Project.Controllers
 
             if (user != null && user.Passwordhash == data.Password)
             {
+                HttpContext.Session.SetString("email", user.Email);
                 return RedirectToAction("PatientDashboard", "Patient");
             }
             else
@@ -112,9 +113,30 @@ namespace HalloDoc_Project.Controllers
             return filePath;
         }
 
-        public IActionResult Profile(int requestId)
+        public IActionResult Profile( )
         {
-            var firstName = _context.Requestclients
+            var email = HttpContext.Session.GetString("email");
+            var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
+
+            if (patientData == null)
+                return NotFound();
+
+            var patientProfile = new PatientProfileDTO()
+            {
+                FirstName = patientData.Firstname,
+                LastName = patientData.Lastname,
+                PhoneNumber = patientData.Mobile,
+                Email = patientData.Email,
+                Street = patientData.Street,
+                City = patientData.City,
+                State = patientData.State,
+                ZipCode = patientData.Zipcode,
+            };
+            return View(patientProfile);
+        }
+
+        public IActionResult ReviewAgreement()
+        {
             return View();
         }
     }
