@@ -1,74 +1,43 @@
 ﻿@{
     ViewData["Title"] = "Submit Request Screen";
-    Layout = "";
+}
+@section style {
+    <link rel="stylesheet" href="~/css/submit_request.css" asp-append-version="true" />
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/submit_request.css" />
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
-    <title>Submit request screen</title>
-</head>
-<body>
-
-
-
-<header>
-    <div class="header_nav d-flex justify-content-between align-items-center ps-3 pe-3">
-        <img src="~/img/hallodoc_img.png" class="img-fluid" alt="logo_img" />
-        <button type="button" class="btn btn-outline-info">
-            <i class="bi bi-moon"></i>
-        </button>
-    </div>
-</header>
-
-    <div class="container">
-<div class="d-flex justify-content-end">
-    <a asp-action="PatientLogin" asp-controller="Patient">
-        <button type="button" class="btn btn-outline-info mt-4" id="back_btn">
-            < Back
-        </button>
-    </a>
-</div>
-
-<h1 class="d-flex justify-content-center mb-5">
-    <strong>I am a...</strong>
-</h1>
-
-<div class="d-flex flex-column align-items-center">
-    <div class="box mb-2" id="box1">
-        <a asp-action="PatientInfo" asp-controller="Request">
-            <h3>patient</h3>
+<div class="container">
+    <div class="d-flex justify-content-end">
+        <a asp-action="PatientLogin" asp-controller="Patient">
+            <button type="button" class="btn btn-outline-info mt-4" id="back_btn">
+                < Back
+            </button>
         </a>
     </div>
-    <div class="box mb-2" id="box2">
-                <a asp-action="FamilyInfo" asp-controller="Request">
-            <h3>family/friend</h3>
-        </a>
-    </div>
-    <div class="box mb-2" id="box3">
-                <a asp-action="ConciergeInfo" asp-controller="Request">
-            <h3>concierge</h3>
-        </a>
-    </div>
-    <div class="box mb-2" id="box4">
-                <a asp-action="BusinessInfo" asp-controller="Request">
-            <h3>business partners</h3>
-        </a>
-    </div>
-</div>
-</div>
-    <footer>
-        <div class="fixed-bottom footer d-flex justify-content-end align-items-center gap-2 pe-2">
-            <a href="#">Terms and condition</a>
-            |
-            <a href="#">Privacy policy</a>
+
+    <h1 class="d-flex justify-content-center mb-5">
+        <strong>I am a...</strong>
+    </h1>
+
+    <div class="d-flex flex-column align-items-center">
+        <div class="box mb-2" id="box1">
+            <a asp-action="PatientInfo" asp-controller="Request">
+                <h3>patient</h3>
+            </a>
         </div>
-    </footer>
-</body>
-</html>
+        <div class="box mb-2" id="box2">
+            <a asp-action="FamilyInfo" asp-controller="Request">
+                <h3>family/friend</h3>
+            </a>
+        </div>
+        <div class="box mb-2" id="box3">
+            <a asp-action="ConciergeInfo" asp-controller="Request">
+                <h3>concierge</h3>
+            </a>
+        </div>
+        <div class="box mb-2" id="box4">
+            <a asp-action="BusinessInfo" asp-controller="Request">
+                <h3>business partners</h3>
+            </a>
+        </div>
+    </div>
+</div>

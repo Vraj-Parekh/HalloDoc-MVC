@@ -52,7 +52,7 @@ namespace HalloDoc_Project.Controllers
         {
             string email = "vraj@gmail.com";
             List<PatientRequestList> data = new();
-            var patientData = _context.Requests.Where(a => a.Email == email).Include(a=>a.Requestwisefiles);
+            var patientData = _context.Requests.Where(a => a.Email == email).Include(a => a.Requestwisefiles);
 
             foreach (var patientRequest in patientData)
             {
@@ -71,11 +71,11 @@ namespace HalloDoc_Project.Controllers
         public IActionResult ViewDocument(int requestId)
         {
             var file = _context.Requestwisefiles.Where(a => a.Requestid == requestId);
-            var req = _context.Requests.Where(a=>a.Requestid == requestId).FirstOrDefault();
+            var req = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             var name = _context.Requestclients.Where(a => a.Requestid == requestId).FirstOrDefault();
             List<FileData> data = new();
 
-            foreach(var files in file)
+            foreach (var files in file)
             {
                 FileData FileDataList = new()
                 {
@@ -105,7 +105,7 @@ namespace HalloDoc_Project.Controllers
         }
         public string getPath(int download)
         {
-            var file = _context.Requestwisefiles.Where(a=>a.Requestwisefileid == download).FirstOrDefault();
+            var file = _context.Requestwisefiles.Where(a => a.Requestwisefileid == download).FirstOrDefault();
 
             var uploads = Path.Combine(env.WebRootPath, "uploads");
             var filePath = Path.Combine(uploads, file.Filename);
@@ -113,7 +113,7 @@ namespace HalloDoc_Project.Controllers
             return filePath;
         }
 
-        public IActionResult Profile( )
+        public IActionResult Profile()
         {
             var email = HttpContext.Session.GetString("email");
             var patientData = _context.Users.FirstOrDefault(a => a.Email == email);

@@ -10,7 +10,7 @@ namespace HalloDoc_Project.Controllers
         private readonly HalloDocDbContext _context;
         private readonly IWebHostEnvironment env;
 
-        public RequestController(HalloDocDbContext context,IWebHostEnvironment env)
+        public RequestController(HalloDocDbContext context, IWebHostEnvironment env)
         {
             _context = context;
             this.env = env;
@@ -55,10 +55,10 @@ namespace HalloDoc_Project.Controllers
                     City = data.City,
                     State = data.State,
                     Zipcode = data.ZipCode,
-                }; 
-                
+                };
+
                 request.Requestclients.Add(requestClient);
-                
+
                 var user = new User
                 {
                     Firstname = data.FirstName,
@@ -105,11 +105,11 @@ namespace HalloDoc_Project.Controllers
                     _context.Requestwisefiles.Add(requestWiseFile);
                     _context.Aspnetusers.Add(aspNetUser);
                     _context.SaveChanges();
-   
+
                     return RedirectToAction("SubmitRequest", "Request");
                 }
                 catch (Exception ex)
-                {                   
+                {
                     ModelState.AddModelError("", "An error occurred while processing your request.");
                     return RedirectToAction("FamilyInfo", "Request");
                 }
@@ -150,7 +150,7 @@ namespace HalloDoc_Project.Controllers
                 };
 
                 request.Requestclients.Add(requestClient);
-                
+
                 var file = data.File;
                 var uniqueFileName = GetUniqueFileName(file.FileName);
                 var uploads = Path.Combine(env.WebRootPath, "uploads");
@@ -162,7 +162,7 @@ namespace HalloDoc_Project.Controllers
                     Createddate = DateTime.Now,
                     Filename = uniqueFileName
                 };
-                
+
                 request.Requestwisefiles.Add(requestWiseFile);
 
                 try
@@ -227,7 +227,7 @@ namespace HalloDoc_Project.Controllers
                     Createddate = DateTime.Now,
                     Regionid = 1,
                 };
-                
+
                 var requestConcierge = new Requestconcierge
                 {
                     Ip = "Ip",
