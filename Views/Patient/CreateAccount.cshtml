@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = "CreateAccount";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+@section style {
+    <link rel="stylesheet" href="~/css/patient_login.css" asp-append-version="true" />
+}
+<div class="main">
+    <h1 class="mb-4 text-center">Create Account</h1>
+
+    <form asp-action="" class="login-form-control">
+
+        <div class="form-floating input-group mb-3">
+            <input type="email"
+                   
+                   class="form-control border-end-0 bg-transparent border-focus-none"
+                   id="floatingInput"
+                   placeholder="Email" />
+            <label for="floatingInpu">Email</label>
+            <span class="input-group-text bg-transparent">
+                <i class="bi bi-person-circle"></i>
+            </span>
+        </div>
+        @* <span asp-validation-for="Email" class="text-danger"></span> *@
+
+        <div class="form-floating input-group mb-3">
+            <input type="password"
+                    class="form-control border-end-0 bg-transparent border-focus-none"
+                   id="floatingPassword"
+                   placeholder="Password" />
+            <label for="floatingPassword">Password</label>
+            <span class="input-group-text bg-transparent">
+                <i class="bi bi-eye"></i>
+            </span>
+        </div>
+        @* <span asp-validation-for="Password" class="text-danger"></span>  *@
+        
+        <div class="form-floating input-group mb-3">
+            <input type="password"
+                    class="form-control border-end-0 bg-transparent border-focus-none"
+                   id="floatingPassword"
+                   placeholder="Confirm Password" />
+            <label for="floatingPassword">Confirm Password</label>
+            <span class="input-group-text bg-transparent">
+                <i class="bi bi-eye"></i>
+            </span>
+        </div>
+        @* <span asp-validation-for="Password" class="text-danger"></span> *@
+
+
+        <button class="btn btn-primary custom-btn mb-4">
+            Create
+        </button>
+    </form>
+
+</div>

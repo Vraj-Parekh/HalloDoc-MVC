@@ -1,13 +1,12 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "ResetPwdPage";
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
-@section style{
-    <link rel="stylesheet" href="~/css/reset_password.css" asp-append-version="true" />
+@section style {
+    <link rel="stylesheet" href="~/css/patient_login.css" asp-append-version="true" />
 }
 <div class="main">
-    <a href="#" class="mb-2">< Back</a>
+    <a asp-action="PatientLogin" asp-controller="Patient" class="mb-2">< Back</a>
 
     <h1 class="mb-4 text-center">Reset Your Password</h1>
 

@@ -1,8 +1,4 @@
-﻿* {
-    box-sizing: border-box;
-}
-
-body {
+﻿body {
     background-color: rgba(65, 65, 65, 0.089);
 }
 
@@ -20,17 +16,3 @@ p{
     text-align:justify;
     font-size:large;
 }
-
-.footer {
-    height: 40px;
-    background-color: black;
-    padding-right: 10px;
-    font-size: 14px;
-    color: white;
-}
-
-    .footer a {
-        text-decoration: none;
-        font-weight: 100;
-        color: white;
-    }

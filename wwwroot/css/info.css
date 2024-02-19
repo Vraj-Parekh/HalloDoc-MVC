@@ -16,6 +16,7 @@
 .form-control:focus {
     box-shadow: none;
 }
+
 .form-control:focus {
     box-shadow: none;
 }
@@ -29,11 +30,15 @@
         color: #01bce9;
     }
 
-
 #fileLoader {
     position: absolute;
     left: -9999px;
 }
-.container{
-    margin-bottom:50px;
+
+.container {
+    margin-bottom: 50px;
+}
+
+#passwordDiv{
+    display:none;
 }

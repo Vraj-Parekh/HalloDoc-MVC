@@ -1,0 +1,25 @@
+﻿
+.btn1 {
+    background-color: #01bce9;
+}
+.btn1:hover {
+    background-color: #01bce9;
+}
+
+.btn2 {
+    background-color: #0d1556;
+}
+.btn2:hover {
+    background-color: #0d1556;
+}
+.c-btn{
+    color:white;
+    border:none;
+    height:50px;
+}
+    .c-btn a:hover {
+        color: white;
+    }
+.container{
+    margin-top : 50px;
+}

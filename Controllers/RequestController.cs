@@ -1,7 +1,7 @@
-﻿using HalloDoc_Project.DTO;
-using HalloDoc_Project.Models;
+﻿using Entities.DataContext;
+using Entities.Models;
+using Entities.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace HalloDoc_Project.Controllers
 {
@@ -30,11 +30,26 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        private string GetConfirmationNumber(string city, string lastname, string firstname, string count)
+        {
+            string regionAbr = city.Substring(0, 2);
+            string date = DateTime.Now.ToString("dd");
+            string month = DateTime.Now.ToString("MM");
+            string last = lastname.Substring(0, 2);
+            string first = firstname.Substring(0, 2);
+            string requestCount = count;
+
+            return regionAbr + date + month + last + first + requestCount;
+        }
+
         [HttpPost]
         public IActionResult PatientInfo(PatientRequestDTO data)
         {
+            ModelState.Remove("Password");
+            ModelState.Remove("ConfirmPassword");
             if (ModelState.IsValid)
             {
+                string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
                 var request = new Request
                 {
                     Requesttypeid = 2,
@@ -44,35 +59,26 @@ namespace HalloDoc_Project.Controllers
                     Email = data.Email,
                     Status = (int)RequestStatus.Unassigned,
                     Createddate = DateTime.Now,
+                    Isurgentemailsent = false,
+                    Confirmationnumber = GetConfirmationNumber(data.City, data.LastName, data.FirstName, count),
                 };
 
                 var requestClient = new Requestclient
                 {
                     Firstname = data.FirstName,
                     Lastname = data.LastName,
+                    Intdate = data.DateOfBirth.Day,
+                    Intyear = data.DateOfBirth.Year,
+                    Strmonth = data.DateOfBirth.ToString("MMM"),
                     Email = data.Email,
                     Street = data.Street,
                     City = data.City,
                     State = data.State,
                     Zipcode = data.ZipCode,
+                    Request = request
                 };
 
-                request.Requestclients.Add(requestClient);
-
-                var user = new User
-                {
-                    Firstname = data.FirstName,
-                    Lastname = data.LastName,
-                    Mobile = data.PhoneNumber,
-                    Email = data.Email,
-                    Street = data.Street,
-                    City = data.City,
-                    State = data.State,
-                    Zipcode = data.ZipCode,
-                    Createddate = DateTime.Now,
-                    Createdby = "patient",
-                };
-
+                //to get uploaded files in the 'uploads' folder
                 var file = data.File;
                 var uniqueFileName = GetUniqueFileName(file.FileName);
                 var uploads = Path.Combine(env.WebRootPath, "uploads");
@@ -82,20 +88,37 @@ namespace HalloDoc_Project.Controllers
                 var requestWiseFile = new Requestwisefile
                 {
                     Createddate = DateTime.Now,
-                    Filename = uniqueFileName
+                    Filename = uniqueFileName,
+                    Request = request,
                 };
-
-                request.Requestwisefiles.Add(requestWiseFile);
 
                 var aspNetUser = new Aspnetuser
                 {
                     Aspnetuserid = Guid.NewGuid().ToString(),
                     Username = data.Email,
+                    Passwordhash = data.ConfirmPassword,
+                    Phonenumber = data.PhoneNumber,
                     Email = data.Email,
                     Createddate = DateTime.Now,
                 };
 
-                user.Aspnetuser = aspNetUser;
+                var user = new User
+                {
+                    Firstname = data.FirstName,
+                    Lastname = data.LastName,
+                    Mobile = data.PhoneNumber,
+                    Email = data.Email,
+                    Intdate = data.DateOfBirth.Day,
+                    Intyear = data.DateOfBirth.Year,
+                    Strmonth = data.DateOfBirth.ToString("MMM"),
+                    Street = data.Street,
+                    City = data.City,
+                    State = data.State,
+                    Zipcode = data.ZipCode,
+                    Createddate = DateTime.Now,
+                    Createdby = "patient",
+                    Aspnetuser = aspNetUser
+                };
 
                 try
                 {
@@ -127,6 +150,7 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
+                string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
                 var request = new Request
                 {
                     Requesttypeid = 3,
@@ -135,7 +159,9 @@ namespace HalloDoc_Project.Controllers
                     Phonenumber = data.Phone,
                     Email = data.Email,
                     Status = (int)RequestStatus.Unassigned,
-                    Createddate = DateTime.Now
+                    Createddate = DateTime.Now,
+                    Isurgentemailsent = false,
+                    Confirmationnumber = GetConfirmationNumber(data.City, data.LastName, data.FirstName, count),
                 };
 
                 var requestClient = new Requestclient
@@ -143,14 +169,17 @@ namespace HalloDoc_Project.Controllers
                     Firstname = data.PatientFirstName,
                     Lastname = data.PatientLastName,
                     Email = data.PatientEmail,
+                    Intdate = data.DateOfBirth.Day,
+                    Intyear = data.DateOfBirth.Year,
+                    Strmonth = data.DateOfBirth.ToString("MMM"),
                     Street = data.Street,
                     City = data.City,
                     State = data.State,
                     Zipcode = data.ZipCode,
+                    Request = request
                 };
 
-                request.Requestclients.Add(requestClient);
-
+                //to get uploaded files in the 'uploads' folder
                 var file = data.File;
                 var uniqueFileName = GetUniqueFileName(file.FileName);
                 var uploads = Path.Combine(env.WebRootPath, "uploads");
@@ -160,10 +189,9 @@ namespace HalloDoc_Project.Controllers
                 var requestWiseFile = new Requestwisefile
                 {
                     Createddate = DateTime.Now,
-                    Filename = uniqueFileName
+                    Filename = uniqueFileName,
+                    Request = request,
                 };
-
-                request.Requestwisefiles.Add(requestWiseFile);
 
                 try
                 {
@@ -193,6 +221,7 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
+                string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
                 var request = new Request
                 {
                     Requesttypeid = 4,
@@ -201,7 +230,9 @@ namespace HalloDoc_Project.Controllers
                     Phonenumber = data.Phone,
                     Email = data.Email,
                     Status = (int)RequestStatus.Unassigned,
-                    Createddate = DateTime.Now
+                    Createddate = DateTime.Now,
+                    Isurgentemailsent = false,
+                    Confirmationnumber = GetConfirmationNumber(data.City, data.LastName, data.FirstName, count)
                 };
 
                 var requestClient = new Requestclient
@@ -209,13 +240,15 @@ namespace HalloDoc_Project.Controllers
                     Firstname = data.PatientFirstName,
                     Lastname = data.PatientLastName,
                     Email = data.PatientEmail,
+                    Intdate = data.DateOfBirth.Day,
+                    Intyear = data.DateOfBirth.Year,
+                    Strmonth = data.DateOfBirth.ToString("MMM"),
                     Street = data.Street,
                     City = data.City,
                     State = data.State,
                     Zipcode = data.ZipCode,
+                    Request = request
                 };
-
-                request.Requestclients.Add(requestClient);
 
                 var concierge = new Concierge
                 {
@@ -230,13 +263,9 @@ namespace HalloDoc_Project.Controllers
 
                 var requestConcierge = new Requestconcierge
                 {
-                    Ip = "Ip",
+                    Request = request,
                     Concierge = concierge
                 };
-
-
-                request.Requestconcierges.Add(requestConcierge);
-                concierge.Requestconcierges.Add(requestConcierge);
 
                 try
                 {
@@ -259,6 +288,19 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
+
+        [Route("[controller]/[action]/{email}")]
+        public bool IsPatientPresent(string email)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Email == email);
+
+            if (user is null)
+            {
+                return false;
+            }
+            return true;
+        }
+
         private string GetUniqueFileName(string fileName)
         {
             fileName = Path.GetFileName(fileName);

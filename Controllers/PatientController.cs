@@ -1,5 +1,5 @@
-﻿using HalloDoc_Project.DTO;
-using HalloDoc_Project.Models;
+﻿using Entities.DataContext;
+using Entities.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
@@ -50,7 +50,7 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult PatientDashboard()
         {
-            string email = "vraj@gmail.com";
+            string email = HttpContext.Session.GetString("email");
             List<PatientRequestList> data = new();
             var patientData = _context.Requests.Where(a => a.Email == email).Include(a => a.Requestwisefiles);
 
@@ -135,7 +135,21 @@ namespace HalloDoc_Project.Controllers
             return View(patientProfile);
         }
 
+        [HttpPost]
+        public IActionResult Profile(PatientProfileDTO data)
+        {
+            var profileData = new PatientProfileDTO()
+            {
+
+            };
+            return View();
+        }
         public IActionResult ReviewAgreement()
+        {
+            return View();
+        }
+
+        public IActionResult CreateAccount()
         {
             return View();
         }

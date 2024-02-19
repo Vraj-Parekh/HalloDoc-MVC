@@ -1,6 +1,29 @@
-﻿.main {
+﻿* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: #01bce9;
+}
+
+    a:hover {
+        color: #01bce9;
+    }
+
+.logo-img {
+    height: 130px;
+}
+
+.theme_btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.main {
     margin: auto;
-    width:400px;
+    width: 400px;
 }
 
 .custom-btn {
@@ -46,14 +69,15 @@
     border: none;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    height: 74vh;
-    background-image: linear-gradient( 0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9) ), url(/img/platform_login_person.jpg);
-    background-size: contain;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-position: center;
-    backdrop-filter: blur(2px);
+.footer {
+    height: 40px;
+    padding-right: 10px;
+    font-size: 18px;
+    color: dimgray;
 }
+
+    .footer a {
+        text-decoration: none;
+        font-weight: 100;
+        color: dimgray;
+    }

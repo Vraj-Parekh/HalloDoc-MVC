@@ -1,4 +1,4 @@
-global using HalloDoc_Project.DataContext;
+using Entities.DataContext;
 
 var builder = WebApplication.CreateBuilder(args);
 

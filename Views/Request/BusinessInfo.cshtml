@@ -1,10 +1,10 @@
-﻿@{
+﻿@model BusinessRequestDTO
+@{
     ViewData["Title"] = "Business Information";
 }
 @section style {
     <link rel="stylesheet" href="~/css/info.css" asp-append-version="true" />
 }
-@model HalloDoc_Project.DTO.BusinessRequestDTO
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
@@ -50,7 +50,8 @@
                     <input asp-for="Phone" type="tel"
                            class="form-control"
                            id="phone"
-                           placeholder="(201) 555-0123"
+                           placeholder="
+"
                            style="height: 58px" />
                 </div>
 
@@ -152,7 +153,7 @@
                     <input asp-for="PatientPhone" type="tel"
                            class="form-control"
                            id="phone1"
-                           placeholder="(201) 555-0123"
+                           placeholder=""
                            style="height: 58px" />
                 </div>
 
@@ -217,16 +218,3 @@
         </form>
     </div>
 </div>
-
-<script>
-    const phoneInputField = document.querySelector("#phone");
-    const phoneInputField1 = document.querySelector("#phone1");
-    const phoneInput = window.intlTelInput(phoneInputField, {
-        utilsScript:
-            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-    });
-    const phoneInput1 = window.intlTelInput(phoneInputField1, {
-        utilsScript:
-            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-    });
-</script>

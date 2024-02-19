@@ -1,23 +1,18 @@
-﻿@model HalloDoc_Project.DTO.LoginDTO
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model LoginDTO
+
 @{
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
-@section style{
+@section style {
     <link rel="stylesheet" href="~/css/patient_login.css" asp-append-version="true" />
-
 }
-
-
 <div class="main">
-    <a href="#" class="mb-2">< Back</a>
+    <a asp-action="Index" asp-controller="Home" class="mb-2">< Back</a>
 
     <h1 class="mb-4 text-center">Login to your account</h1>
 
     <form asp-action="PatientLogin" class="login-form-control">
-       
+
         <div class="form-floating input-group mb-3">
             <input type="email"
                    asp-for="Email"
@@ -32,7 +27,7 @@
         <span asp-validation-for="Email" class="text-danger"></span>
         <div class="form-floating input-group mb-3">
             <input type="password"
-                   asp-for="Password"                   class="form-control border-end-0 bg-transparent border-focus-none"
+                   asp-for="Password" class="form-control border-end-0 bg-transparent border-focus-none"
                    id="floatingPassword"
                    placeholder="password" />
             <label for="floatingPassword">Password</label>
@@ -45,7 +40,7 @@
             Login
         </button>
 
-        <a asp-action ="ResetPwd" asp-controller="Patient" class="d-flex justify-content-center">Forgot Password ?</a>
+        <a asp-action="ResetPwd" asp-controller="Patient" class="d-flex justify-content-center">Forgot Password ?</a>
     </form>
 
 </div>
