@@ -22,7 +22,9 @@
     <div class="bg">
         <div class="row justify-content-end">
             <div class="col-auto">
-                <a class="btn btn-outline-info"> Create New Request </a>
+                <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <a> Create New Request </a>
+                </button>
             </div>
 
             <table class="table mt-3">
@@ -53,6 +55,30 @@
                     }
                 </tbody>
             </table>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-info">
+                        <h1 class="modal-title bg-info text-white  fs-5" id="exampleModalLabel"> Create New Request</h1>
+                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Here, I want to create a new request for...
+                        <div class="d-flex justify-content-center mt-2 ">
+                            <a asp-action="RequestforMe" asp-controller="Patient"> <button class="btn btn-info" data-bs-dismiss="modal">Me</button> </a>
+                            <a asp-action="RequestforSomeoneElse" asp-controller="Patient"><button class="btn btn-outline-info ms-3">Some One Else</button> </a>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-info" data-bs-dismiss="modal">Continue</button>
+                        <button class="btn btn-outline-info">CLose</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

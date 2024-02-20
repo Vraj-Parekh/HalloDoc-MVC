@@ -138,11 +138,28 @@ namespace HalloDoc_Project.Controllers
         [HttpPost]
         public IActionResult Profile(PatientProfileDTO data)
         {
-            var profileData = new PatientProfileDTO()
+            if (ModelState.IsValid)
             {
+                var email = HttpContext.Session.GetString("email");
+                var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
 
-            };
-            return View();
+                patientData.Firstname = data.FirstName;
+                patientData.Lastname = data.LastName;
+                patientData.Mobile = data.PhoneNumber;
+                patientData.Email = data.Email;
+                patientData.Street = data.Street;
+                patientData.City = data.City;
+                patientData.State = data.State;
+                patientData.Zipcode = data.ZipCode;
+                patientData.Intdate = data.DateOfBirth.Day;
+                patientData.Strmonth = data.DateOfBirth.ToString("MMM");
+                patientData.Intyear = data.DateOfBirth.Year;
+
+                _context.SaveChanges();
+
+                return RedirectToAction("PatientDashboard");
+            }
+            return View(data);
         }
         public IActionResult ReviewAgreement()
         {
@@ -150,6 +167,16 @@ namespace HalloDoc_Project.Controllers
         }
 
         public IActionResult CreateAccount()
+        {
+            return View();
+        }
+
+        public IActionResult RequestforMe()
+        {
+            return View();
+        }
+
+        public IActionResult RequestForSomeoneElse()
         {
             return View();
         }

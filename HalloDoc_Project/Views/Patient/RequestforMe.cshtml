@@ -1,0 +1,222 @@
+﻿@model RequestForMeDTO
+@{
+    ViewData["Title"] = "RequestforMe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+div class="container">
+
+<div class="d-flex justify-content-end">
+    <a asp-action="PatientDashboard" asp-controller="Patient">
+        <button type="button" class="btn btn-outline-info mt-4" id="back_btn">
+            < Back
+        </button>
+    </a>
+</div>
+
+<div class="bg mt-2 mb-3">
+    <form asp-action="RequestForMe" enctype="multipart/form-data" class="login-form-control">
+
+        <div class="row">
+            <h4 class="mb-4">Patient Information</h4>
+
+            <div class="mb-3">
+                <div class="form-floating">
+                    <textarea asp-for="Symptoms" class="form-control"
+                              placeholder="Symptoms"
+                              id="floatingTextarea2"
+                              style="height: 100px"></textarea>
+                    <label for="floatingTextarea2">Enter Brief Details of Symptoms (Optional)</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="FirstName" type="text"
+                           class="form-control"
+                           id="floatingInput"
+                           placeholder="First Name" />
+                    <label for="floatingInput">First Name</label>
+                </div>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="LastName" type="text"
+                           class="form-control"
+                           id="floatingInput"
+                           placeholder="Last name" />
+                    <label for="floatingPassword">Last Name</label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input asp-for="DateOfBirth" type="date"
+                           class="form-control"
+                           id="dob"
+                           placeholder=" " />
+                    <label for="floatingPassword">Date of Birth</label>
+                </div>
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+
+            <h4 class="mb-4 mt-4">Patient Contact Information</h4>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="Email" type="email"
+                           onfocusout="checkEmail()"
+                           class="form-control"
+                           id="email"
+                           placeholder="name@example.com" />
+                    <label for="floatingInput">Email</label>
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3 z-3">
+                <input asp-for="PhoneNumber" type="tel"
+                       class="form-control"
+                       id="phone"
+                       placeholder=""
+                       style="height: 58px" />
+            </div>
+        </div>
+        <div class="row" id="passwordDiv">
+            <div class="col-md-6 mb-3">
+                <div class="form-floating input-group">
+                    <input type="password"
+                           asp-for="Password" class="form-control border-end-0 bg-transparent border-focus-none"
+                           placeholder="password" />
+                    <label for="floatingPassword">Password</label>
+                    <span class="input-group-text bg-transparent border-start-0">
+                        <i class="bi bi-eye"></i>
+                    </span>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating input-group">
+                    <input type="password"
+                           asp-for="ConfirmPassword" class="form-control border-end-0 bg-transparent border-focus-none"
+                           placeholder="password" />
+                    <label for="floatingPassword">Confirm Password</label>
+                    <span class="input-group-text bg-transparent border-start-0">
+                        <i class="bi bi-eye"></i>
+                    </span>
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            <h4 class="mb-4 mt-4">Patient Location</h4>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="Street" type="text"
+                           class="form-control"
+                           id="floatingInput"
+                           placeholder="name@example.com" />
+                    <label for="floatingInput">Street</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="City" type="text"
+                           class="form-control"
+                           id="floatingInput"
+                           placeholder="name@example.com" />
+                    <label for="floatingInput">City</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="State" type="text"
+                           class="form-control"
+                           id="floatingInput"
+                           placeholder="name@example.com" />
+                    <label for="floatingInput">State</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="ZipCode" type="text"
+                           class="form-control"
+                           id="floatingInput"
+                           placeholder="name@example.com" />
+                    <label for="floatingInput">Zip code</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="RoomOrSuite" type="text" class="form-control" id="" placeholder="room" />
+                    <label for="floatingPassword">Room # / Suite (Optional)</label>
+                </div>
+            </div>
+
+            <h4 class="mb-4 mt-4">(Optional) Upload Photo Or Document</h4>
+
+            <div class="d-flex justify-content-between rounded border bg-light col-12 p-0">
+                <div id="filename" class="p-2">Select File</div>
+
+                <label for="fileLoader"
+                       class="bg-info text-white text-center rounded-end py-2 px-2">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    <label for="upload">Upload</label>
+                </label>
+                <input type="file" id="upload" accept=".pdf,.jpeg,.png, .txt, .doc" multiple style="display: none" asp-for="File" />
+            </div>
+            <div id="filename1" class="py-2"> </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-info me-3 text-light">
+                Submit
+            </button>
+            <button class="btn btn-outline-info">
+                Cancel
+            </button>
+        </div>
+    </form>
+</div>
+</div>>
+
+<script>
+    //for uploading multiple files
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById('upload');
+        const fileList = document.getElementById('filename1');
+
+        fileInput.addEventListener('change', function (event) {
+            const files = event.target.files;
+            fileList.innerHTML = '';
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+
+                const fileName = document.createTextNode(file.name);
+                fileItem.appendChild(fileName);
+
+                const removeIcon = document.createElement('i');
+                removeIcon.classList = 'bi bi-x-square';
+                removeIcon.alt = 'Remove';
+                fileItem.appendChild(removeIcon);
+
+                fileList.appendChild(fileItem);
+                removeIcon.addEventListener('click', function () {
+                    fileList.removeChild(fileItem);
+                    fileItem.removeChild(fileItem);
+                });
+            }
+        });
+    });
+</script>
