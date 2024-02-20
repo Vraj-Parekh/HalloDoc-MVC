@@ -49,11 +49,11 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
-        [HttpPost]
-        public IActionResult ResetPwd()
-        {
-            return View();
-        }
+        //[HttpPost]
+        //public IActionResult ResetPwd()
+        //{
+        //    return View();
+        //}
 
 
         public IActionResult PatientDashboard()
@@ -168,9 +168,9 @@ namespace HalloDoc_Project.Controllers
                 patientData.City = data.City;
                 patientData.State = data.State;
                 patientData.Zipcode = data.ZipCode;
-                patientData.Intdate = data.DateOfBirth.Day;
-                patientData.Strmonth = data.DateOfBirth.ToString("MMM");
-                patientData.Intyear = data.DateOfBirth.Year;
+                patientData.Intdate = data.DateOfBirth?.Day;
+                patientData.Strmonth = data.DateOfBirth?.ToString("MMM");
+                patientData.Intyear = data.DateOfBirth?.Year;
 
                 _context.Users.Update(patientData);
                 _context.SaveChanges();
@@ -304,9 +304,9 @@ namespace HalloDoc_Project.Controllers
                 {
                     Firstname = data.FirstName,
                     Lastname = data.LastName,
-                    Intdate = data.DateOfBirth.Day,
-                    Intyear = data.DateOfBirth.Year,
-                    Strmonth = data.DateOfBirth.ToString("MMM"),
+                    Intdate = data.DateOfBirth?.Day,
+                    Intyear = data.DateOfBirth?.Year,
+                    Strmonth = data.DateOfBirth?.ToString("MMM"),
                     Email = data.Email,
                     Street = data.Street,
                     City = data.City,
@@ -376,9 +376,9 @@ namespace HalloDoc_Project.Controllers
                 {
                     Firstname = data.FirstName,
                     Lastname = data.LastName,
-                    Intdate = data.DateOfBirth.Day,
-                    Intyear = data.DateOfBirth.Year,
-                    Strmonth = data.DateOfBirth.ToString("MMM"),
+                    Intdate = data.DateOfBirth?.Day,
+                    Intyear = data.DateOfBirth?.Year,
+                    Strmonth = data.DateOfBirth?.ToString("MMM"),
                     Email = data.Email,
                     Street = data.Street,
                     City = data.City,
