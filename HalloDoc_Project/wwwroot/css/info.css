@@ -42,3 +42,8 @@
 #passwordDiv{
     display:none;
 }
+.map {
+    height: 58px;
+    width: 100px;
+    line-height: 42px;
+}

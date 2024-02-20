@@ -1,8 +1,10 @@
 ﻿using Entities.DataContext;
+using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
+using NuGet.Protocol.Plugins;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -47,12 +49,19 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult ResetPwd()
+        {
+            return View();
+        }
+
 
         public IActionResult PatientDashboard()
         {
             string email = HttpContext.Session.GetString("email");
             List<PatientRequestList> data = new();
-            var patientData = _context.Requests.Where(a => a.Email == email).Include(a => a.Requestwisefiles);
+            
+            var patientData = _context.Requests.Where(a => a.Email == email && a.Requesttypeid == 2).Include(a => a.Requestwisefiles);
 
             foreach (var patientRequest in patientData)
             {
@@ -140,6 +149,14 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
+                var isUserExist = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.Email);
+                if (isUserExist == null)
+                {
+                    ModelState.AddModelError("", "An account with this email does not exists.");
+                    //return RedirectToAction("FamilyInfo", "Request");
+                    return View(data);
+                }
+
                 var email = HttpContext.Session.GetString("email");
                 var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
 
@@ -155,6 +172,7 @@ namespace HalloDoc_Project.Controllers
                 patientData.Strmonth = data.DateOfBirth.ToString("MMM");
                 patientData.Intyear = data.DateOfBirth.Year;
 
+                _context.Users.Update(patientData);
                 _context.SaveChanges();
 
                 return RedirectToAction("PatientDashboard");
@@ -171,14 +189,234 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult CreateAccount(LoginDTO data)
+        {
+            if (ModelState.IsValid)
+            {
+                    var aspNetUser = new Aspnetuser
+                    {
+                        Username = data.Email,
+                        Passwordhash = data.Password,
+                        Email = data.Email,
+                        Aspnetuserid = Guid.NewGuid().ToString(),
+                        Createddate = DateTime.Now,
+                    };
+
+                    var user = new User
+                    {
+                        Firstname = aspNetUser.Username,
+                        Email = aspNetUser.Email,
+                        Createdby = "patient",
+                        Createddate = DateTime.Now,
+                        Aspnetuser = aspNetUser,
+                    };
+
+                    var request = new Request
+                    {
+                        User = user,
+                        Firstname = aspNetUser.Username,
+                        Email = aspNetUser.Email,
+                        Isurgentemailsent = false,
+                        Createddate = DateTime.Now,
+                    };
+                try
+                {
+                    _context.Aspnetusers.Add(aspNetUser);
+                    _context.Users.Add(user);
+                    _context.Requests.Add(request);
+                    _context.SaveChanges();
+                    return RedirectToAction("Index", "Home");
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError(string.Empty, "Error creating account. Please try again later.");
+                    return View(data);
+                }
+            }
+            else
+            {
+                return View(data);
+            }
+        }
+
+
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 6)
+                      + Path.GetExtension(fileName);
+        }
+        private string GetConfirmationNumber(string city, string lastname, string firstname, string count)
+        {
+            string regionAbr = city.Substring(0, 2);
+            string date = DateTime.Now.ToString("dd");
+            string month = DateTime.Now.ToString("MM");
+            string last = lastname.Substring(0, 2);
+            string first = firstname.Substring(0, 2);
+            string requestCount = count;
+
+            return regionAbr + date + month + last + first + requestCount;
+        }
+
         public IActionResult RequestforMe()
         {
-            return View();
+            var email = HttpContext.Session.GetString("email");
+            var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
+
+            if (patientData == null)
+                return NotFound();
+
+            var patientProfile = new PatientRequestDTO()
+            {
+                FirstName = patientData.Firstname,
+                LastName = patientData.Lastname,
+                PhoneNumber = patientData.Mobile,
+                Email = patientData.Email,
+            };
+            return View(patientProfile);
+        }
+
+        [HttpPost]
+        public IActionResult RequestforMe(PatientRequestDTO data)
+        {
+            ModelState.Remove("Password");
+            ModelState.Remove("ConfirmPassword");
+            if (ModelState.IsValid)
+            {
+                string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
+                var request = new Request
+                {
+                    Requesttypeid = 2,
+                    Firstname = data.FirstName,
+                    Lastname = data.LastName,
+                    Phonenumber = data.PhoneNumber,
+                    Email = data.Email,
+                    Status = (int)RequestStatus.Unassigned,
+                    Createddate = DateTime.Now,
+                    Isurgentemailsent = false,
+                    Confirmationnumber = GetConfirmationNumber(data.City, data.LastName, data.FirstName, count),
+                };
+
+                var requestClient = new Requestclient
+                {
+                    Firstname = data.FirstName,
+                    Lastname = data.LastName,
+                    Intdate = data.DateOfBirth.Day,
+                    Intyear = data.DateOfBirth.Year,
+                    Strmonth = data.DateOfBirth.ToString("MMM"),
+                    Email = data.Email,
+                    Street = data.Street,
+                    City = data.City,
+                    State = data.State,
+                    Zipcode = data.ZipCode,
+                    Request = request
+                };
+
+                //to get uploaded files in the 'uploads' folder
+                var file = data.File;
+                var uniqueFileName = GetUniqueFileName(file.FileName);
+                var uploads = Path.Combine(env.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploads, uniqueFileName);
+                file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                var requestWiseFile = new Requestwisefile
+                {
+                    Createddate = DateTime.Now,
+                    Filename = uniqueFileName,
+                    Request = request,
+                };
+
+                try
+                {
+                    _context.Requests.Add(request);
+                    _context.Requestclients.Add(requestClient);
+                    _context.Requestwisefiles.Add(requestWiseFile);
+                    _context.SaveChanges();
+
+                    return RedirectToAction("PatientDashboard", "Patient");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An error occurred while processing your request.");
+                    return RedirectToAction("FamilyInfo", "Request");
+                }
+            }
+            return View(data);
+
         }
 
         public IActionResult RequestForSomeoneElse()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult RequestForSomeoneElse(PatientRequestDTO data)
+        {
+            if (ModelState.IsValid)
+            {
+                string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
+                var request = new Request
+                {
+                    Requesttypeid = 2,
+                    Firstname = data.FirstName,
+                    Lastname = data.LastName,
+                    Phonenumber = data.PhoneNumber,
+                    Email = data.Email,
+                    Status = (int)RequestStatus.Unassigned,
+                    Createddate = DateTime.Now,
+                    Isurgentemailsent = false,
+                    Confirmationnumber = GetConfirmationNumber(data.City, data.LastName, data.FirstName, count),
+                };
+
+                var requestClient = new Requestclient
+                {
+                    Firstname = data.FirstName,
+                    Lastname = data.LastName,
+                    Intdate = data.DateOfBirth.Day,
+                    Intyear = data.DateOfBirth.Year,
+                    Strmonth = data.DateOfBirth.ToString("MMM"),
+                    Email = data.Email,
+                    Street = data.Street,
+                    City = data.City,
+                    State = data.State,
+                    Zipcode = data.ZipCode,
+                    Request = request
+                };
+
+                //to get uploaded files in the 'uploads' folder
+                var file = data.File;
+                var uniqueFileName = GetUniqueFileName(file.FileName);
+                var uploads = Path.Combine(env.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploads, uniqueFileName);
+                file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                var requestWiseFile = new Requestwisefile
+                {
+                    Createddate = DateTime.Now,
+                    Filename = uniqueFileName,
+                    Request = request,
+                };
+
+                try
+                {
+                    _context.Requests.Add(request);
+                    _context.Requestclients.Add(requestClient);
+                    _context.Requestwisefiles.Add(requestWiseFile);
+                    _context.SaveChanges();
+
+                    return RedirectToAction("PatientDashboard", "Patient");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An error occurred while processing your request.");
+                    return RedirectToAction("FamilyInfo", "Request");
+                }
+            }
+            return View(data);
         }
     }
 }

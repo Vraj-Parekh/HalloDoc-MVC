@@ -1,7 +1,7 @@
 ﻿public enum RequestStatus
 {
     Unassigned = 1,
-    Accepted = 2,
+    Active = 2,
     Cancelled = 3,
     Reserving = 4,
     MDEnRoute = 5,
@@ -14,5 +14,6 @@
     Clear = 12,
     CancelledByProvider = 13,
     CCUploadedByClient = 14,
-    CCApprovedByAdmin = 15
+    CCApprovedByAdmin = 15,
+    Pending = 16,
 }

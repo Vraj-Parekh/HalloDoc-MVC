@@ -73,12 +73,34 @@
                         </div>
 
                     </div>
+
                     <div class="modal-footer">
                         <button class="btn btn-info" data-bs-dismiss="modal">Continue</button>
                         <button class="btn btn-outline-info">CLose</button>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@* <script>
+    $(document).ready(function () {
+        // Default action for "Continue" button
+        $('#continueBtn').click(function () {
+            alert('Please select "Me" or "Someone Else" first.');
+        });
+
+        // Handle "Me" button click
+        $('#meBtn').click(function () {
+            $('#continueBtn').attr('formaction', '/Patient/RequestforMe');
+        });
+
+        // Handle "Someone Else" button click
+        $('#someoneElseBtn').click(function () {
+            $('#continueBtn').attr('formaction', '/Patient/RequestforSomeoneElse');
+        });
+    });
+</script> *@
+

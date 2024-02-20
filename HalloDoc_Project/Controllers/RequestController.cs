@@ -2,6 +2,7 @@
 using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -49,6 +50,14 @@ namespace HalloDoc_Project.Controllers
             ModelState.Remove("ConfirmPassword");
             if (ModelState.IsValid)
             {
+                var isUserExist = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.Email);
+                if (isUserExist != null)
+                {
+                    //ModelState.AddModelError("", "An account with this email already exists.");
+                    //return RedirectToAction("FamilyInfo", "Request");
+                    return View(data);
+                }
+
                 string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
                 var request = new Request
                 {
@@ -150,6 +159,14 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
+                var isUserExist = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.PatientEmail);
+                if (isUserExist != null)
+                {
+                    //ModelState.AddModelError("", "An account with this email already exists.");
+                    //return RedirectToAction("FamilyInfo", "Request");
+                    return View(data);
+                }
+
                 string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
                 var request = new Request
                 {
@@ -221,6 +238,14 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
+                var isUserExist = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.PatientEmail);
+                if (isUserExist != null)
+                {
+                    //ModelState.AddModelError("", "An account with this email already exists.");
+                    //return RedirectToAction("FamilyInfo", "Request");
+                    return View(data);
+                }
+
                 string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
                 var request = new Request
                 {
@@ -309,6 +334,8 @@ namespace HalloDoc_Project.Controllers
                       + Guid.NewGuid().ToString().Substring(0, 6)
                       + Path.GetExtension(fileName);
         }
+
+       
 
     }
 }

@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "ResetPwdPage";
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
@@ -6,11 +7,11 @@
     <link rel="stylesheet" href="~/css/patient_login.css" asp-append-version="true" />
 }
 <div class="main">
-    <a asp-action="PatientLogin" asp-controller="Patient" class="mb-2">< Back</a>
+    <a asp-action="ResetPwd" asp-controller="Patient" class="mb-2">< Back</a>
 
     <h1 class="mb-4 text-center">Reset Your Password</h1>
 
-    <form action="/" class="login-form-control">
+    <form asp-action="ResetPwd" class="login-form-control">
         <div class="form-floating input-group mb-3">
             <input type="text"
                    class="form-control border-end-0 bg-transparent border-focus-none"

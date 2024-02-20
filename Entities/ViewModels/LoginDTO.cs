@@ -4,13 +4,17 @@ namespace Entities.ViewModels
 {
     public class LoginDTO
     {
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         //[EmailAddress]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        [Required]
+        public string? Password { get; set; }
+
+        [Compare("Password", ErrorMessage = "Password Not Match")]
+        [Required(ErrorMessage = "Field missing")]
+        public string? ConfirmPassword { get; set; }
     }
 }
