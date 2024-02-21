@@ -16,4 +16,5 @@
     CCUploadedByClient = 14,
     CCApprovedByAdmin = 15,
     Pending = 16,
+    ToClosed = 17
 }

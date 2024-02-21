@@ -1,4 +1,7 @@
 using Entities.DataContext;
+using HalloDoc.Utility;
+using Repositories.Repository.Implementation;
+using Repositories.Repository.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +14,10 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(10);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-}); 
+});
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddTransient<IRequestServices, RequestServices>();
+builder.Services.AddTransient<IRequestStatusLogServices, RequestStatusLogServices>();
 
 var app = builder.Build();
 

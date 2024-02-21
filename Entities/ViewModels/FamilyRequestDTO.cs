@@ -16,8 +16,8 @@ namespace Entities.ViewModels
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
-        public string RelationWithPatient { get; set; }
-        public string Symptoms { get; set; }
+        public string? RelationWithPatient { get; set; }
+        public string? Symptoms { get; set; }
         public string PatientFirstName { get; set; }
         public string PatientLastName { get; set; }
 
@@ -35,7 +35,7 @@ namespace Entities.ViewModels
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
-        public string RoomOrSuite { get; set; }
-        public IFormFile File { get; set; }
+        public string? RoomOrSuite { get; set; }
+        public List<IFormFile>? File { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace Entities.ViewModels
         public string? Password { get; set; }
 
         [Compare("Password", ErrorMessage = "Password Not Match")]
-        [Required(ErrorMessage = "Field missing")]
+        //[Required(ErrorMessage = "Field missing")]
         public string? ConfirmPassword { get; set; }
     }
 }

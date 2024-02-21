@@ -20,7 +20,7 @@ namespace Entities.ViewModels
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
-        public string Symptoms { get; set; }
+        public string? Symptoms { get; set; }
         public string PatientFirstName { get; set; }
         public string PatientLastName { get; set; }
 
@@ -34,6 +34,6 @@ namespace Entities.ViewModels
 
         [Phone(ErrorMessage = "Invalid phone number")]
         public string PatientPhone { get; set; }
-        public string RoomOrSuite { get; set; }
+        public string? RoomOrSuite { get; set; }
     }
 }

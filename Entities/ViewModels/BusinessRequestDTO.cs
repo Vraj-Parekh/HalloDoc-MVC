@@ -17,13 +17,13 @@ namespace Entities.ViewModels
         public string Email { get; set; }
         public string BusinessName { get; set; }
         public string CaseNumber { get; set; }
-        public string Symptoms { get; set; }
+        public string? Symptoms { get; set; }
         public string PatientFirstName { get; set; }
         public string PatientLastName { get; set; }
 
         [Required(ErrorMessage = "Date of Birth is required")]
         [DataType(DataType.Date)]
-        public DateTime? DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
@@ -35,6 +35,6 @@ namespace Entities.ViewModels
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
-        public string RoomOrSuite { get; set; }
+        public string? RoomOrSuite { get; set; }
     }
 }

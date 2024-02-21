@@ -50,14 +50,6 @@ namespace HalloDoc_Project.Controllers
             ModelState.Remove("ConfirmPassword");
             if (ModelState.IsValid)
             {
-                var isUserExist = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.Email);
-                if (isUserExist != null)
-                {
-                    //ModelState.AddModelError("", "An account with this email already exists.");
-                    //return RedirectToAction("FamilyInfo", "Request");
-                    return View(data);
-                }
-
                 string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
                 var request = new Request
                 {
@@ -76,9 +68,9 @@ namespace HalloDoc_Project.Controllers
                 {
                     Firstname = data.FirstName,
                     Lastname = data.LastName,
-                    Intdate = data.DateOfBirth?.Day,
-                    Intyear = data.DateOfBirth?.Year,
-                    Strmonth = data.DateOfBirth?.ToString("MMM"),
+                    Intdate = data.DateOfBirth.Day,
+                    Intyear = data.DateOfBirth.Year,
+                    Strmonth = data.DateOfBirth.ToString("MMM"),
                     Email = data.Email,
                     Street = data.Street,
                     City = data.City,
@@ -88,54 +80,60 @@ namespace HalloDoc_Project.Controllers
                 };
 
                 //to get uploaded files in the 'uploads' folder
-                var file = data.File;
-                var uniqueFileName = GetUniqueFileName(file.FileName);
-                var uploads = Path.Combine(env.WebRootPath, "uploads");
-                var filePath = Path.Combine(uploads, uniqueFileName);
-                file.CopyTo(new FileStream(filePath, FileMode.Create));
-
-                var requestWiseFile = new Requestwisefile
+                foreach (var item in data.File)
                 {
-                    Createddate = DateTime.Now,
-                    Filename = uniqueFileName,
-                    Request = request,
-                };
+                    var file = item;
+                    var uniqueFileName = GetUniqueFileName(file.FileName);
+                    var uploads = Path.Combine(env.WebRootPath, "uploads");
+                    var filePath = Path.Combine(uploads, uniqueFileName);
+                    file.CopyTo(new FileStream(filePath, FileMode.Create));
 
-                var aspNetUser = new Aspnetuser
+                    var requestWiseFile = new Requestwisefile
+                    {
+                        Createddate = DateTime.Now,
+                        Filename = uniqueFileName,
+                        Request = request,
+                    };
+                    _context.Requestwisefiles.Add(requestWiseFile);
+                }
+
+                if (!IsPatientPresent(data.Email))
                 {
-                    Aspnetuserid = Guid.NewGuid().ToString(),
-                    Username = data.Email,
-                    Passwordhash = data.ConfirmPassword,
-                    Phonenumber = data.PhoneNumber,
-                    Email = data.Email,
-                    Createddate = DateTime.Now,
-                };
+                    var aspNetUser = new Aspnetuser
+                    {
+                        Aspnetuserid = Guid.NewGuid().ToString(),
+                        Username = data.Email,
+                        Passwordhash = data.ConfirmPassword,
+                        Phonenumber = data.PhoneNumber,
+                        Email = data.Email,
+                        Createddate = DateTime.Now,
+                    };
 
-                var user = new User
-                {
-                    Firstname = data.FirstName,
-                    Lastname = data.LastName,
-                    Mobile = data.PhoneNumber,
-                    Email = data.Email,
-                    Intdate = data.DateOfBirth?.Day,
-                    Intyear = data.DateOfBirth?.Year,
-                    Strmonth = data.DateOfBirth?.ToString("MMM"),
-                    Street = data.Street,
-                    City = data.City,
-                    State = data.State,
-                    Zipcode = data.ZipCode,
-                    Createddate = DateTime.Now,
-                    Createdby = "patient",
-                    Aspnetuser = aspNetUser
-                };
+                    var user = new User
+                    {
+                        Firstname = data.FirstName,
+                        Lastname = data.LastName,
+                        Mobile = data.PhoneNumber,
+                        Email = data.Email,
+                        Intdate = data.DateOfBirth.Day,
+                        Intyear = data.DateOfBirth.Year,
+                        Strmonth = data.DateOfBirth.ToString("MMM"),
+                        Street = data.Street,
+                        City = data.City,
+                        State = data.State,
+                        Zipcode = data.ZipCode,
+                        Createddate = DateTime.Now,
+                        Createdby = "patient",
+                        Aspnetuser = aspNetUser
+                    };
 
+                    _context.Users.Add(user);
+                    _context.Aspnetusers.Add(aspNetUser);
+                }
                 try
                 {
                     _context.Requests.Add(request);
                     _context.Requestclients.Add(requestClient);
-                    _context.Users.Add(user);
-                    _context.Requestwisefiles.Add(requestWiseFile);
-                    _context.Aspnetusers.Add(aspNetUser);
                     _context.SaveChanges();
 
                     return RedirectToAction("SubmitRequest", "Request");
@@ -159,14 +157,6 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                var isUserExist = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.PatientEmail);
-                if (isUserExist != null)
-                {
-                    //ModelState.AddModelError("", "An account with this email already exists.");
-                    //return RedirectToAction("FamilyInfo", "Request");
-                    return View(data);
-                }
-
                 string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
                 var request = new Request
                 {
@@ -197,24 +187,27 @@ namespace HalloDoc_Project.Controllers
                 };
 
                 //to get uploaded files in the 'uploads' folder
-                var file = data.File;
-                var uniqueFileName = GetUniqueFileName(file.FileName);
-                var uploads = Path.Combine(env.WebRootPath, "uploads");
-                var filePath = Path.Combine(uploads, uniqueFileName);
-                file.CopyTo(new FileStream(filePath, FileMode.Create));
-
-                var requestWiseFile = new Requestwisefile
+                foreach (var item in data.File)
                 {
-                    Createddate = DateTime.Now,
-                    Filename = uniqueFileName,
-                    Request = request,
-                };
+                    var file = item;
+                    var uniqueFileName = GetUniqueFileName(file.FileName);
+                    var uploads = Path.Combine(env.WebRootPath, "uploads");
+                    var filePath = Path.Combine(uploads, uniqueFileName);
+                    file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                    var requestWiseFile = new Requestwisefile
+                    {
+                        Createddate = DateTime.Now,
+                        Filename = uniqueFileName,
+                        Request = request,
+                    };
+                    _context.Requestwisefiles.Add(requestWiseFile);
+                }
 
                 try
                 {
                     _context.Requests.Add(request);
                     _context.Requestclients.Add(requestClient);
-                    _context.Requestwisefiles.Add(requestWiseFile);
                     _context.SaveChanges();
 
                     return RedirectToAction("SubmitRequest", "Request");
@@ -238,14 +231,6 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                var isUserExist = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.PatientEmail);
-                if (isUserExist != null)
-                {
-                    //ModelState.AddModelError("", "An account with this email already exists.");
-                    //return RedirectToAction("FamilyInfo", "Request");
-                    return View(data);
-                }
-
                 string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
                 var request = new Request
                 {
@@ -335,7 +320,7 @@ namespace HalloDoc_Project.Controllers
                       + Path.GetExtension(fileName);
         }
 
-       
+
 
     }
 }

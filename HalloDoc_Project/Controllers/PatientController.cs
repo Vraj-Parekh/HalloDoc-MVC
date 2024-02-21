@@ -1,10 +1,15 @@
 ﻿using Entities.DataContext;
 using Entities.Models;
 using Entities.ViewModels;
+using HalloDoc.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using NuGet.Protocol.Plugins;
+using Repositories.Repository.Implementation;
+using Repositories.Repository.Interface;
+using System.Threading.Tasks.Dataflow;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -12,11 +17,15 @@ namespace HalloDoc_Project.Controllers
     {
         private readonly HalloDocDbContext _context;
         private readonly IWebHostEnvironment env;
+        private readonly IEmailSender emailSender;
+        private readonly IRequestServices requestServices;
 
-        public PatientController(HalloDocDbContext context, IWebHostEnvironment env)
+        public PatientController(HalloDocDbContext context, IWebHostEnvironment env, IEmailSender emailSender, IRequestServices requestServices)
         {
             _context = context;
             this.env = env;
+            this.emailSender = emailSender;
+            this.requestServices = requestServices;
         }
         public IActionResult Index()
         {
@@ -40,7 +49,8 @@ namespace HalloDoc_Project.Controllers
             }
             else
             {
-                return RedirectToAction("PatientLogin");
+                ModelState.AddModelError(nameof(data.Email), "An account with this email does not exists.");
+                return View(data);
             }
 
         }
@@ -49,18 +59,47 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
-        //[HttpPost]
-        //public IActionResult ResetPwd()
-        //{
-        //    return View();
-        //}
 
+        [HttpPost]
+        public IActionResult ResetPwd(LoginDTO data)
+        {
+            if (_context.Aspnetusers.Any(u => u.Email == data.Email))
+            {
+                emailSender.SendEmailAsync(data.Email, "Reset Password", $"Click on <a href=\"https://localhost:44396/patient/changepassword/{data.Email}\">login</a>");
+            }
+            else
+            {
+                throw new Exception("User Not Found");
+            }
+            return View();
+        }
 
+        [HttpGet("[controller]/[action]/{email}")]
+        public IActionResult ChangePassword(string email)
+        {
+            TempData["email"] = email;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(LoginDTO data)
+        {
+            string email = TempData["email"] as string;
+
+            var aspNetUserData = _context.Aspnetusers.FirstOrDefault(a => a.Email == email);
+
+            aspNetUserData.Passwordhash = data.ConfirmPassword;
+
+            _context.Aspnetusers.Update(aspNetUserData);
+            _context.SaveChanges();
+
+            return RedirectToAction("PatientLogin");
+        }
         public IActionResult PatientDashboard()
         {
             string email = HttpContext.Session.GetString("email");
             List<PatientRequestList> data = new();
-            
+
             var patientData = _context.Requests.Where(a => a.Email == email && a.Requesttypeid == 2).Include(a => a.Requestwisefiles);
 
             foreach (var patientRequest in patientData)
@@ -79,21 +118,25 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult ViewDocument(int requestId)
         {
+
             var file = _context.Requestwisefiles.Where(a => a.Requestid == requestId);
             var req = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             var name = _context.Requestclients.Where(a => a.Requestid == requestId).FirstOrDefault();
             List<FileData> data = new();
 
-            foreach (var files in file)
+            if (file is not null)
             {
-                FileData FileDataList = new()
+                foreach (var files in file)
                 {
-                    FileName = files.Filename,
-                    CreatedBy = name.Firstname,
-                    CreatedDate = files.Createddate,
-                    DocumentId = files.Requestwisefileid
-                };
-                data.Add(FileDataList);
+                    FileData FileDataList = new()
+                    {
+                        FileName = files.Filename,
+                        CreatedBy = name.Firstname,
+                        CreatedDate = files.Createddate,
+                        DocumentId = files.Requestwisefileid
+                    };
+                    data.Add(FileDataList);
+                }
             }
             ViewDocumentList doc = new()
             {
@@ -149,13 +192,12 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                var isUserExist = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.Email);
-                if (isUserExist == null)
-                {
-                    ModelState.AddModelError("", "An account with this email does not exists.");
-                    //return RedirectToAction("FamilyInfo", "Request");
-                    return View(data);
-                }
+                //var isUserExist = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.Email);
+                //if (isUserExist == null)
+                //{
+                //    ModelState.AddModelError("", "An account with this email does not exists.");
+                //    return View(data);
+                //}
 
                 var email = HttpContext.Session.GetString("email");
                 var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
@@ -168,21 +210,53 @@ namespace HalloDoc_Project.Controllers
                 patientData.City = data.City;
                 patientData.State = data.State;
                 patientData.Zipcode = data.ZipCode;
-                patientData.Intdate = data.DateOfBirth?.Day;
-                patientData.Strmonth = data.DateOfBirth?.ToString("MMM");
-                patientData.Intyear = data.DateOfBirth?.Year;
+                patientData.Intdate = data.DateOfBirth.Day;
+                patientData.Strmonth = data.DateOfBirth.ToString("MMM");
+                patientData.Intyear = data.DateOfBirth.Year;
 
                 _context.Users.Update(patientData);
                 _context.SaveChanges();
 
-                return RedirectToAction("PatientDashboard");
+                return RedirectToAction("Profile");
             }
             return View(data);
         }
-        public IActionResult ReviewAgreement()
+
+
+        [HttpGet("[controller]/[action]/{requestId:int}")]
+        public IActionResult ReviewAgreement(int requestId)
         {
-            return View();
+            string? email = HttpContext.Session.GetString("Email");
+            bool requestPending = requestServices.IsRequestPending(requestId, email);
+            if (requestPending)
+            {
+                ViewBag.RequestId = requestId;
+                return View();
+            }
+            return RedirectToAction("PatientDashboard");
         }
+
+        public async Task<IActionResult> AgreeAgreement(int requestId)
+        {
+            bool result = await requestServices.AgreeWithAgreementAsync(requestId);
+            if (result)
+            {
+                return RedirectToAction("PatientDashboard");
+            }
+            return RedirectToAction("ReviewAgreement", new { requestId = requestId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RejectAgreement(AgreementDTO model)
+        {
+            bool result = await requestServices.RejectAgreementAsync(model.RequestId, model.Notes);
+            if (result)
+            {
+                return RedirectToAction("PatientDashboard");
+            }
+            return RedirectToAction("ReviewAgreement", new { requestId = model.RequestId });
+        }
+
 
         public IActionResult CreateAccount()
         {
@@ -194,32 +268,38 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                    var aspNetUser = new Aspnetuser
-                    {
-                        Username = data.Email,
-                        Passwordhash = data.Password,
-                        Email = data.Email,
-                        Aspnetuserid = Guid.NewGuid().ToString(),
-                        Createddate = DateTime.Now,
-                    };
+                if (_context.Aspnetusers.Any(u => u.Email == data.Email))
+                {
+                    ModelState.AddModelError(nameof(data.Email), "Email is already exist.");
+                    return View(data);
+                }
 
-                    var user = new User
-                    {
-                        Firstname = aspNetUser.Username,
-                        Email = aspNetUser.Email,
-                        Createdby = "patient",
-                        Createddate = DateTime.Now,
-                        Aspnetuser = aspNetUser,
-                    };
+                var aspNetUser = new Aspnetuser
+                {
+                    Username = data.Email,
+                    Passwordhash = data.Password,
+                    Email = data.Email,
+                    Aspnetuserid = Guid.NewGuid().ToString(),
+                    Createddate = DateTime.Now,
+                };
 
-                    var request = new Request
-                    {
-                        User = user,
-                        Firstname = aspNetUser.Username,
-                        Email = aspNetUser.Email,
-                        Isurgentemailsent = false,
-                        Createddate = DateTime.Now,
-                    };
+                var user = new User
+                {
+                    Firstname = aspNetUser.Username,
+                    Email = aspNetUser.Email,
+                    Createdby = "patient",
+                    Createddate = DateTime.Now,
+                    Aspnetuser = aspNetUser,
+                };
+
+                var request = new Request
+                {
+                    User = user,
+                    Firstname = aspNetUser.Username,
+                    Email = aspNetUser.Email,
+                    Isurgentemailsent = false,
+                    Createddate = DateTime.Now,
+                };
                 try
                 {
                     _context.Aspnetusers.Add(aspNetUser);
@@ -304,9 +384,9 @@ namespace HalloDoc_Project.Controllers
                 {
                     Firstname = data.FirstName,
                     Lastname = data.LastName,
-                    Intdate = data.DateOfBirth?.Day,
-                    Intyear = data.DateOfBirth?.Year,
-                    Strmonth = data.DateOfBirth?.ToString("MMM"),
+                    Intdate = data.DateOfBirth.Day,
+                    Intyear = data.DateOfBirth.Year,
+                    Strmonth = data.DateOfBirth.ToString("MMM"),
                     Email = data.Email,
                     Street = data.Street,
                     City = data.City,
@@ -316,24 +396,32 @@ namespace HalloDoc_Project.Controllers
                 };
 
                 //to get uploaded files in the 'uploads' folder
-                var file = data.File;
-                var uniqueFileName = GetUniqueFileName(file.FileName);
-                var uploads = Path.Combine(env.WebRootPath, "uploads");
-                var filePath = Path.Combine(uploads, uniqueFileName);
-                file.CopyTo(new FileStream(filePath, FileMode.Create));
-
-                var requestWiseFile = new Requestwisefile
+                if (data.File is not null)
                 {
-                    Createddate = DateTime.Now,
-                    Filename = uniqueFileName,
-                    Request = request,
-                };
+
+                    foreach (var item in data?.File)
+                    {
+                        var file = item;
+                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uploads = Path.Combine(env.WebRootPath, "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                        var requestWiseFile = new Requestwisefile
+                        {
+                            Createddate = DateTime.Now,
+                            Filename = uniqueFileName,
+                            Request = request,
+                        };
+                        _context.Requestwisefiles.Add(requestWiseFile);
+                    }
+                }
+
 
                 try
                 {
                     _context.Requests.Add(request);
                     _context.Requestclients.Add(requestClient);
-                    _context.Requestwisefiles.Add(requestWiseFile);
                     _context.SaveChanges();
 
                     return RedirectToAction("PatientDashboard", "Patient");
@@ -350,11 +438,21 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult RequestForSomeoneElse()
         {
-            return View();
+            var email = HttpContext.Session.GetString("email");
+            var user = _context.Users.FirstOrDefault(a => a.Email == email);
+
+            FamilyRequestDTO model = new()
+            {
+                FirstName = user.Firstname,
+                LastName = user.Lastname,
+                Email = user.Email,
+                Phone = user.Mobile,
+            };
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult RequestForSomeoneElse(PatientRequestDTO data)
+        public IActionResult RequestForSomeoneElse(FamilyRequestDTO data)
         {
             if (ModelState.IsValid)
             {
@@ -364,21 +462,22 @@ namespace HalloDoc_Project.Controllers
                     Requesttypeid = 2,
                     Firstname = data.FirstName,
                     Lastname = data.LastName,
-                    Phonenumber = data.PhoneNumber,
+                    Phonenumber = data.PatientPhone,
                     Email = data.Email,
                     Status = (int)RequestStatus.Unassigned,
                     Createddate = DateTime.Now,
                     Isurgentemailsent = false,
                     Confirmationnumber = GetConfirmationNumber(data.City, data.LastName, data.FirstName, count),
+                    Relationname = data.RelationWithPatient,
                 };
 
                 var requestClient = new Requestclient
                 {
                     Firstname = data.FirstName,
                     Lastname = data.LastName,
-                    Intdate = data.DateOfBirth?.Day,
-                    Intyear = data.DateOfBirth?.Year,
-                    Strmonth = data.DateOfBirth?.ToString("MMM"),
+                    Intdate = data.DateOfBirth.Day,
+                    Intyear = data.DateOfBirth.Year,
+                    Strmonth = data.DateOfBirth.ToString("MMM"),
                     Email = data.Email,
                     Street = data.Street,
                     City = data.City,
@@ -388,24 +487,31 @@ namespace HalloDoc_Project.Controllers
                 };
 
                 //to get uploaded files in the 'uploads' folder
-                var file = data.File;
-                var uniqueFileName = GetUniqueFileName(file.FileName);
-                var uploads = Path.Combine(env.WebRootPath, "uploads");
-                var filePath = Path.Combine(uploads, uniqueFileName);
-                file.CopyTo(new FileStream(filePath, FileMode.Create));
-
-                var requestWiseFile = new Requestwisefile
+                if (data.File is not null)
                 {
-                    Createddate = DateTime.Now,
-                    Filename = uniqueFileName,
-                    Request = request,
-                };
 
+                    foreach (var item in data.File)
+                    {
+                        var file = item;
+                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uploads = Path.Combine(env.WebRootPath, "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                        var requestWiseFile = new Requestwisefile
+                        {
+                            Createddate = DateTime.Now,
+                            Filename = uniqueFileName,
+                            Request = request,
+                        };
+                        _context.Requestwisefiles.Add(requestWiseFile);
+                    }
+
+                }
                 try
                 {
                     _context.Requests.Add(request);
                     _context.Requestclients.Add(requestClient);
-                    _context.Requestwisefiles.Add(requestWiseFile);
                     _context.SaveChanges();
 
                     return RedirectToAction("PatientDashboard", "Patient");

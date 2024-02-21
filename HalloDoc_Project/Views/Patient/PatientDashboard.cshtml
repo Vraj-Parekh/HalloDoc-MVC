@@ -49,7 +49,11 @@
                                 @item.CurrentStatus
                             </td>
                             <td>
-                                <a class="btn btn-outline-info" asp-action="ViewDocument" asp-route-requestId="@item.RequestId">(@item.Document) Download</a>
+                                @if (@item.Document > 0)
+                                {
+                                    <a class="btn btn-outline-info" asp-action="ViewDocument" asp-route-requestId="@item.RequestId">(@item.Document) Download</a>
+                                }
+
                             </td>
                         </tr>
                     }
