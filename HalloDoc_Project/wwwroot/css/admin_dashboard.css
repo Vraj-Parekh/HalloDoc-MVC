@@ -1,0 +1,40 @@
+﻿.box {
+    height: 80px;
+    width: 150px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding-top:5px;
+}
+
+#box1 {
+    color: white;
+    background-color: #213e9a;
+}
+
+#box2 {
+    color: #4e9daf;
+    background-color: #9dd6e2;
+}
+
+#box3 {
+    color: #557f57;
+    background-color: #c1ddbf;
+}
+
+#box4 {
+    color: #ab7796;
+    background-color: #e1b0cd;
+}
+
+#box5 {
+    color: #467292;
+    background-color: #b9d1e5;
+}
+
+#box6 {
+    color: #89719b;
+    background-color: #d2c0dd;
+}
+.state-text {
+    color: #213e9a;
+}

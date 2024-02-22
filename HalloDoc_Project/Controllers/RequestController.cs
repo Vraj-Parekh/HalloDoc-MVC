@@ -1,6 +1,7 @@
 ﻿using Entities.DataContext;
 using Entities.Models;
 using Entities.ViewModels;
+using HalloDoc.Utility;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -10,11 +11,13 @@ namespace HalloDoc_Project.Controllers
     {
         private readonly HalloDocDbContext _context;
         private readonly IWebHostEnvironment env;
+        private readonly IEmailSender emailSender;
 
-        public RequestController(HalloDocDbContext context, IWebHostEnvironment env)
+        public RequestController(HalloDocDbContext context, IWebHostEnvironment env, IEmailSender emailSender)
         {
             _context = context;
             this.env = env;
+            this.emailSender = emailSender;
         }
 
         public IActionResult Index()
@@ -80,21 +83,25 @@ namespace HalloDoc_Project.Controllers
                 };
 
                 //to get uploaded files in the 'uploads' folder
-                foreach (var item in data.File)
+                if (data.File is not null)
                 {
-                    var file = item;
-                    var uniqueFileName = GetUniqueFileName(file.FileName);
-                    var uploads = Path.Combine(env.WebRootPath, "uploads");
-                    var filePath = Path.Combine(uploads, uniqueFileName);
-                    file.CopyTo(new FileStream(filePath, FileMode.Create));
 
-                    var requestWiseFile = new Requestwisefile
+                    foreach (var item in data.File)
                     {
-                        Createddate = DateTime.Now,
-                        Filename = uniqueFileName,
-                        Request = request,
-                    };
-                    _context.Requestwisefiles.Add(requestWiseFile);
+                        var file = item;
+                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uploads = Path.Combine(env.WebRootPath, "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                        var requestWiseFile = new Requestwisefile
+                        {
+                            Createddate = DateTime.Now,
+                            Filename = uniqueFileName,
+                            Request = request,
+                        };
+                        _context.Requestwisefiles.Add(requestWiseFile);
+                    }
                 }
 
                 if (!IsPatientPresent(data.Email))
@@ -187,28 +194,35 @@ namespace HalloDoc_Project.Controllers
                 };
 
                 //to get uploaded files in the 'uploads' folder
-                foreach (var item in data.File)
+                if (data.File is not null)
                 {
-                    var file = item;
-                    var uniqueFileName = GetUniqueFileName(file.FileName);
-                    var uploads = Path.Combine(env.WebRootPath, "uploads");
-                    var filePath = Path.Combine(uploads, uniqueFileName);
-                    file.CopyTo(new FileStream(filePath, FileMode.Create));
-
-                    var requestWiseFile = new Requestwisefile
+                    foreach (var item in data.File)
                     {
-                        Createddate = DateTime.Now,
-                        Filename = uniqueFileName,
-                        Request = request,
-                    };
-                    _context.Requestwisefiles.Add(requestWiseFile);
-                }
+                        var file = item;
+                        var uniqueFileName = GetUniqueFileName(file.FileName);
+                        var uploads = Path.Combine(env.WebRootPath, "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        file.CopyTo(new FileStream(filePath, FileMode.Create));
 
+                        var requestWiseFile = new Requestwisefile
+                        {
+                            Createddate = DateTime.Now,
+                            Filename = uniqueFileName,
+                            Request = request,
+                        };
+                        _context.Requestwisefiles.Add(requestWiseFile);
+                    }
+                }
                 try
                 {
                     _context.Requests.Add(request);
                     _context.Requestclients.Add(requestClient);
                     _context.SaveChanges();
+
+                    if (!IsPatientPresent(data.Email))
+                    {
+                        emailSender.SendEmailAsync(data.Email, "Create Account", $"Tap the link to create account: <a href=\"https://localhost:44396/Patient/createaccount/{request.Requestid}\">Create Now</a>");
+                    }
 
                     return RedirectToAction("SubmitRequest", "Request");
                 }
@@ -282,6 +296,10 @@ namespace HalloDoc_Project.Controllers
                     _context.Requests.Add(request);
                     _context.Requestclients.Add(requestClient);
                     _context.SaveChanges();
+                    if (!IsPatientPresent(data.Email))
+                    {
+                        emailSender.SendEmailAsync(data.Email, "Create Account", $"Tap the link to create account: <a href=\"https://localhost:44396/Patient/createaccount/{request.Requestid}\">Create Now</a>");
+                    }
 
                     return RedirectToAction("SubmitRequest", "Request");
                 }

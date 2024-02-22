@@ -1,4 +1,6 @@
-﻿namespace Entities.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Entities.ViewModels
 {
     public class PatientProfileDTO
     {
@@ -6,6 +8,7 @@
 
         public string LastName { get; set; }
 
+        [DataType(DataType.DateTime)]
         public DateTime DateOfBirth { get; set; }
 
         public string PhoneNumber { get; set; }

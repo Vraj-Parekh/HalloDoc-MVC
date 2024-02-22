@@ -35,11 +35,10 @@
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
                         <input type="text"
-                            asp-for="FirstName"
+                               asp-for="FirstName"
                                class="form-control"
                                id="floatingInput"
                                placeholder="First Name"
-                               value="@Model.FirstName"
                                disabled />
                         <label for="floatingInput">First Name</label>
                     </div>
@@ -52,7 +51,6 @@
                                class="form-control"
                                id="floatingInput"
                                placeholder="Last name"
-                               value="@Model.LastName"
                                disabled />
                         <label for="floatingPassword">Last Name</label>
                     </div>
@@ -64,8 +62,6 @@
                                asp-for="DateOfBirth"
                                class="form-control"
                                id="dob"
-                               placeholder="dob"
-                               value="@Model.DateOfBirth"
                                disabled />
                         <label for="floatingPassword">Date of Birth</label>
                     </div>
@@ -91,7 +87,6 @@
                            id="phone"
                            placeholder=""
                            style="height: 58px"
-                           value="@Model.PhoneNumber"
                            disabled />
                 </div>
 
@@ -102,7 +97,6 @@
                                class="form-control"
                                id="floatingInput"
                                placeholder="name@example.com"
-                               value="@Model.Email"
                                disabled />
                         <label for="floatingInput">Email</label>
                     </div>
@@ -118,7 +112,6 @@
                                class="form-control"
                                id="floatingInput"
                                placeholder="street"
-                               value="@Model.Street"
                                disabled />
                         <label for="floatingInput">Street</label>
                     </div>
@@ -131,7 +124,6 @@
                                class="form-control"
                                id="floatingInput"
                                placeholder="city"
-                               value="@Model.City"
                                disabled />
                         <label for="floatingInput">City</label>
                     </div>
@@ -144,7 +136,6 @@
                                class="form-control"
                                id="floatingInput"
                                placeholder="state"
-                               value="@Model.State"
                                disabled />
                         <label for="floatingInput">State</label>
                     </div>
@@ -157,7 +148,6 @@
                                class="form-control"
                                id="floatingInput"
                                placeholder="zip code"
-                               value="@Model.ZipCode"
                                disabled />
                         <label for="floatingInput">Zip code</label>
                     </div>
@@ -179,7 +169,13 @@
         </form>
     </div>
 </div>
+<script>
+    // Get today's date
+    var today = new Date().toISOString().split('T')[0];
 
+    // Set the max attribute of the input element to today's date
+    document.getElementById("dob").setAttribute("max", today);
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {

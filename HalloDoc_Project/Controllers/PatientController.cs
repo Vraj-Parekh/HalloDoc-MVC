@@ -8,6 +8,7 @@ using MimeKit;
 using NuGet.Protocol.Plugins;
 using Repositories.Repository.Implementation;
 using Repositories.Repository.Interface;
+using System.Globalization;
 using System.Threading.Tasks.Dataflow;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -65,13 +66,13 @@ namespace HalloDoc_Project.Controllers
         {
             if (_context.Aspnetusers.Any(u => u.Email == data.Email))
             {
-                emailSender.SendEmailAsync(data.Email, "Reset Password", $"Click on <a href=\"https://localhost:44396/patient/changepassword/{data.Email}\">login</a>");
+                emailSender.SendEmailAsync(data.Email, "Reset Password", $"Tap the link to reset the password: <a href=\"https://localhost:44396/patient/changepassword/{data.Email}\">Reset now</a>");
+                return RedirectToAction("PatientLogin", "Patient");
             }
             else
             {
                 throw new Exception("User Not Found");
             }
-            return View();
         }
 
         [HttpGet("[controller]/[action]/{email}")]
@@ -164,6 +165,21 @@ namespace HalloDoc_Project.Controllers
 
             return filePath;
         }
+        private DateTime GenerateDatoOfBirth(int? year, string? month, int? date)
+        {
+
+            DateTime finalDate = new DateTime(year ?? 1900, DateTime.ParseExact(month ?? "January", "MMMM", CultureInfo.CurrentCulture).Month, date ?? 01);
+            return finalDate;
+        }
+
+        private (int date, int year, string month) SeprateDateOfBirth(DateTime date)
+        {
+
+            int intdate = date.Day;
+            int intyear = date.Year;
+            string strmonth = date.ToString("MMMM");
+            return (intdate, intyear, strmonth);
+        }
 
         public IActionResult Profile()
         {
@@ -183,6 +199,7 @@ namespace HalloDoc_Project.Controllers
                 City = patientData.City,
                 State = patientData.State,
                 ZipCode = patientData.Zipcode,
+                DateOfBirth = GenerateDatoOfBirth(patientData.Intyear,patientData.Strmonth,patientData.Intdate)
             };
             return View(patientProfile);
         }
@@ -192,13 +209,6 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                //var isUserExist = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.Email);
-                //if (isUserExist == null)
-                //{
-                //    ModelState.AddModelError("", "An account with this email does not exists.");
-                //    return View(data);
-                //}
-
                 var email = HttpContext.Session.GetString("email");
                 var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
 
@@ -257,9 +267,10 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ReviewAgreement", new { requestId = model.RequestId });
         }
 
-
-        public IActionResult CreateAccount()
+        [HttpGet("[controller]/[action]/{requestId:int}")]
+        public IActionResult CreateAccount(int requestId)
         {
+            TempData["requestId"] = requestId;
             return View();
         }
 
@@ -268,9 +279,21 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_context.Aspnetusers.Any(u => u.Email == data.Email))
+                int requestId = (int)TempData["requestId"];
+
+                var requestClient = _context.Requestclients.FirstOrDefault(u => u.Requestid == requestId);
+
+                if (requestClient is null)
                 {
-                    ModelState.AddModelError(nameof(data.Email), "Email is already exist.");
+                    ModelState.AddModelError("", "No request associated with this email address");
+                    return View(data);
+                }
+
+                int requestClientId = requestClient.Requestclientid;
+
+                if (requestClient.Email != data.Email)
+                {
+                    ModelState.AddModelError(string.Empty, "Wrong email");
                     return View(data);
                 }
 
@@ -292,19 +315,19 @@ namespace HalloDoc_Project.Controllers
                     Aspnetuser = aspNetUser,
                 };
 
-                var request = new Request
-                {
-                    User = user,
-                    Firstname = aspNetUser.Username,
-                    Email = aspNetUser.Email,
-                    Isurgentemailsent = false,
-                    Createddate = DateTime.Now,
-                };
+                _context.Aspnetusers.Add(aspNetUser);
+                _context.Users.Add(user);
+                _context.SaveChanges();
+
+                var requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+
+                requestData.User = user;
+                requestData.Createduserid = user.Userid;
+                requestData.Patientaccountid = aspNetUser.Aspnetuserid;
+
+                _context.Requests.Update(requestData);
                 try
                 {
-                    _context.Aspnetusers.Add(aspNetUser);
-                    _context.Users.Add(user);
-                    _context.Requests.Add(request);
                     _context.SaveChanges();
                     return RedirectToAction("Index", "Home");
                 }
@@ -331,11 +354,11 @@ namespace HalloDoc_Project.Controllers
         }
         private string GetConfirmationNumber(string city, string lastname, string firstname, string count)
         {
-            string regionAbr = city.Substring(0, 2);
+            string regionAbr = city.Substring(0, 2).ToUpper();
             string date = DateTime.Now.ToString("dd");
             string month = DateTime.Now.ToString("MM");
-            string last = lastname.Substring(0, 2);
-            string first = firstname.Substring(0, 2);
+            string last = lastname.Substring(0, 2).ToUpper();
+            string first = firstname.Substring(0, 2).ToUpper();
             string requestCount = count;
 
             return regionAbr + date + month + last + first + requestCount;

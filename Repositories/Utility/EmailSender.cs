@@ -1,4 +1,7 @@
 ﻿using MimeKit;
+using NuGet.Protocol.Plugins;
+using System.Net.Mail;
+using System.Net;
 
 namespace HalloDoc.Utility
 {
@@ -21,6 +24,19 @@ namespace HalloDoc.Utility
                 emailClient.Disconnect(true);
                 return Task.CompletedTask;
             }
+
+            //var mail = "vrajparekh58@gmail.com";
+            //var password = "bhul lsjl twue amf";
+
+            //var client = new SmtpClient("smtp.gmail.com", 587)
+            //{
+            //    EnableSsl = true,
+            //    UseDefaultCredentials = false,
+            //    Credentials = new NetworkCredential(mail, password)
+            //};
+
+            //client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
+            //return Task.CompletedTask;
         }
     }
 }

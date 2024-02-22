@@ -60,8 +60,7 @@
                     <div class="form-floating">
                         <input asp-for="DateOfBirth" type="date"
                                class="form-control"
-                               id="dob"
-                               placeholder=" " />
+                               id="dob" />
                         <label for="floatingPassword">Date of Birth</label>
                     </div>
                     <span asp-validation-for="DateOfBirth" class="text-danger"></span>
@@ -193,6 +192,13 @@
     </div>
 </div>>
 
+<script>
+    // Get today's date
+    var today = new Date().toISOString().split('T')[0];
+
+    // Set the max attribute of the input element to today's date
+    document.getElementById("dob").setAttribute("max", today);
+</script>
 <script>
     //for uploading multiple files
     document.addEventListener("DOMContentLoaded", function () {
