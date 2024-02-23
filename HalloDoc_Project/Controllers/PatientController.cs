@@ -119,7 +119,7 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult ViewDocument(int requestId)
         {
-
+            TempData["requestId"] = requestId;
             var file = _context.Requestwisefiles.Where(a => a.Requestid == requestId);
             var req = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             var name = _context.Requestclients.Where(a => a.Requestid == requestId).FirstOrDefault();
@@ -255,7 +255,7 @@ namespace HalloDoc_Project.Controllers
             }
             return RedirectToAction("ReviewAgreement", new { requestId = requestId });
         }
-
+         
         [HttpPost]
         public async Task<IActionResult> RejectAgreement(AgreementDTO model)
         {
@@ -378,6 +378,7 @@ namespace HalloDoc_Project.Controllers
                 LastName = patientData.Lastname,
                 PhoneNumber = patientData.Mobile,
                 Email = patientData.Email,
+                DateOfBirth = GenerateDatoOfBirth(patientData.Intyear, patientData.Strmonth, patientData.Intdate)
             };
             return View(patientProfile);
         }

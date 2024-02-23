@@ -133,7 +133,6 @@ namespace HalloDoc_Project.Controllers
                         Createdby = "patient",
                         Aspnetuser = aspNetUser
                     };
-
                     _context.Users.Add(user);
                     _context.Aspnetusers.Add(aspNetUser);
                 }
@@ -142,6 +141,7 @@ namespace HalloDoc_Project.Controllers
                     _context.Requests.Add(request);
                     _context.Requestclients.Add(requestClient);
                     _context.SaveChanges();
+
 
                     return RedirectToAction("SubmitRequest", "Request");
                 }
@@ -290,16 +290,16 @@ namespace HalloDoc_Project.Controllers
                     Request = request,
                     Concierge = concierge
                 };
+                if (!IsPatientPresent(data.Email))
+                {
+                    emailSender.SendEmailAsync(data.Email, "Create Account", $"Tap the link to create account: <a href=\"https://localhost:44396/Patient/createaccount/{request.Requestid}\">Create Now</a>");
+                }
 
                 try
                 {
                     _context.Requests.Add(request);
                     _context.Requestclients.Add(requestClient);
                     _context.SaveChanges();
-                    if (!IsPatientPresent(data.Email))
-                    {
-                        emailSender.SendEmailAsync(data.Email, "Create Account", $"Tap the link to create account: <a href=\"https://localhost:44396/Patient/createaccount/{request.Requestid}\">Create Now</a>");
-                    }
 
                     return RedirectToAction("SubmitRequest", "Request");
                 }

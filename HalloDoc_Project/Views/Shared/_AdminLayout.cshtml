@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"] - HalloDoc_Project</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/css/header_footer_layout.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css//admin_dashboard.css rel="stylesheet" asp-append-version="true" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    @await RenderSectionAsync("style", required: false)
+</head>
+<body>
+    <header>
+        <div class="header_nav d-flex justify-content-between align-items-center ps-3 pe-3">
+            <img src="~/img/hallodoc_img.png" class="img-fluid" alt="logo_img" />
+            <button type="button" class="btn btn-outline-info">
+                <i class="bi bi-moon"></i>
+            </button>
+        </div>
+    </header>
+
+
+        @RenderBody()
+
+    <footer>
+        <div class="footer d-flex justify-content-end align-items-center gap-2 pe-2">
+            <a href="#">Terms and condition</a>
+            |
+            <a href="#">Privacy policy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <partial name="_ValidationScriptsPartial" />
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+</body>
+</html>

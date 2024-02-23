@@ -1,6 +1,6 @@
-﻿.box {
+﻿/*.box {
     height: 80px;
-    width: 150px;
+    width: 200px;
     border: 1px solid black;
     border-radius: 10px;
     padding-top:5px;
@@ -9,7 +9,16 @@
 #box1 {
     color: white;
     background-color: #213e9a;
+    border: solid thin #063982;
+    color: #063982;
+    background-color: #cfe2ff;
 }
+
+    #new-box:hover {
+        color: white;
+        background-color: #3385ff;
+        transition: all 0.1s;
+    }
 
 #box2 {
     color: #4e9daf;
@@ -37,4 +46,25 @@
 }
 .state-text {
     color: #213e9a;
+}
+*/
+
+.patientcolor {
+    background-color: green !important;
+    color: white !important;
+}
+
+.friendcolor {
+    background-color: orange !important;
+    color: white !important;
+}
+
+.businesscolor {
+    background-color: red !important;
+    color: white !important;
+}
+
+.conciergecolor {
+    background-color: blue !important;
+    color: white !important;
 }

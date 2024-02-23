@@ -1,6 +1,7 @@
 ﻿@model ViewDocumentList;
 @{
     ViewData["Title"] = "View Documents";
+    int requestId = (int)TempData["requestId"];
 }
 @section style{
     <link rel="stylesheet" href="~/css/view_document.css" asp-append-version="true" />
@@ -23,7 +24,7 @@
     </div>
 
     <div class="bg">
-        Patient Name    
+        Patient Name
         <h5><span> @Model.Name </span> (@Model.ConfirmationNumber) </h5>
         <p>
             Check here for any files that you or the doctors of your subsequents
@@ -40,7 +41,11 @@
             </label>
             <input type="file" id="upload" accept=".pdf,.jpeg,.png, .txt, .doc" multiple style="display: none" />
         </div>
-        <div id="filename1" class="py-2"> </div>
+        <div id="fileNames">
+        </div>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-info text-white float-end toggle-button" onclick="submitFile(@requestId)">Upload All</button>
+        </div>
 
         <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
             <h5>Documents</h5>
@@ -86,33 +91,123 @@
 <script>
 
     //for uploading multiple files
-    document.addEventListener("DOMContentLoaded", function () {
-        const fileInput = document.getElementById('upload');
-        const fileList = document.getElementById('filename1');
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     const fileInput = document.getElementById('upload');
+    //     const fileList = document.getElementById('filename1');
 
-        fileInput.addEventListener('change', function (event) {
-            const files = event.target.files;
-            fileList.innerHTML = '';
+    //     fileInput.addEventListener('change', function (event) {
+    //         const files = event.target.files;
+    //         fileList.innerHTML = '';
 
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
+    //         for (let i = 0; i < files.length; i++) {
+    //             const file = files[i];
+    //             const fileItem = document.createElement('div');
+    //             fileItem.className = 'file-item';
 
-                const fileName = document.createTextNode(file.name);
-                fileItem.appendChild(fileName);
+    //             const fileName = document.createTextNode(file.name);
+    //             fileItem.appendChild(fileName);
 
-                const removeIcon = document.createElement('i');
-                removeIcon.classList = 'bi bi-x-square';
-                removeIcon.alt = 'Remove';
-                fileItem.appendChild(removeIcon);
+    //             const removeIcon = document.createElement('i');
+    //             removeIcon.classList = 'bi bi-x-square';
+    //             removeIcon.alt = 'Remove';
+    //             fileItem.appendChild(removeIcon);
 
-                fileList.appendChild(fileItem);
-                removeIcon.addEventListener('click', function () {
-                    fileList.removeChild(fileItem);
-                    fileItem.removeChild(fileItem);
-                });
+    //             fileList.appendChild(fileItem);
+    //             removeIcon.addEventListener('click', function () {
+    //                 fileList.removeChild(fileItem);
+    //                 fileItem.removeChild(fileItem);
+    //             });
+    //         }
+    //     });
+    // });
+
+
+    let allFiles = [];
+    let input = document.getElementById("upload");
+    var button = document.getElementsByClassName("toggle-button")[0];
+
+    let div = document.getElementById("fileNames");
+
+    input.addEventListener("change", function () {
+        let files = input.files;
+
+
+        for (let i = 0; i < files.length; i++) {
+            allFiles.push(files[i]);
+        }
+
+        console.log(allFiles)
+        button.style = "display:block"
+        showNames(files);
+    });
+
+    function showNames(files) {
+
+        for (let i = 0; i < files.length; i++) {
+
+            let icon = document.createElement('i');
+            icon.classList = 'bi bi-x-lg fileIcon';
+
+            let br = document.createElement('br');
+
+            let span = document.createElement('span');
+            span.className = "showFile"
+            span.style.color = 'black';
+            span.textContent = files[i].name;
+            span.appendChild(icon);
+            div.appendChild(span);
+
+
+            div.appendChild(br);
+
+
+            icon.onclick = function () {
+                let index = allFiles.indexOf(files[i]);
+                allFiles.splice(index, 1);
+                console.log(allFiles);
+                div.removeChild(span);
+                div.removeChild(br);
+
+                if (allFiles.length == 0) {
+                    button.style = "display:none";
+                }
+            }
+        }
+    }
+
+    function removeAll() {
+        allFiles = [];
+        div.innerHTML = "";
+        button.style = "display:none";
+    }
+
+    function submitFile(id) {
+
+        console.log(allFiles);
+        console.log("ADFA");
+
+        const formData = new FormData();
+
+        for (let i = 0; i < allFiles.length; i++) {
+            formData.append('files', allFiles[i]);
+        }
+
+
+        $.ajax({
+            type: 'POST',
+            url: "/ViewDocument/Upload/" + id,
+            data: (formData),
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
+                console.log(response)
+                removeAll();
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", status, error);
             }
         });
-    });
+    }
 </script>
