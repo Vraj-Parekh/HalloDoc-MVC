@@ -16,7 +16,7 @@
                 <img src="~/img/hallodoc_img.png"
                      class="img-fluid logo-img"
                      alt="hallodoc_img" />
-                <button type="button" class="btn btn-outline-info theme_btn">
+            <button type="button" class="btn btn-outline-info theme_btn" id="toggle_theme_btn">
                     <i class="bi bi-moon"></i>
                 </button>
             </div>
@@ -35,8 +35,9 @@
         </footer>
    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/toggle_btn.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
     @await RenderSectionAsync("Scripts", required: false)
 </body>
