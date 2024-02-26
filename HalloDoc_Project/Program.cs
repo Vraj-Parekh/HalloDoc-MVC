@@ -18,6 +18,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddTransient<IRequestServices, RequestServices>();
 builder.Services.AddTransient<IRequestStatusLogServices, RequestStatusLogServices>();
+builder.Services.AddTransient<IRequestClientServices, RequestClientServices>();
 
 var app = builder.Build();
 

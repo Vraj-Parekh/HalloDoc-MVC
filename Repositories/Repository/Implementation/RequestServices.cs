@@ -1,11 +1,16 @@
 ﻿using Entities.DataContext;
 using Entities.Models;
+using Entities.ViewModels;
 using Repositories.Repository.Interface;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Repositories.Repository.Implementation
 {
@@ -13,11 +18,13 @@ namespace Repositories.Repository.Implementation
     {
         private readonly HalloDocDbContext _context;
         private readonly IRequestStatusLogServices requestStatusLogServices;
+        private readonly IRequestClientServices requestClientServices;
 
-        public RequestServices(HalloDocDbContext _context,IRequestStatusLogServices requestStatusLogServices)
+        public RequestServices(HalloDocDbContext _context, IRequestStatusLogServices requestStatusLogServices, IRequestClientServices requestClientServices)
         {
             this._context = _context;
             this.requestStatusLogServices = requestStatusLogServices;
+            this.requestClientServices = requestClientServices;
         }
         public bool IsRequestPending(int requestId, string email)
         {
@@ -63,6 +70,36 @@ namespace Repositories.Repository.Implementation
             }
             return false;
         }
+        private DateTime GenerateDatoOfBirth(int? year, string? month, int? date)
+        {
 
+            DateTime finalDate = new DateTime(year ?? 1900, DateTime.ParseExact(month ?? "January", "MMMM", CultureInfo.CurrentCulture).Month, date ?? 01);
+            return finalDate;
+        }
+
+        public ViewCaseDTO GetViewCase(int requestId)
+        {
+            //TempData["requestId"] = requestId;
+            Request? request = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+
+            if (request is null) return null;
+
+            Requestclient? client = requestClientServices.GetClient(requestId);
+            if (client is null) return null;
+
+            ViewCaseDTO? data = new ViewCaseDTO()
+            {
+                ConfirmationNumber = request.Confirmationnumber,
+                PatientNotes = client.Notes,
+                FirstName = client.Firstname,
+                LastName = client.Lastname,
+                DateOfBirth = GenerateDatoOfBirth(client.Intyear, client.Strmonth, client.Intdate),
+                PhoneNumber = client.Phonenumber,
+                Email = client.Email,
+                Region = client.City,
+                //BusinessName = client.Firstname,---check if businesstype id or not then show name or address
+            };
+            return data;
+        }
     }
 }

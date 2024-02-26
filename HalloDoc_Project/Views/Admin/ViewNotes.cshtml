@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "ViewNotes";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Notes</h4>
+
+        <a asp-controller="Admin" asp-action="ViewCase" class="btn btn-outline-info text-info"> < Back </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 bg d-flex">
+            <i class="fa-solid fa-right-left p-2"></i>
+            <div class="">
+                <h4>Transfer Notes</h4>
+                <span>Admin transferred to Dr. AGOLA on 27/09/2023 on 9:38:04 AM test assign</span>
+            </div>
+        </div>
+
+        <div class="col-lg-6 bg d-flex">
+            <i class="fa-solid fa-user-doctor"></i>
+            <div class="">
+                <h4>Physician Notes</h4>
+                <span>Admin transferred to Dr. AGOLA on 27/09/2023 on 9:38:04 AM test assign</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6 bg d-flex">
+            <i class="fa-solid fa-user-tie"></i>
+            <div class="">
+                <h4>Admin Notes</h4>
+                <span>Admin transferred to Dr. AGOLA on 27/09/2023 on 9:38:04 AM test assign</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="bg mt-4">
+        <div class="mb-3">
+            <div class="form-floating">
+                <textarea
+                    @* asp-for="AdminNotes" *@
+                          class="form-control"
+                          placeholder="admin notes"
+                          id="floatingTextarea2"
+                          style="height: 100px"></textarea>
+                <label for="floatingTextarea2">Admin Notes</label>
+            </div>
+        </div>
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <button type="button" class="btn btn-info text-white"> Save Changes </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

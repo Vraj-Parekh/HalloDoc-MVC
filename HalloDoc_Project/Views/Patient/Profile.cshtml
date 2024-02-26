@@ -5,8 +5,7 @@
 @section style{
     <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
 }
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17`.0.8/js/intlTelInput.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
 
 
@@ -162,32 +161,12 @@
             </div>
             <div class="row justify-content-end">
                 <div class="col-auto">
-                    <button type="button" class="btn btn-info c-btn text-white btn-edit"> Edit </button>
-                    <button class="btn btn-info c-btn text-white btn-save">Save</button>
+                    <button type="button" class="btn btn-info text-white btn-edit "> Edit </button>
+                    <button class="btn btn-info text-white btn-save">Save</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
-<script>
-    // Get today's date
-    var today = new Date().toISOString().split('T')[0];
 
-    // Set the max attribute of the input element to today's date
-    document.getElementById("dob").setAttribute("max", today);
-</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // Disable all input fields initially
-        $('input, select,.btn-map').prop('disabled', true);
-        $('.btn-save').hide();
-
-        // Handle click event for the Edit button
-        $('.btn-edit').click(function () {
-            // Enable all input fields
-            $('input, select,.btn-map').prop('disabled', false);
-            $('.btn-save').show();
-        });
-    });
-</script>

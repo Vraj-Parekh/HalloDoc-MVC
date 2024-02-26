@@ -1,0 +1,15 @@
+﻿.icon {
+    height: 58px;
+    width: 49px;
+    line-height: 40px;
+}
+
+.btn-edit, .btn-save {
+    height: 100%;
+    width: 80px;
+}
+
+.btn-outline-info:hover {
+    color: #000;
+    background-color: white;
+}
