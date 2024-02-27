@@ -17,83 +17,95 @@
 
     <div class="bg mt-2 mb-3">
         <form asp-action="ViewCase" class="login-form-control">
-            <div class="row">
-                <h4 class="mb-4">Patient Information</h4>
+            <h4 class="mb-4">Patient Information</h4>
+            <span class="mb-3">Confirmation Number <h3 class="text-info">@Model.ConfirmationNumber</h3> </span>
 
-                <span class="mb-3">Confirmation Number <h3 class="text-info">@Model.ConfirmationNumber</h3> </span>
-                <div class="mb-3">
+            <div class="row">
+                <div class="col-12 mb-3">
                     <div class="form-floating">
-                        <textarea 
-                            asp-for="PatientNotes"
-                                  class="form-control dis-field"
+                        <textarea asp-for="PatientNotes"
+                                  class="form-control"
+                                  value="@Model.PatientNotes"
                                   placeholder="notes"
                                   id="floatingTextarea2"
-                                  disabled
+                                  readonly
                                   style="height: 100px"></textarea>
                         <label for="floatingTextarea2">Patient Notes</label>
                     </div>
+                    <span asp-validation-for="PatientNotes" class="text-danger"></span>
                 </div>
+            </div>
 
+            <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
                         <input type="text"
-                        asp-for="FirstName"
-                               class="form-control dis-field"
+                               asp-for="FirstName"
+                               class="form-control "
                                id="floatingInput"
                                placeholder="First name"
-                               disabled />
+                               readonly />
                         <label for="floatingPassword">First Name</label>
                     </div>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
                         <input type="text"
-                        asp-for="LastName"
-                               class="form-control dis-field"
+                               asp-for="LastName"
+                               class="form-control "
                                id="floatingInput"
                                placeholder="Last name"
-                               disabled />
+                               readonly />
                         <label for="floatingPassword">Last Name</label>
                     </div>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
+            </div>
 
+            <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
                         <input type="date"
-                        asp-for="DateOfBirth"
-                               class="form-control dis-field"
+                               asp-for="DateOfBirth"
+                               class="form-control "
                                id="dob"
-                               disabled />
+                               readonly />
                         <label for="floatingPassword">Date of Birth</label>
                     </div>
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
 
 
-                <div class="col-md-5 col-sm-10 mb-3 z-3 form-floating">
+                <div class="col-md-5 col-10 mb-3 z-3 form-floating">
                     <input type="tel"
-                    asp-for="PhoneNumber"
+                           asp-for="PhoneNumber"
                            class="form-control dis-field"
                            id="phone"
                            placeholder=""
                            style="height: 58px"
                            disabled />
+
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
 
-                <div class="col-md-1 col-sm-2 mb-3">
+                <div class="col-md-1 col-2 mb-3">
                     <div class="form-floating">
                         <a class="btn btn-outline-info icon dis-field"><i class="bi bi-telephone-fill"></i> </a>
                     </div>
                 </div>
+            </div>
 
+            <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
                         <input type="email"
-                        asp-for="Email"
+                               asp-for="Email"
                                class="form-control dis-field"
                                id="email"
-                               placeholder="name@example.com" 
-                               disabled/>
+                               placeholder="name@example.com"
+                               disabled />
                         <label for="floatingInput">Email</label>
                     </div>
                     <span asp-validation-for="Email" class="text-danger"></span>
@@ -103,52 +115,56 @@
                     <button type="button" class="btn btn-outline-info text-info btn-edit"> Edit </button>
                     <button class="btn btn-info text-white btn-save">Save</button>
                 </div>
+            </div>
 
-                <h4 class="mb-4 mt-4">Location Information</h4>
+            <h4 class="mb-4 mt-4">Location Information</h4>
 
+            <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
                         <input type="text"
-                        asp-for="Region"
+                               asp-for="Region"
                                class="form-control"
                                id="floatingInput"
                                placeholder="region"
-                               disabled />
+                               readonly />
                         <label for="floatingInput">Region</label>
                     </div>
                 </div>
 
-                <div class="col-md-5 mb-3 col-sm-10 form-floating">
+                <div class="col-md-5 col-10 mb-3 form-floating">
                     <div class="form-floating">
                         <input type="text"
-                        asp-for="BusinessName"
+                               asp-for="BusinessName"
                                class="form-control"
                                id="floatingInput"
                                placeholder="business name"
-                               disabled />
+                               readonly />
                         <label for="floatingInput">Business Name/Address</label>
                     </div>
                 </div>
 
-                <div class="col-md-1 col-sm-2 mb-3">
+                <div class="col-md-1 col-2 mb-3">
                     <div class="form-floating">
                         <a class="btn btn-outline-info icon"><i class="bi bi-geo-alt"></i> </a>
                     </div>
                 </div>
+            </div>
 
+            <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
                         <input type="text"
-                        asp-for="Room"
+                               asp-for="Room"
                                class="form-control"
                                id="floatingInput"
                                placeholder="room"
-                               disabled />
+                               readonly />
                         <label for="floatingInput">Room #</label>
                     </div>
                 </div>
-
             </div>
+
             <div class="row justify-content-end">
                 <div class="col-auto">
                     <button type="button" class="btn btn-info text-white"> Assign </button>

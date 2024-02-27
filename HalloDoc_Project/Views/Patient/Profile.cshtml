@@ -5,8 +5,6 @@
 @section style{
     <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
 }
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
 
 
 <ul class="nav nav-underline ps-4 pe-4 bg-white">
@@ -41,6 +39,7 @@
                                disabled />
                         <label for="floatingInput">First Name</label>
                     </div>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -53,6 +52,7 @@
                                disabled />
                         <label for="floatingPassword">Last Name</label>
                     </div>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6">
@@ -64,6 +64,7 @@
                                disabled />
                         <label for="floatingPassword">Date of Birth</label>
                     </div>
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
 
                 <h4 class="mb-4 mt-4">Contact Information</h4>
@@ -87,6 +88,7 @@
                            placeholder=""
                            style="height: 58px"
                            disabled />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -99,6 +101,7 @@
                                disabled />
                         <label for="floatingInput">Email</label>
                     </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
 
@@ -114,6 +117,7 @@
                                disabled />
                         <label for="floatingInput">Street</label>
                     </div>
+                    <span asp-validation-for="Street" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -126,6 +130,7 @@
                                disabled />
                         <label for="floatingInput">City</label>
                     </div>
+                    <span asp-validation-for="City" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -138,6 +143,7 @@
                                disabled />
                         <label for="floatingInput">State</label>
                     </div>
+                    <span asp-validation-for="State" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-4 mb-3">
@@ -150,6 +156,7 @@
                                disabled />
                         <label for="floatingInput">Zip code</label>
                     </div>
+                    <span asp-validation-for="ZipCode" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-2 mb-3">
@@ -168,5 +175,6 @@
         </form>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@section Scripts{
+<script src="~/js/edit_btn_profile.js"></script>
+}

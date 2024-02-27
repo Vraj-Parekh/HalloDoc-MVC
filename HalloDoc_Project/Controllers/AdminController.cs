@@ -36,10 +36,10 @@ namespace HalloDoc_Project.Controllers
         [HttpPost]
         public IActionResult ViewCase(ViewCaseDTO data)
         {
-
             if(ModelState.IsValid)
             {
                 requestClientServices.UpdateCase(data);
+                return View(data);
             }
             return View(data);
         }

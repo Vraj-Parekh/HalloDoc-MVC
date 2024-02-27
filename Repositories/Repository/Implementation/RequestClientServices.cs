@@ -22,14 +22,8 @@ namespace Repositories.Repository.Implementation
         }
         public void UpdateCase(ViewCaseDTO data)
         {
-            Requestclient? clientData = _context.Requestclients.FirstOrDefault(a => a.Requestid == 54);
+            Requestclient? clientData = GetClient(54);
 
-            clientData.Notes = data.PatientNotes;
-            clientData.Firstname = data.FirstName;
-            clientData.Lastname = data.LastName;
-            clientData.Intdate = data.DateOfBirth.Day;
-            clientData.Strmonth = data.DateOfBirth.ToString("MMM");
-            clientData.Intyear = data.DateOfBirth.Year;
             clientData.Phonenumber = data.PhoneNumber;
             clientData.Email = data.Email;
 

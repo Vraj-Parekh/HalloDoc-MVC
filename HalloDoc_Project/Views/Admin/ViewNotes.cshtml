@@ -10,30 +10,36 @@
         <a asp-controller="Admin" asp-action="ViewCase" class="btn btn-outline-info text-info"> < Back </a>
     </div>
 
-    <div class="row">
-        <div class="col-lg-6 bg d-flex">
-            <i class="fa-solid fa-right-left p-2"></i>
-            <div class="">
-                <h4>Transfer Notes</h4>
-                <span>Admin transferred to Dr. AGOLA on 27/09/2023 on 9:38:04 AM test assign</span>
+    <div class="row g-4">
+        <div class="col-md-6 col-12">
+            <div class="bg d-flex">
+                <i class="fa-solid fa-right-left pt-2"></i>
+                <div class="ps-2">
+                    <h4>Transfer Notes</h4>
+                    <span>Admin transferred to Dr. AGOLA on 27/09/2023 on 9:38:04 AM test assign</span>
+                </div>
             </div>
         </div>
 
-        <div class="col-lg-6 bg d-flex">
-            <i class="fa-solid fa-user-doctor"></i>
-            <div class="">
-                <h4>Physician Notes</h4>
-                <span>Admin transferred to Dr. AGOLA on 27/09/2023 on 9:38:04 AM test assign</span>
+        <div class="col-md-6 col-12">
+            <div class="bg d-flex">
+                <i class="fa-solid fa-user-doctor pt-2"></i>
+                <div class="ps-2">
+                    <h4>Physician Notes</h4>
+                    <span>Admin transferred to Dr. AGOLA on 27/09/2023 on 9:38:04 AM test assign</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-6 bg d-flex">
-            <i class="fa-solid fa-user-tie"></i>
-            <div class="">
-                <h4>Admin Notes</h4>
-                <span>Admin transferred to Dr. AGOLA on 27/09/2023 on 9:38:04 AM test assign</span>
+    <div class="row g-4 mt-2">
+        <div class="col-md-6 col-12">
+            <div class="bg d-flex">
+                <i class="fa-solid fa-user-tie pt-2"></i>
+                <div class="ps-2">
+                    <h4>Admin Notes</h4>
+                    <span>Admin transferred to Dr. AGOLA on 27/09/2023 on 9:38:04 AM test assign</span>
+                </div>
             </div>
         </div>
     </div>
@@ -42,8 +48,7 @@
     <div class="bg mt-4">
         <div class="mb-3">
             <div class="form-floating">
-                <textarea
-                    @* asp-for="AdminNotes" *@
+                <textarea @* asp-for="AdminNotes" *@
                           class="form-control"
                           placeholder="admin notes"
                           id="floatingTextarea2"

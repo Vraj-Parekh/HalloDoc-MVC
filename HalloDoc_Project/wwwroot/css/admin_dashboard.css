@@ -1,70 +1,1 @@
-﻿/*.box {
-    height: 80px;
-    width: 200px;
-    border: 1px solid black;
-    border-radius: 10px;
-    padding-top:5px;
-}
-
-#box1 {
-    color: white;
-    background-color: #213e9a;
-    border: solid thin #063982;
-    color: #063982;
-    background-color: #cfe2ff;
-}
-
-    #new-box:hover {
-        color: white;
-        background-color: #3385ff;
-        transition: all 0.1s;
-    }
-
-#box2 {
-    color: #4e9daf;
-    background-color: #9dd6e2;
-}
-
-#box3 {
-    color: #557f57;
-    background-color: #c1ddbf;
-}
-
-#box4 {
-    color: #ab7796;
-    background-color: #e1b0cd;
-}
-
-#box5 {
-    color: #467292;
-    background-color: #b9d1e5;
-}
-
-#box6 {
-    color: #89719b;
-    background-color: #d2c0dd;
-}
-.state-text {
-    color: #213e9a;
-}
-*/
-
-.patientcolor {
-    background-color: green !important;
-    color: white !important;
-}
-
-.friendcolor {
-    background-color: orange !important;
-    color: white !important;
-}
-
-.businesscolor {
-    background-color: red !important;
-    color: white !important;
-}
-
-.conciergecolor {
-    background-color: blue !important;
-    color: white !important;
-}
+﻿#NewState {    background-color: #e8eaf1;    color: #213f99;    border: 2px solid #213f99;    border-radius: 10px;}    #NewState.active {        background-color: #213f99;        color: #ffffff;        border: 1px solid #213f99;        border-radius: 10px;    }#ActiveState {    background-color: #d0f0c0;    color: #228b22;    border: 1px solid #228b22;    border-radius: 10px;}    #ActiveState.active {        background-color: #228b22;        color: #ffffff;        border: 1px solid #228b22;        border-radius: 10px;    }#PendingState {    background-color: #e5f3f8;    color: #00adef;    border: 1px solid #00adef;    border-radius: 10px;}    #PendingState.active {        background-color: #00adef;        color: #ffffff;        border: 1px solid #00adef;        border-radius: 10px;    }#ConcludeState {    background-color: #f6e6ef;    color: #d90f81;    border: 1px solid #d90f81;    border-radius: 10px;}    #ConcludeState.active {        background-color: #d90f81;        color: #ffffff;        border: 1px solid #d90f81;        border-radius: 10px;    }#ToCloseState {    background-color: #e5eef6;    color: #0371d7;    border: 1px solid #0371d7;    border-radius: 10px;}    #ToCloseState.active {        background-color: #0371d7;        color: #ffffff;        border: 1px solid #0371d7;        border-radius: 10px;    }#UnpaidState {    background-color: #f1edf5;    color: #9966cf;    border: 1px solid #9966cf;    border-radius: 10px;}    #UnpaidState.active {        background-color: #9966cf;        color: #ffffff;        border: 1px solid #9966cf;        border-radius: 10px;    }
