@@ -16,8 +16,6 @@ namespace Repositories.Repository.Implementation
         public Requestclient GetClient(int requestId)
         {
             Requestclient? requestClient = _context.Requestclients.First(a => a.Requestid == requestId);
-
-
             return requestClient;
         }
         public void UpdateCase(ViewCaseDTO data)

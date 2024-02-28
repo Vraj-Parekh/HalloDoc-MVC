@@ -15,10 +15,12 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddTransient<IRequestServices, RequestServices>();
 builder.Services.AddTransient<IRequestStatusLogServices, RequestStatusLogServices>();
 builder.Services.AddTransient<IRequestClientServices, RequestClientServices>();
+builder.Services.AddTransient<IRequestNotesServices,RequestNotesServices>();
 
 var app = builder.Build();
 

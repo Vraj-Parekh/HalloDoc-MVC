@@ -50,6 +50,11 @@ namespace Repositories.Repository.Implementation
 
             return requeststatuslog;
         }
+
+        public Requeststatuslog? GetTransferNotes(int requestId)
+        {
+            return _context.Requeststatuslogs.FirstOrDefault(a=>a.Requestid == requestId);
+        }
     }
 }
 

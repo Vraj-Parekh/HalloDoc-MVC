@@ -9,11 +9,13 @@ namespace HalloDoc_Project.Controllers
     {
         private readonly IRequestClientServices requestClientServices;
         private readonly IRequestServices requestServices;
+        private readonly IRequestNotesServices requestNotesServices;
 
-        public AdminController(IRequestClientServices requestClientServices,IRequestServices requestServices)
+        public AdminController(IRequestClientServices requestClientServices,IRequestServices requestServices,IRequestNotesServices requestNotesServices)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
+            this.requestNotesServices = requestNotesServices;
         }
         public IActionResult Index()
         {
@@ -78,8 +80,9 @@ namespace HalloDoc_Project.Controllers
         }
 
         [HttpGet("[controller]/[action]/{requestId}")]
-        public IActionResult ViewNotes()
+        public IActionResult ViewNotes(int requestId)
         {
+            //pending
             return View();
         }
         [HttpPost]
@@ -87,6 +90,7 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
+                requestNotesServices.AddNotes(data);
                 return View(data);
             }
             return View(data);

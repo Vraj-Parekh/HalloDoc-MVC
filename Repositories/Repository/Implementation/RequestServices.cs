@@ -3,15 +3,7 @@ using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repository.Interface;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Repositories.Repository.Implementation
 {
@@ -27,6 +19,12 @@ namespace Repositories.Repository.Implementation
             this.requestStatusLogServices = requestStatusLogServices;
             this.requestClientServices = requestClientServices;
         }
+
+        public Request? GetRequest(int requestId)
+        {
+            return _context.Requests.FirstOrDefault(a=>a.Requestid == requestId);
+        }
+
         public bool IsRequestPending(int requestId, string email)
         {
             return _context.Requests.FirstOrDefault(a => a.Requestid == requestId)?.Status == (int)RequestStatus.Pending;
@@ -34,7 +32,7 @@ namespace Repositories.Repository.Implementation
 
         public async Task<bool> AgreeWithAgreementAsync(int requestId)
         {
-            Request? request = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+            Request? request = GetRequest(requestId);
             if (request is null)
                 return false;
 
@@ -56,7 +54,7 @@ namespace Repositories.Repository.Implementation
         public async Task<bool> RejectAgreementAsync(int requestId, string message)
         {
 
-            Request? request = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+            Request? request = GetRequest(requestId);
             if (request is null)
                 return false;
 
@@ -77,11 +75,9 @@ namespace Repositories.Repository.Implementation
             DateTime finalDate = new DateTime(year ?? 1900, DateTime.ParseExact(month ?? "January", "MMMM", CultureInfo.CurrentCulture).Month, date ?? 01);
             return finalDate;
         }
-
         public ViewCaseDTO GetViewCase(int requestId)
         {
-            //TempData["requestId"] = requestId;
-            Request? request = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+            Request? request = GetRequest(requestId);
 
             if (request is null) return null;
 
@@ -95,8 +91,8 @@ namespace Repositories.Repository.Implementation
                 FirstName = client.Firstname,
                 LastName = client.Lastname,
                 DateOfBirth = GenerateDateOfBirth(client.Intyear, client.Strmonth, client.Intdate),
-                PhoneNumber = client.Phonenumber,
-                Email = client.Email,
+                PhoneNumber = client.Phonenumber ?? "",
+                Email = client.Email ?? "",
                 Region = client.City,
                 //BusinessName = client.Firstname,---check if businesstype id or not then show name or address
                 BusinessName = (request.Requesttypeid == 1) ? client.Firstname : client.City,
@@ -106,28 +102,28 @@ namespace Repositories.Repository.Implementation
 
         public List<AdminDashboardDTO> GetPatientdata(int requesttypeid,int status)
         {
-            List<Request>? r = _context.Requests.Where(a =>( a.Requesttypeid == requesttypeid || requesttypeid == 5) && a.Status == status).Include(a => a.Requestclients).ToList();
+            List<Request>? request = _context.Requests.Where(a =>( a.Requesttypeid == requesttypeid || requesttypeid == 5) && a.Status == status).Include(a => a.Requestclients).ToList();
+
             List<AdminDashboardDTO> admin = new List<AdminDashboardDTO>();
-            foreach (Request req in r)
+
+            foreach (Request req in request)
             {
-                Requestclient? rc = req.Requestclients.First();
+                Requestclient? requestClient = req.Requestclients.First();
                 AdminDashboardDTO? AdminDashboard = new AdminDashboardDTO
                 {
                     RequestId = req.Requestid,
-                    Name = rc.Firstname,
-                    Dob = GenerateDateOfBirth(rc.Intyear, rc.Strmonth, rc.Intdate),
+                    Name = requestClient.Firstname,
+                    Dob = GenerateDateOfBirth(requestClient.Intyear, requestClient.Strmonth, requestClient.Intdate),
                     Requestor = (RequestTypeId)req.Requesttypeid + ", " + req.Firstname,
                     RequestedDate = req.Createddate,
                     Phone = req.Phonenumber,
-                    Address = rc.Address,
-                    Notes = rc.Notes,
+                    Address = requestClient.Address,
+                    Notes = requestClient.Notes,
                     RequestTypeId = req.Requesttypeid,
-                    //ChatWith =,
                 };
                 admin.Add(AdminDashboard);
             }
             return admin;
-
         }
     }
 }

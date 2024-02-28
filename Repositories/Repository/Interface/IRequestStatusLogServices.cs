@@ -6,5 +6,6 @@ namespace Repositories.Repository.Interface
     {
         Task<Requeststatuslog> AddRequestStatusLogAsync(Request request, RequestStatus status);
         Task<Requeststatuslog> AddRequestStatusLogAsync(Request request, RequestStatus status, string message);
+        Requeststatuslog? GetTransferNotes(int requestId);
     }
 }
