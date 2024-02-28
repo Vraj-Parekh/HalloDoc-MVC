@@ -24,7 +24,7 @@ namespace Entities.ViewModels
         public string? Notes { get; set; }
         public string? ChatWith { get; set; }
 
-        public int? statusdb; //  field to store the actual db status value
+        public int? statusdb;
         public int? RegionId { get; set; }
     }
 }

@@ -27,7 +27,7 @@
             </div>
 
             <div class="col-xl-2 col-sm-4 col-6">
-                <div class="mt-1 p-3 rounded d-flex flex-column" id="ActiveState">
+                <div class="mt-1 p-3 rounded d-flex flex-column" id="ActiveState" onclick="activateTab('ActiveState')">
                     <span><i class="bi bi-check2-circle"></i> ACTIVE</span>
                     <span class="h3 fw-bold">12345</span>
                 </div>
@@ -35,21 +35,21 @@
             </div>
 
             <div class="col-xl-2 col-sm-4 col-6">
-                <div class="mt-1 p-3 rounded d-flex flex-column" id="ConcludeState">
+                <div class="mt-1 p-3 rounded d-flex flex-column" id="ConcludeState" onclick="activateTab('ConcludeState')">
                     <span><i class="bi bi-clock"></i> CONCLUDE</span>
                     <span class="h3 fw-bold">12345</span>
                 </div>
             </div>
 
             <div class="col-xl-2 col-sm-4 col-6">
-                <div class="mt-1 p-3 rounded d-flex flex-column" id="ToCloseState">
+                <div class="mt-1 p-3 rounded d-flex flex-column" id="ToCloseState" onclick="activateTab('ToCloseState')">
                     <span><i class="bi bi-person-x-fill"></i> TO CLOSE</span>
                     <span class="h3 fw-bold">12345</span>
                 </div>
             </div>
 
             <div class="col-xl-2 col-sm-4 col-6 ">
-                <div class="mt-1 p-3 rounded d-flex flex-column" id="UnpaidState">
+                <div class="mt-1 p-3 rounded d-flex flex-column" id="UnpaidState" onclick="activateTab('UnpaidState')">
                     <span><i class="fa-solid fa-dollar-sign"></i> UNPAID</span>
                     <span class="h3 fw-bold">12345</span>
                 </div>
@@ -101,24 +101,119 @@
 
         </div>
 
+
+
     </div>
+
+    <div id="tableRecords" class="tableData"></div>
 </div>
 
+@section Scripts{
 
-<script>
-    var previousTab = null;
-    function activateTab(tabId) {
-        // Deactivate previous tab
-        if (previousTab !== null) {
-            previousTab.classList.remove('active');
+    <script>
+        requestTypeId = 5;
+        status = 1;
+        var previousTab = null;
+        function activateTab(tabId) {
+            // Deactivate previous tab
+            if (previousTab !== null) {
+                previousTab.classList.remove('active');
+            }
+
+            // Activate the clicked tab
+            var clickedTab = document.getElementById(tabId);
+            clickedTab.classList.add('active');
+
+            // Update the previousTab variable
+            previousTab = clickedTab;
         }
+        activateTab('NewState');
 
-        // Activate the clicked tab
-        var clickedTab = document.getElementById(tabId);
-        clickedTab.classList.add('active');
+        $(document).ready(function () {
+            $('#NewState').trigger('click');
+        });
 
-        // Update the previousTab variable
-        previousTab = clickedTab;
-    }
-    activateTab('NewState');
-</script>
+        $('#NewState').on('click ', function (type="All") {
+            status = 1;
+            switch (type) {
+                case "All":
+                    requestTypeId = 5;
+                    break;
+                case "Patient":
+                    requestTypeId = 2;
+                    break;
+                case "Family":
+                    requestTypeId = 3;
+                    break;
+                case "Business":
+                    requestTypeId = 1;
+                    break;
+                case "Concierge":
+                    requestTypeId = 4;
+                    break;
+            }
+            $.ajax({
+                url: '@Url.Action("NewStateTable", "Admin")',
+                type: 'get',
+                data: { status: status, requestTypeId: requestTypeId },
+                success: function (result) {
+                    // console.log(result);
+                    $(".tableData").html(result);
+                }
+            });
+        });
+
+        $('#PendingState').on('click ', function () {
+            $.ajax({
+                url: '@Url.Action("PendingStateTable", "Admin")',
+                type: 'get',
+                success: function (result) {
+                    $(".tableData").html(result);
+                }
+            });
+        });
+
+        $('#ActiveState').on('click ', function () {
+            $.ajax({
+                url: '@Url.Action("ActiveStateTable", "Admin")',
+                type: 'get',
+                success: function (result) {
+                    $(".tableData").html(result);
+                }
+            });
+        });
+
+        $('#ConcludeState').on('click ', function () {
+            $.ajax({
+                url: '@Url.Action("ConcludeStateTable", "Admin")',
+                type: 'get',
+                success: function (result) {
+                    $(".tableData").html(result);
+                }
+            });
+        });
+
+        $('#ToCloseState').on('click ', function () {
+            $.ajax({
+                url: '@Url.Action("ToCloseStateTable", "Admin")',
+                type: 'get',
+                success: function (result) {
+                    $(".tableData").html(result);
+                }
+            });
+        });
+
+        $('#UnpaidState').on('click ', function () {
+            $.ajax({
+                url: '@Url.Action("UnpaidStateTable", "Admin")',
+                type: 'get',
+                success: function (result) {
+                    $(".tableData").html(result);
+                }
+            });
+        });
+
+
+      
+    </script>
+}

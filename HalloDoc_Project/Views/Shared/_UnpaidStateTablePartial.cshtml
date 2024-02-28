@@ -1,0 +1,95 @@
+﻿@model List<AdminDashboardDTO>
+@{
+    ViewData["Title"] = "_UnpaidStateTable";
+}
+
+
+@functions {
+    public string GetColor(int RequestTypeId)
+    {
+        switch (RequestTypeId)
+        {
+            case 1: return "green";
+            case 2: return "orange";
+            case 3: return "pink";
+            case 4: return "blue";
+            default: return "green";
+        }
+    }
+
+    public string showName(int Status)
+    {
+        switch (Status)
+        {
+            case 1: return "New";
+            case 2: return "Pending";
+            case 3: return "Active";
+            case 4: return "Conclude";
+            case 5: return "To close";
+            case 6: return "Unpaid";
+            default: return "Unknown";
+        }
+    }
+}
+    @if (Model.Count > 0)
+{
+    <div class="table-responsive d-none d-sm-block" style="min-height:50vh;">
+        <table class="table " id="adminTable">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Physian Name</th>
+                    <th scope="col">Date Of Service</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Chat With</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    Console.WriteLine(a);
+                    var clr = GetColor(a.RequestTypeId);
+                    Console.Write(clr);
+                    <tr class="align-middle table-@clr">
+                        <td scope="row">@a.Name</td>
+                        <td>@a.PhysicianName</td>
+                        <td>@a.RequestedDate</td>
+                        <td>
+                            <div>
+                                <span class="border border-white rounded p-2"><i class="bi bi-telephone p-2"></i>@a.Phone</span>
+                            </div>
+                        </td>
+                        <td>@a.Address</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-secondary d-none d-md-block">Patient</button>
+                                <button class="btn btn-outline-secondary d-none d-md-block">Provider</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn text-white border border-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Action
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-action="ViewCase">View Case</a></li>
+                                    <li><a class="dropdown-item" href="#">View Uploads</a></li>
+                                    <li><a class="dropdown-item" href="#">View Notes</a></li>
+                                    <li><a class="dropdown-item" href="#">Orders</a></li>
+                                    <li><a class="dropdown-item" href="#">Close Case</a></li>
+                                    <li><a class="dropdown-item" href="#">Doctors Note</a></li>
+                                    <li><a class="dropdown-item" href="#">Clear Case</a></li>
+                                    <li><a class="dropdown-item" href="#">Encounter</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+

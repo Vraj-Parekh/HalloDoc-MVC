@@ -165,20 +165,11 @@ namespace HalloDoc_Project.Controllers
 
             return filePath;
         }
-        private DateTime GenerateDatoOfBirth(int? year, string? month, int? date)
+        private DateTime GenerateDateOfBirth(int? year, string? month, int? date)
         {
 
             DateTime finalDate = new DateTime(year ?? 1900, DateTime.ParseExact(month ?? "January", "MMMM", CultureInfo.CurrentCulture).Month, date ?? 01);
             return finalDate;
-        }
-
-        private (int date, int year, string month) SeprateDateOfBirth(DateTime date)
-        {
-
-            int intdate = date.Day;
-            int intyear = date.Year;
-            string strmonth = date.ToString("MMMM");
-            return (intdate, intyear, strmonth);
         }
 
         public IActionResult Profile()
@@ -199,7 +190,7 @@ namespace HalloDoc_Project.Controllers
                 City = patientData.City,
                 State = patientData.State,
                 ZipCode = patientData.Zipcode,
-                DateOfBirth = GenerateDatoOfBirth(patientData.Intyear,patientData.Strmonth,patientData.Intdate)
+                DateOfBirth = GenerateDateOfBirth(patientData.Intyear,patientData.Strmonth,patientData.Intdate)
             };
             return View(patientProfile);
         }
@@ -221,7 +212,7 @@ namespace HalloDoc_Project.Controllers
                 patientData.State = data.State;
                 patientData.Zipcode = data.ZipCode;
                 patientData.Intdate = data.DateOfBirth.Day;
-                patientData.Strmonth = data.DateOfBirth.ToString("MMM");
+                patientData.Strmonth = data.DateOfBirth.ToString("MMMM");
                 patientData.Intyear = data.DateOfBirth.Year;
 
                 _context.Users.Update(patientData);
@@ -378,7 +369,7 @@ namespace HalloDoc_Project.Controllers
                 LastName = patientData.Lastname,
                 PhoneNumber = patientData.Mobile,
                 Email = patientData.Email,
-                DateOfBirth = GenerateDatoOfBirth(patientData.Intyear, patientData.Strmonth, patientData.Intdate)
+                DateOfBirth = GenerateDateOfBirth(patientData.Intyear, patientData.Strmonth, patientData.Intdate)
             };
             return View(patientProfile);
         }

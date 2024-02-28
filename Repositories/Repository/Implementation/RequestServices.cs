@@ -1,6 +1,7 @@
 ﻿using Entities.DataContext;
 using Entities.Models;
 using Entities.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -70,7 +71,7 @@ namespace Repositories.Repository.Implementation
             }
             return false;
         }
-        private DateTime GenerateDatoOfBirth(int? year, string? month, int? date)
+        private DateTime GenerateDateOfBirth(int? year, string? month, int? date)
         {
 
             DateTime finalDate = new DateTime(year ?? 1900, DateTime.ParseExact(month ?? "January", "MMMM", CultureInfo.CurrentCulture).Month, date ?? 01);
@@ -93,7 +94,7 @@ namespace Repositories.Repository.Implementation
                 PatientNotes = client.Notes,
                 FirstName = client.Firstname,
                 LastName = client.Lastname,
-                DateOfBirth = GenerateDatoOfBirth(client.Intyear, client.Strmonth, client.Intdate),
+                DateOfBirth = GenerateDateOfBirth(client.Intyear, client.Strmonth, client.Intdate),
                 PhoneNumber = client.Phonenumber,
                 Email = client.Email,
                 Region = client.City,
@@ -101,6 +102,32 @@ namespace Repositories.Repository.Implementation
                 BusinessName = (request.Requesttypeid == 1) ? client.Firstname : client.City,
             };
             return data;
+        }
+
+        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid,int status)
+        {
+            List<Request>? r = _context.Requests.Where(a =>( a.Requesttypeid == requesttypeid || requesttypeid == 5) && a.Status == status).Include(a => a.Requestclients).ToList();
+            List<AdminDashboardDTO> admin = new List<AdminDashboardDTO>();
+            foreach (Request req in r)
+            {
+                Requestclient? rc = req.Requestclients.First();
+                AdminDashboardDTO? AdminDashboard = new AdminDashboardDTO
+                {
+                    RequestId = req.Requestid,
+                    Name = rc.Firstname,
+                    Dob = GenerateDateOfBirth(rc.Intyear, rc.Strmonth, rc.Intdate),
+                    Requestor = (RequestTypeId)req.Requesttypeid + ", " + req.Firstname,
+                    RequestedDate = req.Createddate,
+                    Phone = req.Phonenumber,
+                    Address = rc.Address,
+                    Notes = rc.Notes,
+                    RequestTypeId = req.Requesttypeid,
+                    //ChatWith =,
+                };
+                admin.Add(AdminDashboard);
+            }
+            return admin;
+
         }
     }
 }
