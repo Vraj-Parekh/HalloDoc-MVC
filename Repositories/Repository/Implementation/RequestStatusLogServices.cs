@@ -51,9 +51,34 @@ namespace Repositories.Repository.Implementation
             return requeststatuslog;
         }
 
-        public Requeststatuslog? GetTransferNotes(int requestId)
+        public List<Requeststatuslog>? GetTransferNotes(int requestId)
         {
-            return _context.Requeststatuslogs.FirstOrDefault(a=>a.Requestid == requestId);
+            return _context.Requeststatuslogs.Where(a=>a.Requestid == requestId).ToList();
+        }
+
+        public void AddCancelNote(int requestId, string reason, string notes)
+        {
+            Request? request = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+
+            if (request != null)
+            {
+                request.Status = 3;
+                request.Modifieddate = DateTime.Now;
+                request.Casetag = reason;
+                _context.Requests.Update(request);
+
+                Requeststatuslog requeststatuslog = new Requeststatuslog()
+                {
+                    Requestid = requestId,
+                    Status = request.Status,
+                    Notes = notes,
+                    Createddate = DateTime.Now,
+                };
+
+                _context.Requeststatuslogs.Add(requeststatuslog);
+                _context.SaveChanges();
+            }
+
         }
     }
 }

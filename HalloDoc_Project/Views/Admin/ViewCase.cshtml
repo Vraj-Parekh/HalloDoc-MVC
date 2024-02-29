@@ -16,7 +16,9 @@
     </div>
 
     <div class="bg mt-2 mb-3">
-        <form asp-action="ViewCase" class="login-form-control">
+        <form asp-action="ViewCase" method="post" class="login-form-control">
+            <input type="text" hidden asp-for="RequestId" value="@Model.RequestId" />
+
             <h4 class="mb-4">Patient Information</h4>
             <span class="mb-3">Confirmation Number <h3 class="text-info">@Model.ConfirmationNumber</h3> </span>
 
@@ -168,7 +170,7 @@
             <div class="row justify-content-end">
                 <div class="col-auto">
                     <button type="button" class="btn btn-info text-white"> Assign </button>
-                    <button type="button" class="btn btn-info text-white"> View Notes </button>
+                    <a class="btn btn-info text-white" href="@Url.Action("ViewNotes", "Admin", new { requestId = Model.RequestId})"> View Notes </a>
                     <button type="button" class="btn btn-danger text-white"> Cancel </button>
                 </div>
             </div>

@@ -1,0 +1,61 @@
+﻿ <!-- Modal For Cancel Case For Patient-->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" id="cancelForm">
+                <input type="text" hidden id="requestId" name="requestId" />
+                <div class="modal-header bg-info text-white ">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Cancellation</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col text-muted">
+                            Patient Name: <span class="text-info" id="p-name"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                <select class="form-select pt-0 pb-0" id="floatingSelect" aria-label="Floating label select example" name="reason">
+                                    <option selected>Reasons For Cancellation</option>
+                                    <option value="1">No Response to call or text, left message</option>
+                                    <option value="2">Cost issue</option>
+                                    <option value="3">Insurance Issue</option>
+                                    <option value="4">Out of servie Area</option>
+                                    <option value="5">Not appropriate for service</option>
+                                    <option value="6">Refferal to Clinic or Hospital</option>
+                                </select>
+                                @* <label for="floatingSelect">Reasons For Cancellation</label> *@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <textarea class="form-control" name="notes" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Provide Additional Notes</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info text-white" id="confirmbtn">Confirm</button>
+                    <button class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function SetCancelInfo(id, name) {
+        console.log(id);
+        $("#p-name").text(name);
+        const myModal = new bootstrap.Modal("#cancelModal", {});
+        myModal.show();
+        $("#cancelForm").attr("action", "/Admin/CancelCase/" + id);
+    }
+</script>

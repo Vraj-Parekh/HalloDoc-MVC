@@ -16,5 +16,7 @@
     CCUploadedByClient = 14,
     CCApprovedByAdmin = 15,
     Pending = 16,
-    ToClosed = 17
+    ToClosed = 17,
+    Conclude = 18,
+    Unpaid = 19,
 }

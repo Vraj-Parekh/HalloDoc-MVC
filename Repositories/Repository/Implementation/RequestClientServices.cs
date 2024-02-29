@@ -20,7 +20,7 @@ namespace Repositories.Repository.Implementation
         }
         public void UpdateCase(ViewCaseDTO data)
         {
-            Requestclient? clientData = GetClient(54);
+            Requestclient? clientData = GetClient(data.RequestId);
 
             clientData.Phonenumber = data.PhoneNumber;
             clientData.Email = data.Email;

@@ -5,8 +5,8 @@ namespace Repositories.Repository.Interface
 {
     public interface IRequestNotesServices
     {
-        void AddNotes(int requestId);
-        void AddNotes(ViewNotesDTO model);
+        void AddNotes(ViewNotesDTO model,int requestId);
         Requestnote GetRequestNotes(int requestId);
+        ViewNotesDTO GetViewRequestNotes(int requestId);
     }
 }

@@ -135,27 +135,27 @@
 
         $('#NewState').on('click ', function (type="All") {
             status = 1;
-            switch (type) {
-                case "All":
-                    requestTypeId = 5;
-                    break;
-                case "Patient":
-                    requestTypeId = 2;
-                    break;
-                case "Family":
-                    requestTypeId = 3;
-                    break;
-                case "Business":
-                    requestTypeId = 1;
-                    break;
-                case "Concierge":
-                    requestTypeId = 4;
-                    break;
-            }
+            // switch (type) {
+            //     case "All":
+            //         requestTypeId = 5;
+            //         break;
+            //     case "Patient":
+            //         requestTypeId = 2;
+            //         break;
+            //     case "Family":
+            //         requestTypeId = 3;
+            //         break;
+            //     case "Business":
+            //         requestTypeId = 1;
+            //         break;
+            //     case "Concierge":
+            //         requestTypeId = 4;
+            //         break;
+            // }
             $.ajax({
                 url: '@Url.Action("NewStateTable", "Admin")',
                 type: 'get',
-                data: { status: status, requestTypeId: requestTypeId },
+                data: { status: status, requestTypeId: 2},
                 success: function (result) {
                     // console.log(result);
                     $(".tableData").html(result);
@@ -164,9 +164,11 @@
         });
 
         $('#PendingState').on('click ', function () {
+
             $.ajax({
                 url: '@Url.Action("PendingStateTable", "Admin")',
                 type: 'get',
+                data: { status: status, requestTypeId: 2 },
                 success: function (result) {
                     $(".tableData").html(result);
                 }
@@ -177,6 +179,7 @@
             $.ajax({
                 url: '@Url.Action("ActiveStateTable", "Admin")',
                 type: 'get',
+                data: { status: status, requestTypeId: 2 },
                 success: function (result) {
                     $(".tableData").html(result);
                 }
@@ -187,6 +190,7 @@
             $.ajax({
                 url: '@Url.Action("ConcludeStateTable", "Admin")',
                 type: 'get',
+                data: { status: status, requestTypeId: 2 },
                 success: function (result) {
                     $(".tableData").html(result);
                 }
@@ -197,6 +201,7 @@
             $.ajax({
                 url: '@Url.Action("ToCloseStateTable", "Admin")',
                 type: 'get',
+                data: { status: status, requestTypeId: 2 },
                 success: function (result) {
                     $(".tableData").html(result);
                 }
@@ -207,6 +212,7 @@
             $.ajax({
                 url: '@Url.Action("UnpaidStateTable", "Admin")',
                 type: 'get',
+                data: { status: status, requestTypeId: 2 },
                 success: function (result) {
                     $(".tableData").html(result);
                 }

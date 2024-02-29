@@ -1,0 +1,58 @@
+﻿ <!-- Modal For Assign Case For Patient-->
+<div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white ">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Request</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col text-muted">
+                        To assign this request, search and select another physician
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            <select class="form-select pt-0 pb-0" id="floatingSelect" aria-label="Floating label select example">
+                                <option selected>Narrow search by region</option>
+                                <option value="1">No Response to call or text, left message</option>
+                                <option value="2">Cost issue</option>
+                                <option value="3">Insurance Issue</option>
+                                <option value="4">Out of servie Area</option>
+                                <option value="5">Not appropriate for service</option>
+                                <option value="6">Refferal to Clinic or Hospital</option>
+                            </select>
+                            @* <label for="floatingSelect">Narrow search by region</label> *@
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            <select class="form-select pt-0 pb-0" id="floatingSelect" aria-label="Floating label select example">
+                                <option selected>Select Physician</option>
+                                <option value="1">No Response to call or text, left message</option>
+                                <option value="2">Cost issue</option>
+                            </select>
+                            @* <label for="floatingSelect">Select Physician</label> *@
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="desc" id="floatingTextarea2" style="height: 100px"></textarea>
+                            <label for="floatingTextarea2">Description</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white">Confirm</button>
+                <button type="button" class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,38 +11,47 @@ namespace Repositories.Repository.Implementation
     {
         private readonly HalloDocDbContext _context;
         private readonly IRequestServices requestServices;
-        private readonly IRequestNotesServices requestNotesServices;
+
         private readonly IRequestStatusLogServices requestStatusLogServices;
         private readonly IRequestClientServices requestClientServices;
 
-        public RequestNotesServices(HalloDocDbContext _context, IRequestServices requestServices,IRequestNotesServices requestNotesServices,IRequestStatusLogServices requestStatusLogServices,IRequestClientServices requestClientServices)
+        public RequestNotesServices(HalloDocDbContext _context, IRequestServices requestServices, IRequestStatusLogServices requestStatusLogServices, IRequestClientServices requestClientServices)
         {
             this._context = _context;
             this.requestServices = requestServices;
-            this.requestNotesServices = requestNotesServices;
             this.requestStatusLogServices = requestStatusLogServices;
             this.requestClientServices = requestClientServices;
         }
 
         public Requestnote? GetRequestNotes(int requestId)
         {
-            return _context.Requestnotes.FirstOrDefault(a=>a.Requestid == requestId);
+            return _context.Requestnotes.FirstOrDefault(a => a.Requestid == requestId);
         }
 
-        public void ViewNotes(int requestId)
+        public ViewNotesDTO GetViewRequestNotes(int requestId)
         {
             Requestclient? client = requestClientServices.GetClient(requestId);
-            //pending
+            Requestnote? adminNotes = GetRequestNotes(requestId);
+            List<Requeststatuslog>? transferNotes = requestStatusLogServices.GetTransferNotes(requestId);
+
+            ViewNotesDTO model = new()
+            {
+                AdminNotes = adminNotes.Adminnotes,
+                TransferNotes = transferNotes.Select(a => a.Notes).ToList(),
+                PhysicianNotes = adminNotes.Physiciannotes,
+                RequestId = requestId,
+            };
+            return model;
         }
-        public void AddNotes(ViewNotesDTO model)
+        public void AddNotes(ViewNotesDTO model, int requestId)
         {
-            Request? request = requestServices.GetRequest(model.RequestId);
-            Requestnote? requestNotes = GetRequestNotes(model.RequestId);
+            Request? request = requestServices.GetRequest(requestId);
+            Requestnote? requestNotes = GetRequestNotes(requestId);
             //Requeststatuslog? transferNotes = requestStatusLogServices.GetTransferNotes(model.RequestId);
 
             if (requestNotes != null)
             {
-                requestNotes.Adminnotes = model.AdminNotes;
+                requestNotes.Adminnotes = model.AdditionalNotes;
                 requestNotes.Physiciannotes = model.PhysicianNotes;
                 requestNotes.Createdby = request.Email;
                 requestNotes.Modifiedby = request.Email;
@@ -54,10 +63,10 @@ namespace Repositories.Repository.Implementation
             {
                 Requestnote? addNote = new Requestnote()
                 {
-                    Requestid = model.RequestId,
-                    Adminnotes = model.AdminNotes,
+                    Requestid = requestId,
+                    Adminnotes = model.AdditionalNotes,
                     Physiciannotes = model.PhysicianNotes,
-                    Createdby = request.Email,
+                    Createdby = "Admin",
                     Createddate = DateTime.Now,
                 };
                 _context.Requestnotes.Add(addNote);
