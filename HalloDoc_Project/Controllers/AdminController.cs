@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Repository.Interface;
 using Entities.ViewModels;
+using System.Drawing;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -11,13 +12,15 @@ namespace HalloDoc_Project.Controllers
         private readonly IRequestServices requestServices;
         private readonly IRequestNotesServices requestNotesServices;
         private readonly IRequestStatusLogServices requestStatusLogServices;
+        private readonly IBlockRequestService blockRequestService;
 
-        public AdminController(IRequestClientServices requestClientServices,IRequestServices requestServices,IRequestNotesServices requestNotesServices,IRequestStatusLogServices requestStatusLogServices)
+        public AdminController(IRequestClientServices requestClientServices,IRequestServices requestServices,IRequestNotesServices requestNotesServices,IRequestStatusLogServices requestStatusLogServices,IBlockRequestService blockRequestService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
             this.requestNotesServices = requestNotesServices;
             this.requestStatusLogServices = requestStatusLogServices;
+            this.blockRequestService = blockRequestService;
         }
         public IActionResult Index()
         {
@@ -107,5 +110,11 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
+        [HttpPost("[controller]/[action]/{requestId}")]
+        public IActionResult BlockCase([FromRoute] int requestId, [FromForm] string blockReason)
+        {
+            blockRequestService.BlockRequest(requestId, blockReason);
+            return RedirectToAction("AdminDashboard");
+        }
     }
 }

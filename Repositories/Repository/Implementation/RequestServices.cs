@@ -79,10 +79,12 @@ namespace Repositories.Repository.Implementation
         {
             Request? request = GetRequest(requestId);
 
-            if (request is null) return null;
+            if (request is null) 
+                return null;
 
             Requestclient? client = requestClientServices.GetClient(requestId);
-            if (client is null) return null;
+            if (client is null)
+                return null;
 
             ViewCaseDTO? data = new ViewCaseDTO()
             {
@@ -103,7 +105,7 @@ namespace Repositories.Repository.Implementation
 
         public List<AdminDashboardDTO> GetPatientdata(int requesttypeid,int status)
         {
-            List<Request>? request = _context.Requests.Where(a =>( a.Requesttypeid == requesttypeid || requesttypeid == 5) && a.Status == status).Include(a => a.Requestclients).ToList();
+            List<Request>? request = _context.Requests.Where(a =>a.Status == status).Include(a => a.Requestclients).ToList();
 
             List<AdminDashboardDTO> admin = new List<AdminDashboardDTO>();
 

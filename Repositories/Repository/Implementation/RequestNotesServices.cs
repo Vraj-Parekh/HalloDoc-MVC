@@ -33,14 +33,15 @@ namespace Repositories.Repository.Implementation
             Requestclient? client = requestClientServices.GetClient(requestId);
             Requestnote? adminNotes = GetRequestNotes(requestId);
             List<Requeststatuslog>? transferNotes = requestStatusLogServices.GetTransferNotes(requestId);
+            ViewNotesDTO model = new();
 
-            ViewNotesDTO model = new()
+            if (adminNotes != null)
             {
-                AdminNotes = adminNotes.Adminnotes,
-                TransferNotes = transferNotes.Select(a => a.Notes).ToList(),
-                PhysicianNotes = adminNotes.Physiciannotes,
-                RequestId = requestId,
-            };
+                model.AdminNotes = adminNotes.Adminnotes;
+                model.TransferNotes = transferNotes.Select(a => a.Notes).ToList();
+                model.PhysicianNotes = adminNotes.Physiciannotes;
+                model.RequestId = requestId;
+            }
             return model;
         }
         public void AddNotes(ViewNotesDTO model, int requestId)

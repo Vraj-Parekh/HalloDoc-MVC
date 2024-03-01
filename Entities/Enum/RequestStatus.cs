@@ -19,4 +19,5 @@
     ToClosed = 17,
     Conclude = 18,
     Unpaid = 19,
+    Blocked = 20,
 }

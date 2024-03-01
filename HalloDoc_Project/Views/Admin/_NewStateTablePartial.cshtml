@@ -31,8 +31,7 @@
         }
     }
 }
-<partial name="_CancelModalPartial" />
-<partial name="_AssignModalPartial" />
+
 <div class="table-responsive d-none d-sm-block">
     <table class="table" id="adminTable">
         <thead>
@@ -51,9 +50,7 @@
         <tbody class="text-white">
             @foreach (var a in Model)
             {
-                <tr class="align-middle table-@{
-                                                @GetColor(a.RequestTypeId)
-}" data-request-type="RequestTypeId">
+                <tr class="align-middle table-@{ @GetColor(a.RequestTypeId)}" data-request-type="RequestTypeId">
                     <td scope="row">@a.Name, @a.RequestId</td>
                     <td>@a.Dob.ToString("MMM,dd yyyy")</td>
                     <td>@a.Requestor</td>
@@ -62,7 +59,6 @@
                         <div>
                             <span class="border border-white rounded p-2 text-nowrap"><i class="bi bi-telephone p-2"></i>@a.Phone</span>
                         </div>
-
                     </td>
                     <td>@a.Address</td>
                     <td>@a.Notes</td>
@@ -74,10 +70,10 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#assignModal"><i class="fa-regular fa-file-lines pe-2"></i>Assign Case</a></li>
-                                <li><a class="dropdown-item cancelCase" onclick="SetCancelInfo(@a.RequestId, '@a.Name')"><i class="fa-solid fa-xmark me-1"></i>Cancel Case</a></li>
+                                <li><a class="dropdown-item cancelCase" onclick="SetCancelInfo(@a.RequestId,'@a.Name')"><i class="fa-solid fa-xmark me-1"></i>Cancel Case</a></li>
                                 <li><a class="dropdown-item viewCase" href="@Url.Action("ViewCase", "Admin", new { requestId = a.RequestId })"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
                                 <li><a class="dropdown-item viewNotes" href="@Url.Action("ViewNotes", "Admin", new { requestId = a.RequestId })"><i class="fa-solid fa-book pe-2"></i>View Notes</a></li>
-                                <li><a class="dropdown-item"><i class="fa-solid fa-ban pe-2"></i>Block Patient</a></li>
+                                <li><a class="dropdown-item blockCase" onclick="SetBlockInfo(@a.RequestId,'@a.Name')"><i class="fa-solid fa-ban pe-2"></i>Block Patient</a></li>
                             </ul>
                         </div>
                     </td>
@@ -86,47 +82,7 @@
         </tbody>
     </table>
 </div>
-<script>
-    $(document).ready(function () {
-        $(".req_type").on("click", function () {
-            var requestType = $(this).data("type");
-            $("#adminTable tbody tr").show();
-            $("#adminTable tbody tr").each(function () {
-                var rowRequestType = $(this).data("request-type");
-                if (rowRequestType != requestType) {
-                    $(this).hide();
-                } else {
-                    $(this).show();
-                }
-            });
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-
-        $('#adminTable').DataTable({
-            "initComplete": function (settings, json) {
-
-                $('#my-search-input').val(settings.oPreviousSearch.sSearch);
-
-                $('#my-search-input').on('keyup', function () {
-                    var searchValue = $(this).val();
-                    settings.oPreviousSearch.sSearch = searchValue;
-                    settings.oApi._fnReDraw(settings);
-                });
-            },
-            "lengthMenu": [[5, 10, -1], [5, 10, "All"]],
-            "pageLength": 5,
-            language: {
-                oPaginate: {
-                    sNext: '<i class="bi bi-caret-right-fill text-info"></i>',
-                    sPrevious: '<i class="bi bi-caret-left-fill text-info"></i>'
-                }
-            }
-        });
-        $('.dataTables_filter').hide();
-    });
-</script>
+<partial name="_AssignModalPartial" />
+<partial name="_BlockModalPartial" />
+<partial name="_CancelModalPartial" />
 

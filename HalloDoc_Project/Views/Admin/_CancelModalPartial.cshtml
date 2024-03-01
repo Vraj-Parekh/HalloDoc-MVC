@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col text-muted">
-                            Patient Name: <span class="text-info" id="p-name"></span>
+                            Patient Name: <span class="text-info" id="p-name-cancel"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -19,12 +19,12 @@
                             <div class="form-floating">
                                 <select class="form-select pt-0 pb-0" id="floatingSelect" aria-label="Floating label select example" name="reason">
                                     <option selected>Reasons For Cancellation</option>
-                                    <option value="1">No Response to call or text, left message</option>
-                                    <option value="2">Cost issue</option>
-                                    <option value="3">Insurance Issue</option>
-                                    <option value="4">Out of servie Area</option>
-                                    <option value="5">Not appropriate for service</option>
-                                    <option value="6">Refferal to Clinic or Hospital</option>
+                                    <option value="No Response to call or text, left message">No Response to call or text, left message</option>
+                                    <option value="Cost issue">Cost issue</option>
+                                    <option value="Insurance Issue">Insurance Issue</option>
+                                    <option value="Out of servie Area">Out of servie Area</option>
+                                    <option value="Not appropriate for service">Not appropriate for service</option>
+                                    <option value="Refferal to Clinic or Hospital">Refferal to Clinic or Hospital</option>
                                 </select>
                                 @* <label for="floatingSelect">Reasons For Cancellation</label> *@
                             </div>
@@ -50,10 +50,11 @@
 
 
 <script>
-
     function SetCancelInfo(id, name) {
+        console.log("start");
+        console.log(name);
         console.log(id);
-        $("#p-name").text(name);
+        $("#p-name-cancel").text(name);
         const myModal = new bootstrap.Modal("#cancelModal", {});
         myModal.show();
         $("#cancelForm").attr("action", "/Admin/CancelCase/" + id);

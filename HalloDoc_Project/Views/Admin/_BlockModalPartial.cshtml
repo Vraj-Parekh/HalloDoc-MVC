@@ -1,0 +1,46 @@
+﻿ <!-- Modal For Block Case For Patient-->
+<div class="modal fade" id="blockModal" tabindex="-1" aria-labelledby="bloackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" id="blockForm">
+                <input type="text" hidden id="requestId" name="requestId" />
+                <div class="modal-header bg-info text-white ">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Block</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col text-muted">
+                            Patient Name: <span class="text-info" id="p-name-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <textarea class="form-control" name="blockReason" placeholder="comment for block request" id="floatingTextarea2" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Reason for Block Request</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info text-white" id="confirmbtn">Confirm</button>
+                    <button class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function SetBlockInfo(id, name) {
+        console.log("start");
+        console.log(name);
+        console.log(id);
+        $("#p-name-block").text(name);
+        const myModal = new bootstrap.Modal("#blockModal", {});
+        myModal.show();
+        $("#blockForm").attr("action", "/Admin/BlockCase/" + id);
+    }
+</script>
