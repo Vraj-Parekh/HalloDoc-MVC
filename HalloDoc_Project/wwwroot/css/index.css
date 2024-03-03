@@ -12,14 +12,12 @@
 .btn2:hover {
     background-color: #0d1556;
 }
-.c-btn{
-    color:white;
-    border:none;
-    height:50px;
+.c-btn {
+    color: white;
+    border: none;
+    height: 50px;
+    line-height: 35px;
 }
-    .c-btn a:hover {
-        color: white;
-    }
 .container{
-    margin-top : 50px;
+    margin-top : 150px;
 }

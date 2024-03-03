@@ -19,12 +19,13 @@
                    class="form-control border-end-0 bg-transparent border-focus-none"
                    id="floatingInput"
                    placeholder="email" />
-            <label for="floatingInpu">Email</label>
+            <label for="floatingInput">Email</label>
             <span class="input-group-text bg-transparent">
                 <i class="bi bi-person-circle"></i>
             </span>
         </div>
         <span asp-validation-for="Email" class="text-danger"></span>
+
         <div class="form-floating input-group mb-3">
             <input type="password"
                    asp-for="Password" class="form-control border-end-0 bg-transparent border-focus-none"
@@ -36,6 +37,7 @@
             </span>
         </div>
         <span asp-validation-for="Password" class="text-danger"></span>
+
         <button class="btn btn-primary custom-btn mb-4">
             Login
         </button>

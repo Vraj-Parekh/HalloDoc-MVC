@@ -29,7 +29,7 @@
     border-left: none;
 }
 
-.form-control:focus {
+/*.form-control:focus {
     box-shadow: none;
 }
 
@@ -44,7 +44,7 @@
 
 .border-focus-none:focus {
     border: none;
-}
+}*/
 
 .container {
     display: flex;
