@@ -59,7 +59,7 @@ public partial class Request
     public string? Declinedby { get; set; }
 
     [Column("isurgentemailsent")]
-    public bool? Isurgentemailsent { get; set; }
+    public bool Isurgentemailsent { get; set; }
 
     [Column("lastwellnessdate", TypeName = "timestamp without time zone")]
     public DateTime? Lastwellnessdate { get; set; }

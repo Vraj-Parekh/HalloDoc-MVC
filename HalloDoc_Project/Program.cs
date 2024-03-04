@@ -22,6 +22,8 @@ builder.Services.AddTransient<IRequestStatusLogServices, RequestStatusLogService
 builder.Services.AddTransient<IRequestClientServices, RequestClientServices>();
 builder.Services.AddTransient<IRequestNotesServices,RequestNotesServices>();
 builder.Services.AddTransient<IBlockRequestService,BlockRequestService>();
+builder.Services.AddTransient<IRegionService,RegionService>();
+builder.Services.AddTransient<IPhysicianService,PhysicianService>();
 
 var app = builder.Build();
 

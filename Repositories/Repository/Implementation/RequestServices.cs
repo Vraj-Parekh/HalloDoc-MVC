@@ -22,7 +22,7 @@ namespace Repositories.Repository.Implementation
 
         public Request? GetRequest(int requestId)
         {
-            return _context.Requests.FirstOrDefault(a=>a.Requestid == requestId);
+            return _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
         }
 
         public bool IsRequestPending(int requestId, string email)
@@ -79,7 +79,7 @@ namespace Repositories.Repository.Implementation
         {
             Request? request = GetRequest(requestId);
 
-            if (request is null) 
+            if (request is null)
                 return null;
 
             Requestclient? client = requestClientServices.GetClient(requestId);
@@ -103,9 +103,9 @@ namespace Repositories.Repository.Implementation
             return data;
         }
 
-        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid,int status)
+        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status)
         {
-            List<Request>? request = _context.Requests.Where(a =>a.Status == status).Include(a => a.Requestclients).ToList();
+            List<Request>? request = _context.Requests.Where(a => a.Status == status).Include(a => a.Requestclients).ToList();
 
             List<AdminDashboardDTO> admin = new List<AdminDashboardDTO>();
 
@@ -127,6 +127,29 @@ namespace Repositories.Repository.Implementation
                 admin.Add(AdminDashboard);
             }
             return admin;
+        }
+        public void AssignCase(int requestId, string phyRegion, string phyId, string assignNote)
+        {
+            Request? request = GetRequest(requestId);
+            if (request != null)
+            {
+                int physicianId = int.Parse(phyId);
+
+                Requeststatuslog model = new();
+                model.Requestid = requestId;
+                model.Notes = assignNote;
+                model.Status = 16; //pending
+                model.Createddate = DateTime.Now;
+                model.Physicianid = physicianId;
+
+                request.Status = 16; //pending
+                request.Physicianid = physicianId;
+
+                _context.Requeststatuslogs.Add(model);
+                _context.Requests.Update(request);
+
+                _context.SaveChanges();
+            }
         }
     }
 }

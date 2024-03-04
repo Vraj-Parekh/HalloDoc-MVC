@@ -2,49 +2,117 @@
 <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-info text-white ">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Request</h1>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-3">
-                    <div class="col text-muted">
-                        To assign this request, search and select another physician
-                    </div>
+
+            <form class="assignCaseForm" method="post">
+                <div class="modal-header bg-info text-white ">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Request</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <div class="form-floating">
-                            <select class="form-select pt-0 pb-0" id="floatingSelect" aria-label="Floating label select example">
-                                <option selected>Narrow search by region</option>
-                                <option value="1"></option>
-                            </select>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col text-muted">
+                            To assign this request, search and select another physician
+                        </div>
+                    </div>
+
+                    <input type="number"
+                           id="assignreqid" name="requestId"
+                           hidden />
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                <select class="form-select pt-0 pb-0 regionDropDown" id="floatingSelect" aria-label="Floating label select example" name="phyRegion">
+                                    <option selected>Narrow Search by Region</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                <select class="form-select pt-0 pb-0 physicianDropDown" id="floatingSelect" aria-label="Floating label select example" name="phyId">
+                                    <option selected>Select Physician</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="desc" id="floatingTextarea2" name="assignNote" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Description</label>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <div class="form-floating">
-                            <select class="form-select pt-0 pb-0" id="floatingSelect" aria-label="Floating label select example">
-                                <option selected>Select Physician</option>
-                                <option value="1"></option>
-                            </select>
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info text-white" id="assignCaseSubmit">Confirm</button>
+                    <button type="button" class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <div class="form-floating">
-                            <textarea class="form-control" placeholder="desc" id="floatingTextarea2" style="height: 100px"></textarea>
-                            <label for="floatingTextarea2">Description</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info text-white">Confirm</button>
-                <button type="button" class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $(document).on("click", ".assignCase", OpenAssigncase);
+    });
+
+    function OpenAssigncase() {
+        console.log("clicked assign");
+        var requestid = $(this).data("reqid");
+        console.log(requestid);
+        $('#assignreqid').val(requestid);
+        $('assignModal').model();
+    }
+
+    $('#assignCaseSubmit').on('click', function () {
+        $.ajax({
+            method: "POST",
+            url: '@Url.Action("AssignCase", "Admin")',
+            data: $('form.assignCaseForm').serialize(),
+            success: function (result) {
+                console.log("success");
+                alert("success");
+            }
+
+        });
+    });
+
+
+    function fetchPhysicianByRegion(regionId) {
+        console.log('2');
+        $.ajax({
+            url: './FetchPhysicianByRegion/' + regionId,
+            method: 'GET',
+            success: function (response) {
+                $('.physicianDropDown').empty();
+                response.forEach(function (res) {
+                    console.log("calls phy");
+                    $('.physicianDropDown').append("<option value='" + res.physicianid + "'>" + res.firstname + "</option>");
+                });
+            }
+        });
+    }
+
+    $('.regionDropDown').on('change', function () {
+        console.log('1');
+        var selectedRegionId = $(this).val();
+        fetchPhysicianByRegion(selectedRegionId);
+    })
+
+    $.ajax({
+        url: './FetchRegions',
+        method: 'GET',
+        success: function (response) {
+            response.forEach(function (res) {
+                console.log("calls region");
+                $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
+            });
+        }
+    });
+</script>

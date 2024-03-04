@@ -8,9 +8,9 @@
     {
         switch (RequestTypeId)
         {
-            case 1: return "orange";
+            case 1: return "pink";
             case 2: return "green";
-            case 3: return "pink";
+            case 3: return "orange";
             case 4: return "blue";
             default: return "green";
         }
@@ -30,7 +30,7 @@
         }
     }
 }
-<div class="table-responsive d-none d-sm-block">
+<div class="table-responsive d-none d-sm-block" style="min-height:40vh">
     <table class="table " id="adminTable">
         <thead>
             <tr>
@@ -46,14 +46,11 @@
                 <th scope="col">Actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="text-white">
             @foreach (var a in Model)
             {
-                <tr class="align-middle table-@{
-                            @GetColor(a.RequestTypeId)
-}" data-request-type="RequestTypeId">
-
-                    <td scope="row">@a.Name</td>
+                <tr class="align-middle table-@{ @GetColor(a.RequestTypeId) }" data-request-type="RequestTypeId">
+                    <td scope="row">@a.Name, @a.RequestId</td>
                     <td>@a.Dob.ToString("MMM,dd yyyy")</td>
                     <td>@a.Requestor</td>
                     <td>@a.PhysicianName</td>
@@ -64,24 +61,25 @@
                         </div>
                     </td>
                     <td>@a.Address</td>
-                    <td>Notes</td>
+                    <td>@a.Notes</td>
                     <td>
                         <div class="d-flex gap-2">
-                            <button class="btn text-white border border-white">Patient</button>
-                            <button class="btn text-white border border-white">Provider</button>
+                            <button class="btn border border-white text-white">Patient</button>
+                            <button class="btn border border-white text-white">Provider</button>
                         </div>
                     </td>
                     <td>
                         <div class="dropdown">
-                            <button class="btn text-white border border-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn border border-white text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Action
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Assign Case</a></li>
-                                <li><a class="dropdown-item" href="#">Cancel Case</a></li>
-                                <li><a class="dropdown-item" asp-action="ViewCase">View Case</a></li>
-                                <li><a class="dropdown-item" href="#">View Notes</a></li>
-                                <li><a class="dropdown-item" href="#">Block Patient</a></li>
+                                <li><a class="dropdown-item viewCase" href="@Url.Action("ViewCase", "Admin", new { requestId = a.RequestId })"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
+                                <li><a class="dropdown-item" ><i class="fa-solid fa-file-arrow-up pe-2"></i>View Uploads</a></li>
+                                <li><a class="dropdown-item viewNotes" href="@Url.Action("ViewNotes", "Admin", new { requestId = a.RequestId })"> <i class="fa-solid fa-book pe-2"></i>View Notes</a></li>
+                                <li><a class="dropdown-item assignCase" data-bs-toggle="modal" data-bs-target="#assignModal" data-reqid="@a.RequestId"><i class="fa-solid fa-file-import pe-2"></i>Transfer</a></li>
+                                <li><a class="dropdown-item cancelCase" onclick="SetCancelInfo(@a.RequestId,'@a.Name')"><i class="fa-regular fa-circle-xmark pe-2"></i>Clear Case</a></li>
+                                <li><a class="dropdown-item blockCase" onclick="SetBlockInfo(@a.RequestId,'@a.Name')"><i class="fa-regular fa-file-lines pe-2"></i>Send Agreement</a></li>
                             </ul>
                         </div>
                     </td>

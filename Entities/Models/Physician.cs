@@ -82,7 +82,7 @@ public partial class Physician
 
     [Column("createdby")]
     [StringLength(128)]
-    public string Createdby { get; set; } = null!;
+    public string? Createdby { get; set; }
 
     [Column("createddate", TypeName = "timestamp without time zone")]
     public DateTime Createddate { get; set; }
@@ -138,7 +138,7 @@ public partial class Physician
 
     [ForeignKey("Createdby")]
     [InverseProperty("PhysicianCreatedbyNavigations")]
-    public virtual Aspnetuser CreatedbyNavigation { get; set; } = null!;
+    public virtual Aspnetuser? CreatedbyNavigation { get; set; }
 
     [ForeignKey("Modifiedby")]
     [InverseProperty("PhysicianModifiedbyNavigations")]

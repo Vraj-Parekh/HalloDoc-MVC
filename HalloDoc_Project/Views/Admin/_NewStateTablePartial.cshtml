@@ -62,15 +62,15 @@
                     </td>
                     <td>@a.Address</td>
                     <td>@a.Notes</td>
-                    <td><button class="btn text-white border border-white">Provider</button></td>
+                    <td><button class="btn border border-white text-white">Provider</button></td>
                     <td>
                         <div class="dropdown">
-                            <button class="btn text-white border border-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn border border-white text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Action
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#assignModal"><i class="fa-regular fa-file-lines pe-2"></i>Assign Case</a></li>
-                                <li><a class="dropdown-item cancelCase" onclick="SetCancelInfo(@a.RequestId,'@a.Name')"><i class="fa-solid fa-xmark me-1"></i>Cancel Case</a></li>
+                                <li><a class="dropdown-item assignCase" data-bs-toggle="modal" data-bs-target="#assignModal" data-reqid="@a.RequestId"><i class="fa-regular fa-file-lines pe-2"></i>Assign Case</a></li>
+                                <li><a class="dropdown-item cancelCase" onclick="SetCancelInfo(@a.RequestId,'@a.Name')"><i class="fa-solid fa-xmark pe-2"></i>Cancel Case</a></li>
                                 <li><a class="dropdown-item viewCase" href="@Url.Action("ViewCase", "Admin", new { requestId = a.RequestId })"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
                                 <li><a class="dropdown-item viewNotes" href="@Url.Action("ViewNotes", "Admin", new { requestId = a.RequestId })"><i class="fa-solid fa-book pe-2"></i>View Notes</a></li>
                                 <li><a class="dropdown-item blockCase" onclick="SetBlockInfo(@a.RequestId,'@a.Name')"><i class="fa-solid fa-ban pe-2"></i>Block Patient</a></li>

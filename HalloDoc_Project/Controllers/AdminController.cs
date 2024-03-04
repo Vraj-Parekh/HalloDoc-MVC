@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Repository.Interface;
 using Entities.ViewModels;
-using System.Drawing;
+
 
 namespace HalloDoc_Project.Controllers
 {
+    [Route("[controller]/[action]")]
     public class AdminController : Controller
     {
         private readonly IRequestClientServices requestClientServices;
@@ -13,14 +14,20 @@ namespace HalloDoc_Project.Controllers
         private readonly IRequestNotesServices requestNotesServices;
         private readonly IRequestStatusLogServices requestStatusLogServices;
         private readonly IBlockRequestService blockRequestService;
+        private readonly IRegionService regionService;
+        private readonly IPhysicianService physicianService;
 
-        public AdminController(IRequestClientServices requestClientServices,IRequestServices requestServices,IRequestNotesServices requestNotesServices,IRequestStatusLogServices requestStatusLogServices,IBlockRequestService blockRequestService)
+        public IRegionService RegionService { get; }
+
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
             this.requestNotesServices = requestNotesServices;
             this.requestStatusLogServices = requestStatusLogServices;
             this.blockRequestService = blockRequestService;
+            this.regionService = regionService;
+            this.physicianService = physicianService;
         }
         public IActionResult Index()
         {
@@ -28,10 +35,10 @@ namespace HalloDoc_Project.Controllers
         }
 
         [HttpGet]
-        public IActionResult NewStateTable(int requestTypeId,int status)
+        public IActionResult NewStateTable(int requestTypeId, int status)
         {
-            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId,1);   
-            return PartialView("_NewStateTablePartial",data);
+            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, 1);
+            return PartialView("_NewStateTablePartial", data);
         }
         public IActionResult PendingStateTable(int requestTypeId, int status)
         {
@@ -67,7 +74,7 @@ namespace HalloDoc_Project.Controllers
         }
 
 
-        [HttpGet("[controller]/[action]/{requestId}")]
+        [HttpGet("{requestId}")]
         public IActionResult ViewCase(int requestId)
         {
             ViewCaseDTO? request = requestServices.GetViewCase(requestId);
@@ -77,7 +84,7 @@ namespace HalloDoc_Project.Controllers
         [HttpPost]
         public IActionResult ViewCase(ViewCaseDTO data)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 requestClientServices.UpdateCase(data);
                 return View(data);
@@ -85,7 +92,7 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
-        [HttpGet("[controller]/[action]/{requestId}")]
+        [HttpGet("{requestId}")]
         public IActionResult ViewNotes(int requestId)
         {
             ViewNotesDTO? data = requestNotesServices.GetViewRequestNotes(requestId);
@@ -93,28 +100,52 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
-        [HttpPost("[controller]/[action]/{requestId}")]
-        public IActionResult ViewNotes(ViewNotesDTO data,[FromRoute]int requestId)
+        [HttpPost("{requestId}")]
+        public IActionResult ViewNotes(ViewNotesDTO data, [FromRoute] int requestId)
         {
             if (ModelState.IsValid)
             {
-                requestNotesServices.AddNotes(data,requestId);
+                requestNotesServices.AddNotes(data, requestId);
             }
             return View();
         }
 
-        [HttpPost("[controller]/[action]/{requestId}")]
-        public IActionResult CancelCase([FromRoute]int requestId,[FromForm] string reason,[FromForm] string notes)
+        [HttpPost("{requestId}")]
+        public IActionResult CancelCase([FromRoute] int requestId, [FromForm] string reason, [FromForm] string notes)
         {
             requestStatusLogServices.AddCancelNote(requestId, reason, notes);
             return RedirectToAction("AdminDashboard");
         }
 
-        [HttpPost("[controller]/[action]/{requestId}")]
+        public void AssignCase(int requestId, string phyRegion, string phyId, string assignNote)
+        {
+            requestServices.AssignCase(requestId, phyRegion, phyId, assignNote);
+        }
+        
+
+        [HttpPost("{requestId}")]
         public IActionResult BlockCase([FromRoute] int requestId, [FromForm] string blockReason)
         {
             blockRequestService.BlockRequest(requestId, blockReason);
             return RedirectToAction("AdminDashboard");
+        }
+
+        public List<Region> FetchRegions()
+        {
+            List<Region>? regions = regionService.GetRegion();
+            return regions;
+        }
+
+        [HttpGet("{regionId}")]
+        public List<Physician> FetchPhysicianByRegion(int regionId)
+        {
+            List<Physician>? physician = physicianService.GetPhysician(regionId);
+            return physician;
+        }
+
+        public IActionResult ViewUploads()
+        {
+            return View();
         }
     }
 }

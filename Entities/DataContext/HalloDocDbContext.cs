@@ -88,7 +88,7 @@ public partial class HalloDocDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("User ID = postgres;Password=vraj;Server=localhost;Port=5432;Database=HalloDoc;Integrated Security=true;Pooling=true;");
+        => optionsBuilder.UseNpgsql("User ID = postgres;Password=vraj;Server=localhost;Port=5432;Database=HalloDoc;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -200,9 +200,7 @@ public partial class HalloDocDbContext : DbContext
 
             entity.HasOne(d => d.Aspnetuser).WithMany(p => p.PhysicianAspnetusers).HasConstraintName("fk_aspnetusers_aspnetuserid");
 
-            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.PhysicianCreatedbyNavigations)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_aspnetusers_createdby");
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.PhysicianCreatedbyNavigations).HasConstraintName("fk_aspnetusers_createdby");
 
             entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.PhysicianModifiedbyNavigations).HasConstraintName("fk_aspnetusers_modifiedby");
         });
