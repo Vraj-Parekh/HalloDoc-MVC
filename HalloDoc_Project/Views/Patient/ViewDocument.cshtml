@@ -50,13 +50,16 @@
         <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
             <h5>Documents</h5>
 
-            <a class="btn btn-outline-info"> Download All </a>
+            <a class="btn btn-outline-info" onclick="downloadSelectedFiles()"> Download All </a>
         </div>
         <table class="table mt-3">
             <thead class="table-light">
                 <tr>
                     <td>
                         <input type="checkbox" />
+                    </td>
+                    <td>
+                        Documents
                     </td>
                     <td>
                         Uploader
@@ -69,6 +72,9 @@
                 @foreach (var item in Model.Document)
                 {
                     <tr>
+                        <td>
+                            <input type="checkbox" name="checkdoc" />
+                        </td>
                         <td>
                             @item.FileName
                         </td>
@@ -87,3 +93,29 @@
         </table>
     </div>
 </div>
+
+<script>
+    function downloadSelectedFiles() {
+
+        var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
+        var fileUrls = [];
+
+
+        selectedFiles.forEach(function (checkbox) {
+            var row = checkbox.closest('tr');
+            var fileUrl = row.querySelector('a').getAttribute('href');
+            fileUrls.push(fileUrl);
+        });
+
+        fileUrls.forEach(function (url) {
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = '';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+
+    }
+</script>

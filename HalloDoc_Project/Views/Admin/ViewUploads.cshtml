@@ -1,6 +1,10 @@
-﻿@{
+﻿@model ViewDocumentList
+@{
     ViewData["Title"] = "ViewUploads";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section style{
+    <link rel="stylesheet" href="~/css/view_document.css" asp-append-version="true" />
 }
 
 <div class="container">
@@ -12,12 +16,12 @@
 
     <div class="bg">
         Patient Name
-        <h5><span class="text-info"> Name </span> Confirmation Number </h5>
+        <h5><span class="text-info"> @Model.Name </span> (@Model.ConfirmationNumber) </h5>
         <p>
             Check here to review and add files that you or Client/Member has attached to the Request.
         </p>
 
-        <div class="d-flex justify-content-between rounded border bg-light col-12 p-0">
+@*         <div class="d-flex justify-content-between rounded border bg-light col-12 p-0">
             <div id="filename" class="p-2">Select File</div>
 
             <label for="fileLoader"
@@ -28,16 +32,36 @@
             <input type="file" id="upload" accept=".pdf,.jpeg,.png, .txt, .doc" multiple style="display: none" />
         </div>
         <div id="fileNames">
-        </div>.
-        <div class="d-flex justify-content-end">
-            <button class="btn btn-info text-white float-end toggle-button" onclick="submitFile()">Upload All</button>
+        </div> *@
+
+        <div class="row">
+            <div class="mb-3">
+                <div class="d-flex"
+                     onclick="document.getElementById('choose-file').click()"
+                     style="cursor: pointer">
+                    <label class="flex-grow-1 upload" id="fileLabel">Select File</label>
+                    <button type="button" class="btn btn-info uploadbtn text-white"
+                            style="width: fit-content">
+                        <img src="~/img/cloud-upload-icon.svg" alt="" />
+                        Upload
+                    </button>
+                </div>
+            </div>
         </div>
+
+        <div id="fileNames">
+        </div>
+
+        <div class="d-flex justify-content-end mt-2">
+            <button class="btn btn-info text-white float-end toggle-button" onclick="submitFile(@Model.RequestId)">Upload All</button>
+        </div>
+        <input type="file" style="display: none" multiple id="choose-file" />
 
         <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
             <h5>Documents</h5>
 
-            <div class="">
-                <a class="btn btn-outline-info"> Download All </a>
+            <div>
+                <a class="btn btn-outline-info" onclick="downloadSelectedFiles()"> Download All </a>
                 <a class="btn btn-outline-info"> Delete All </a>
                 <a class="btn btn-outline-info"> Send Mail </a>
             </div>
@@ -55,25 +79,139 @@
                     <td>Actions</td>
                 </tr>
             </thead>
-            @* <tbody>
-            @foreach (var item in Model.Document)
-            {
-            <tr>
-            <td>
-            @item.FileName
-            </td>
-            <td>
-            @item.CreatedBy
-            </td>
-            <td>
-            @item.CreatedDate.ToString("MMM dd, yyyy")
-            </td>
-            <td>
-            <a asp-route-download="@item.DocumentId" asp-action="Download" class="btn btn-outline-info"><i class="bi bi-cloud-arrow-down fs-4"></i></a>
-            </td>
-            </tr>
-            }
-            </tbody> *@
+            <tbody>
+                @foreach (var item in Model.Document)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="checkdoc" />
+                        </td>
+                        <td>
+                            @item.FileName
+                        </td>
+                        <td>
+                            @item.CreatedDate.ToString("MMM dd, yyyy")
+                        </td>
+                        <td>
+                            <a asp-route-docId="@item.DocumentId" asp-action="Download" class="btn btn-outline-info"><i class="bi bi-cloud-arrow-down fs-4"></i></a>
+                            <a asp-route-docId="@item.DocumentId" asp-action="Delete" class="btn btn-outline-info">
+                                <i class="bi bi-trash fs-4" style="position: relative; right: 7px; bottom: 9px;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    let allFiles = [];
+    let input = document.getElementById("choose-file");
+    var button = document.getElementsByClassName("toggle-button")[0];
+
+    let div = document.getElementById("fileNames");
+
+    input.addEventListener("change", function () {
+        let files = input.files;
+
+
+        for (let i = 0; i < files.length; i++) {
+            allFiles.push(files[i]);
+        }
+
+        console.log(allFiles)
+        button.style = "display:block"
+        showNames(files);
+    });
+
+    function showNames(files) {
+        for (let i = 0; i < files.length; i++) {
+            let icon = document.createElement('i');
+            icon.classList = 'bi bi-x-lg fileIcon';
+
+            // let br = document.createElement('br');
+
+            let span = document.createElement('span');
+            span.className = "showFile";
+            span.style.color = 'black';
+            span.textContent = files[i].name;
+
+            let spanIcon = icon.cloneNode(true); // Clone the icon for each file
+            span.appendChild(spanIcon);
+            div.appendChild(span);
+            // div.appendChild(br);
+
+            spanIcon.onclick = function () {
+                let index = allFiles.indexOf(files[i]);
+                allFiles.splice(index, 1);
+                div.removeChild(span);
+                div.removeChild(br);
+
+                if (allFiles.length == 0) {
+                    button.style = "display:none";
+                }
+            };
+        }
+    }
+
+    function removeAll() {
+        allFiles = [];
+        div.innerHTML = "";
+        button.style = "display:none";
+    }
+
+    function submitFile(id) {
+
+        console.log(allFiles);
+        console.log("ADFA");
+
+        const formData = new FormData();
+
+        for (let i = 0; i < allFiles.length; i++) {
+            formData.append('files', allFiles[i]);
+        }
+
+
+        $.ajax({
+            type: 'POST',
+            url: "/Document/Upload/" + id,
+            data: (formData),
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
+                console.log(response)
+                removeAll();
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", status, error);
+            }
+        });
+    }
+
+    function downloadSelectedFiles() {
+
+        var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
+        var fileUrls = [];
+
+
+        selectedFiles.forEach(function (checkbox) {
+            var row = checkbox.closest('tr');
+            var fileUrl = row.querySelector('a').getAttribute('href');
+            fileUrls.push(fileUrl);
+        });
+
+        fileUrls.forEach(function (url) {
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = '';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+
+    }
+</script>

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Repository.Interface;
 using Entities.ViewModels;
-
+using MimeKit;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -16,10 +16,11 @@ namespace HalloDoc_Project.Controllers
         private readonly IBlockRequestService blockRequestService;
         private readonly IRegionService regionService;
         private readonly IPhysicianService physicianService;
+        private readonly IRequestWiseFilesServices requestWiseFilesServices;
 
         public IRegionService RegionService { get; }
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -28,6 +29,7 @@ namespace HalloDoc_Project.Controllers
             this.blockRequestService = blockRequestService;
             this.regionService = regionService;
             this.physicianService = physicianService;
+            this.requestWiseFilesServices = requestWiseFilesServices;
         }
         public IActionResult Index()
         {
@@ -121,7 +123,7 @@ namespace HalloDoc_Project.Controllers
         {
             requestServices.AssignCase(requestId, phyRegion, phyId, assignNote);
         }
-        
+
 
         [HttpPost("{requestId}")]
         public IActionResult BlockCase([FromRoute] int requestId, [FromForm] string blockReason)
@@ -143,9 +145,28 @@ namespace HalloDoc_Project.Controllers
             return physician;
         }
 
-        public IActionResult ViewUploads()
+        [HttpGet("{requestId}")]
+        public IActionResult ViewUploads(int requestId)
         {
-            return View();
+            ViewDocumentList? doc = requestServices.GetDocumentData(requestId);
+            return View(doc);
+        }
+
+        public IActionResult Download(int docId)
+        {
+            string filePath = requestWiseFilesServices.GetPath(docId);
+
+            return PhysicalFile(filePath, MimeTypes.GetMimeType(filePath), Path.GetFileName(filePath));
+        }
+
+        [HttpPost("{requestId}")]
+        public void Upload(int requestId, List<IFormFile> files)
+        {
+            //Request? request = requestServices.GetRequest(requestId);
+            //var result = await requestWiseFileService.AddFilesAsync(files, request);
+
+
+            //return RedirectToAction("ViewDocument", "Patient", new { requestId });
         }
     }
 }

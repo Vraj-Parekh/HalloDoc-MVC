@@ -2,8 +2,10 @@
 using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Ocsp;
 using Repositories.Repository.Interface;
 using System.Globalization;
+using System.Xml.Linq;
 
 namespace Repositories.Repository.Implementation
 {
@@ -108,7 +110,6 @@ namespace Repositories.Repository.Implementation
             List<Request>? request = _context.Requests.Where(a => a.Status == status).Include(a => a.Requestclients).ToList();
 
             List<AdminDashboardDTO> admin = new List<AdminDashboardDTO>();
-
             foreach (Request req in request)
             {
                 Requestclient? requestClient = req.Requestclients.First();
@@ -121,7 +122,8 @@ namespace Repositories.Repository.Implementation
                     RequestedDate = req.Createddate,
                     Phone = req.Phonenumber,
                     Address = requestClient.Address,
-                    Notes = requestClient.Notes,
+                    PhysicianName = _context.Physicians.Where(a => a.Physicianid == req.Physicianid).Select(phy => phy.Firstname).FirstOrDefault(),
+                    Notes = _context.Requeststatuslogs.Where(a => a.Requestid == req.Requestid).Select(log => log.Notes).FirstOrDefault(),
                     RequestTypeId = req.Requesttypeid,
                 };
                 admin.Add(AdminDashboard);
@@ -150,6 +152,41 @@ namespace Repositories.Repository.Implementation
 
                 _context.SaveChanges();
             }
+        }
+
+        public ViewDocumentList GetDocumentData(int requestId)
+        {
+            var request = _context.Requests.Where(a => a.Requestid == requestId).Include(a => a.Requestclients).Include(a => a.Requestwisefiles).FirstOrDefault();
+            if(request is null)
+            {
+                return null;
+            }
+
+            List<FileData> data = new();
+            ICollection<Requestwisefile>? files = request.Requestwisefiles;
+            ICollection<Requestclient>? name = request.Requestclients;
+
+            if (files is not null)
+            {
+                foreach (Requestwisefile file in files)
+                {
+                    FileData FileDataList = new()
+                    {
+                        FileName = file.Filename,
+                        CreatedDate = file.Createddate,
+                        DocumentId = file.Requestwisefileid
+                    };
+                    data.Add(FileDataList);
+                }
+            }
+            ViewDocumentList doc = new()
+            {
+                Name = request.Firstname + request.Lastname,
+                ConfirmationNumber = request.Confirmationnumber,
+                Document = data,
+                RequestId = request.Requestid,
+            };
+            return doc;
         }
     }
 }

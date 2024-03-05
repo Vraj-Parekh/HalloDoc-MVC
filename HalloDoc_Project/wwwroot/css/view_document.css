@@ -44,15 +44,18 @@ td a {
     left: -7px;
     top: -10px;
 }
-.toggle-button {
-    display: none;
-}
-.fileIcon {
-    cursor: pointer;
-    color: red;
-}
+
 .showFile {
     display: flex;
     justify-content: space-between;
     width: 100%;
+}
+
+.fileIcon {
+    cursor: pointer;
+    color: red;
+}
+
+.toggle-button {
+    display: none;
 }

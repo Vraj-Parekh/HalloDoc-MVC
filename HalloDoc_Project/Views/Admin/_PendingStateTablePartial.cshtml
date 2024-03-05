@@ -61,7 +61,16 @@
                         </div>
                     </td>
                     <td>@a.Address</td>
-                    <td>@a.Notes</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(a.Notes))
+                        {
+                            @a.Notes
+                        }
+                        else
+                        {
+                            @Html.Raw("-")
+                        }
+                    </td>
                     <td>
                         <div class="d-flex gap-2">
                             <button class="btn border border-white text-white">Patient</button>
@@ -74,12 +83,12 @@
                                 Action
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item viewCase" href="@Url.Action("ViewCase", "Admin", new { requestId = a.RequestId })"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
-                                <li><a class="dropdown-item" ><i class="fa-solid fa-file-arrow-up pe-2"></i>View Uploads</a></li>
-                                <li><a class="dropdown-item viewNotes" href="@Url.Action("ViewNotes", "Admin", new { requestId = a.RequestId })"> <i class="fa-solid fa-book pe-2"></i>View Notes</a></li>
-                                <li><a class="dropdown-item assignCase" data-bs-toggle="modal" data-bs-target="#assignModal" data-reqid="@a.RequestId"><i class="fa-solid fa-file-import pe-2"></i>Transfer</a></li>
-                                <li><a class="dropdown-item cancelCase" onclick="SetCancelInfo(@a.RequestId,'@a.Name')"><i class="fa-regular fa-circle-xmark pe-2"></i>Clear Case</a></li>
-                                <li><a class="dropdown-item blockCase" onclick="SetBlockInfo(@a.RequestId,'@a.Name')"><i class="fa-regular fa-file-lines pe-2"></i>Send Agreement</a></li>
+                                <li><a class="dropdown-item viewCase" role="button" href="@Url.Action("ViewCase", "Admin", new { requestId = a.RequestId })"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
+                                <li><a class="dropdown-item" role="button" href="@Url.Action("ViewUploads","Admin",new{requestId = a.RequestId})"><i class="fa-solid fa-file-arrow-up pe-2"></i>View Uploads</a></li>
+                                <li><a class="dropdown-item viewNotes" role="button" href="@Url.Action("ViewNotes", "Admin", new { requestId = a.RequestId })"> <i class="fa-solid fa-book pe-2"></i>View Notes</a></li>
+                                <li><a class="dropdown-item assignCase" role="button" data-bs-toggle="modal" data-bs-target="#assignModal" data-reqid="@a.RequestId"><i class="fa-solid fa-file-import pe-2"></i>Transfer</a></li>
+                                <li><a class="dropdown-item cancelCase" role="button" onclick="SetCancelInfo(@a.RequestId,'@a.Name')"><i class="fa-regular fa-circle-xmark pe-2"></i>Clear Case</a></li>
+                                <li><a class="dropdown-item blockCase" role="button" onclick="SetBlockInfo(@a.RequestId,'@a.Name')"><i class="fa-regular fa-file-lines pe-2"></i>Send Agreement</a></li>
                             </ul>
                         </div>
                     </td>

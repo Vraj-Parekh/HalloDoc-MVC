@@ -48,12 +48,16 @@ namespace HalloDoc_Project.Controllers
                 HttpContext.Session.SetString("email", user.Email);
                 return RedirectToAction("PatientDashboard", "Patient");
             }
-            else
+            else if(user == null)
             {
                 ModelState.AddModelError(nameof(data.Email), "An account with this email does not exists.");
                 return View(data);
             }
-
+            else
+            {
+                ModelState.AddModelError(nameof(data.Password), "Incorrect Password.");
+                return View(data);
+            }
         }
 
         public IActionResult ResetPwd()
@@ -120,21 +124,21 @@ namespace HalloDoc_Project.Controllers
         public IActionResult ViewDocument(int requestId)
         {
             TempData["requestId"] = requestId;
-            var file = _context.Requestwisefiles.Where(a => a.Requestid == requestId);
+            var files = _context.Requestwisefiles.Where(a => a.Requestid == requestId);//name from file to files
             var req = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             var name = _context.Requestclients.Where(a => a.Requestid == requestId).FirstOrDefault();
             List<FileData> data = new();
 
-            if (file is not null)
+            if (files is not null)
             {
-                foreach (var files in file)
+                foreach (var file in files)
                 {
                     FileData FileDataList = new()
                     {
-                        FileName = files.Filename,
+                        FileName = file.Filename,
                         CreatedBy = name.Firstname,
-                        CreatedDate = files.Createddate,
-                        DocumentId = files.Requestwisefileid
+                        CreatedDate = file.Createddate,
+                        DocumentId = file.Requestwisefileid
                     };
                     data.Add(FileDataList);
                 }
