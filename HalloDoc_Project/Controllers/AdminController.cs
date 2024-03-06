@@ -3,10 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Repositories.Repository.Interface;
 using Entities.ViewModels;
 using MimeKit;
+using HalloDoc_Project.Attributes;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HalloDoc_Project.Controllers
 {
     [Route("[controller]/[action]")]
+    //[CustomAuthorization("Admin")]
+
     public class AdminController : Controller
     {
         private readonly IRequestClientServices requestClientServices;
@@ -35,6 +39,18 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
+
+        //[AllowAnonymous]
+        //public IActionResult AdminLogin()
+        //{
+
+        //}
+        //[HttpPost]
+        //[AllowAnonymous]
+        //public IActionResult AdminLogin()
+        //{
+
+        //}
 
         [HttpGet]
         public IActionResult NewStateTable(int requestTypeId, int status)

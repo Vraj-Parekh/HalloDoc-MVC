@@ -2,6 +2,8 @@
 using Entities.Models;
 using Entities.ViewModels;
 using HalloDoc.Utility;
+using HalloDoc_Project.Attributes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
@@ -9,11 +11,14 @@ using NuGet.Protocol.Plugins;
 using Repositories.Repository.Implementation;
 using Repositories.Repository.Interface;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks.Dataflow;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc_Project.Controllers
 {
+    [CustomAuthorization("Patient")]
     public class PatientController : Controller
     {
         private readonly HalloDocDbContext _context;
@@ -32,20 +37,31 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
+        [AllowAnonymous]
         public IActionResult PatientLogin()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult PatientLogin(LoginDTO data)
         {
 
-            var user = _context.Aspnetusers.FirstOrDefault(u => u.Email == data.Email);
+            var user = _context.Aspnetusers.Where(u => u.Email == data.Email).Include(a=>a.Roles).FirstOrDefault();
 
             if (user != null && user.Passwordhash == data.Password)
             {
-                HttpContext.Session.SetString("email", user.Email);
+                string? token = JwtService.Generate(user);//asp net user services
+                CookieOptions cookieOptions = new CookieOptions()
+                {
+                    Expires = DateTime.UtcNow.AddMinutes(20),
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict
+                };
+                Response.Cookies.Append("Token", token, cookieOptions);
+
                 return RedirectToAction("PatientDashboard", "Patient");
             }
             else if(user == null)
@@ -60,12 +76,14 @@ namespace HalloDoc_Project.Controllers
             }
         }
 
+        [AllowAnonymous]
         public IActionResult ResetPwd()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult ResetPwd(LoginDTO data)
         {
             if (_context.Aspnetusers.Any(u => u.Email == data.Email))
@@ -100,9 +118,10 @@ namespace HalloDoc_Project.Controllers
 
             return RedirectToAction("PatientLogin");
         }
+
         public IActionResult PatientDashboard()
         {
-            string email = HttpContext.Session.GetString("email");
+            string? email = User.Identities.ElementAt(1).Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
             List<PatientRequestList> data = new();
 
             var patientData = _context.Requests.Where(a => a.Email == email && a.Requesttypeid == 2).Include(a => a.Requestwisefiles);
@@ -178,11 +197,14 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult Profile()
         {
-            var email = HttpContext.Session.GetString("email");
+            var email = User.Identities.ElementAt(1).Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
+            
+
+
             var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
 
             if (patientData == null)
-                return NotFound();
+                return View();
 
             var patientProfile = new PatientProfileDTO()
             {

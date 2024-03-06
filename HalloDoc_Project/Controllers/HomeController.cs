@@ -15,5 +15,10 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

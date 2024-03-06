@@ -24,8 +24,6 @@ public partial class HalloDocDbContext : DbContext
 
     public virtual DbSet<Aspnetuser> Aspnetusers { get; set; }
 
-    public virtual DbSet<Aspnetuserrole> Aspnetuserroles { get; set; }
-
     public virtual DbSet<Blockrequest> Blockrequests { get; set; }
 
     public virtual DbSet<Business> Businesses { get; set; }
@@ -124,15 +122,29 @@ public partial class HalloDocDbContext : DbContext
         modelBuilder.Entity<Aspnetuser>(entity =>
         {
             entity.HasKey(e => e.Aspnetuserid).HasName("aspnetusers_pkey");
-        });
 
-        modelBuilder.Entity<Aspnetuserrole>(entity =>
-        {
-            entity.HasKey(e => new { e.Userid, e.Roleid }).HasName("aspnetuserroles_pkey");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Aspnetuserroles)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_aspnetusers_userid");
+            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "Aspnetuserrole",
+                    r => r.HasOne<Aspnetrole>().WithMany()
+                        .HasForeignKey("Roleid")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("fk_aspnetuserrole_role"),
+                    l => l.HasOne<Aspnetuser>().WithMany()
+                        .HasForeignKey("Userid")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("fk_aspnetusers_userid"),
+                    j =>
+                    {
+                        j.HasKey("Userid", "Roleid").HasName("aspnetuserroles_pkey");
+                        j.ToTable("aspnetuserroles");
+                        j.IndexerProperty<string>("Userid")
+                            .HasMaxLength(128)
+                            .HasColumnName("userid");
+                        j.IndexerProperty<string>("Roleid")
+                            .HasMaxLength(128)
+                            .HasColumnName("roleid");
+                    });
         });
 
         modelBuilder.Entity<Blockrequest>(entity =>
