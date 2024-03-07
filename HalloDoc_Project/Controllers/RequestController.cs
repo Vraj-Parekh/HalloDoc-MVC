@@ -153,7 +153,7 @@ namespace HalloDoc_Project.Controllers
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("", "An error occurred while processing your request.");
-                    return RedirectToAction("FamilyInfo", "Request");
+                    return RedirectToAction("Patientinfo", "Request");
                 }
             }
             return View(data);
@@ -311,7 +311,7 @@ namespace HalloDoc_Project.Controllers
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("", "An error occurred while processing your request.");
-                    return RedirectToAction("FamilyInfo", "Request");
+                    return RedirectToAction("ConciergeInfo", "Request");
                 }
             }
             return View(data);
