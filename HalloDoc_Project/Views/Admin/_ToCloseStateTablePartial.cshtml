@@ -8,9 +8,9 @@
     {
         switch (RequestTypeId)
         {
-            case 1: return "green";
-            case 2: return "orange";
-            case 3: return "pink";
+            case 1: return "pink";
+            case 2: return "green";
+            case 3: return "orange";
             case 4: return "blue";
             default: return "green";
         }
@@ -50,10 +50,8 @@
             <tbody>
                 @foreach (var a in Model)
                 {
-                    <tr class="align-middle table-@{
-                                                                    @GetColor(a.RequestTypeId)
-}">
-                        <td scope="row">@a.Name</td>
+                    <tr class="align-middle table-@{ @GetColor(a.RequestTypeId)}">
+                        <td scope="row">@a.Name, @a.RequestId</td>
                         <td>@a.Dob.ToString("MMM,dd yyyy")</td>
                         <td>@a.Region</td>
                         <td>@a.PhysicianName</td>
@@ -72,14 +70,14 @@
                                     Action
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-action="ViewCase">View Case</a></li>
-                                    <li><a class="dropdown-item" href="#">View Uploads</a></li>
-                                    <li><a class="dropdown-item" href="#">View Notes</a></li>
-                                    <li><a class="dropdown-item" href="#">Orders</a></li>
-                                    <li><a class="dropdown-item" href="#">Close Case</a></li>
-                                    <li><a class="dropdown-item" href="#">Doctors Note</a></li>
-                                    <li><a class="dropdown-item" href="#">Clear Case</a></li>
-                                    <li><a class="dropdown-item" href="#">Encounter</a></li>
+                                    <li><a class="dropdown-item viewCase" role="button" asp-route-requestId="@a.RequestId" asp-action="ViewCase">View Case</a></li>
+                                    <li><a class="dropdown-item role="button" asp-route-requestId="@a.RequestId" asp-action="ViewUploads">View Uploads</a></li>
+                                    <li><a class="dropdown-item viewNotes" role="button" asp-route-requestId="@a.RequestId" asp-action="ViewNotes">View Notes</a></li>
+                                    <li><a class="dropdown-item" role="button" asp-route-requestId="@a.RequestId" asp-action="SendOrder">Orders</a></li>
+                                    <li><a class="dropdown-item" role="button">Close Case</a></li>
+                                    <li><a class="dropdown-item" role="button">Doctors Note</a></li>
+                                    <li><a class="dropdown-item" role="button">Clear Case</a></li>
+                                    <li><a class="dropdown-item" role="button">Encounter</a></li>
                                 </ul>
                             </div>
                         </td>

@@ -52,7 +52,7 @@ namespace HalloDoc_Project.Controllers
 
             if (user != null && user.Passwordhash == data.Password)
             {
-                string? token = JwtService.Generate(user);//asp net user services
+                string? token = JwtService.GenerateJwtToken(user);//asp net user services
                 CookieOptions cookieOptions = new CookieOptions()
                 {
                     Expires = DateTime.UtcNow.AddMinutes(20),
@@ -121,7 +121,7 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult PatientDashboard()
         {
-            string? email = User.Identities.ElementAt(1).Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
+            string? email = User.Identities.ElementAt(index: 1).Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
             List<PatientRequestList> data = new();
 
             var patientData = _context.Requests.Where(a => a.Email == email && a.Requesttypeid == 2).Include(a => a.Requestwisefiles);

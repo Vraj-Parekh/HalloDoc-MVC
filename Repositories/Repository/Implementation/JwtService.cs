@@ -14,29 +14,30 @@ namespace Repositories.Repository.Implementation
 {
     public class JwtService : IJwtService
     {
-        public static string Generate(Aspnetuser user)
+        public static string GenerateJwtToken(Aspnetuser user)
         {
             List<Claim>? authClaims = new List<Claim>
             {
                     new Claim("userName", user.Username),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),//unique identifier for the JWT token
                     new Claim("firstname", user.Users.FirstOrDefault()?.Firstname??""),
                     new Claim("lastname", user.Users.FirstOrDefault()?.Lastname??""),
             };
 
-            foreach (var role in user.Roles)
+            foreach (Aspnetrole role in user.Roles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, role.Name));
             }
 
             //Get key from configuration
             SymmetricSecurityKey? key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("7b5e8fb32a9c046b1e4f8dcf02014a307d2f3fe3d820d1f70f9df2f4c6a8b9e5"));
-            var expires = DateTime.UtcNow.AddMinutes(20);
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
+            DateTime expires = DateTime.UtcNow.AddMinutes(10);
+            SigningCredentials? creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
             //Brought this things from configuration
-            var token = new JwtSecurityToken("Issuer", "Audience", authClaims, expires: expires, signingCredentials: creds);
+            JwtSecurityToken? token = new JwtSecurityToken("Issuer", "Audience", authClaims, expires: expires, signingCredentials: creds);
 
 
 
@@ -52,12 +53,12 @@ namespace Repositories.Repository.Implementation
                 return false;
             }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityTokenHandler? tokenHandler = new JwtSecurityTokenHandler();
             SymmetricSecurityKey? key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("7b5e8fb32a9c046b1e4f8dcf02014a307d2f3fe3d820d1f70f9df2f4c6a8b9e5"));
 
             try
             {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                tokenHandler.ValidateToken(token, validationParameters: new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = key,

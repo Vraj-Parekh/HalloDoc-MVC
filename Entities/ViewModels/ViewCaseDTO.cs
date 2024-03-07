@@ -5,6 +5,7 @@ namespace Entities.ViewModels
     public class ViewCaseDTO
     {
         public int RequestId { get; set; }
+        public int RequestStatusType { get; set; }
         public string? ConfirmationNumber { get; set; }
         public string? PatientNotes { get; set; }
 

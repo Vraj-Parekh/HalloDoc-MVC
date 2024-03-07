@@ -43,7 +43,7 @@ namespace HalloDoc_Project.Controllers
         //[AllowAnonymous]
         //public IActionResult AdminLogin()
         //{
-
+        //    return View();
         //}
         //[HttpPost]
         //[AllowAnonymous]
@@ -99,7 +99,7 @@ namespace HalloDoc_Project.Controllers
             return View(request);
         }
 
-        [HttpPost]
+        [HttpPost("{requestId}")]
         public IActionResult ViewCase(ViewCaseDTO data)
         {
             if (ModelState.IsValid)
@@ -184,5 +184,17 @@ namespace HalloDoc_Project.Controllers
 
             //return RedirectToAction("ViewDocument", "Patient", new { requestId });
         }
+
+        [HttpGet("requestId")]
+        public IActionResult SendOrder()
+        {
+            return View();
+        }
+
+        //[HttpPost("{requestId}")]
+        //public IActionResult SendOrder()
+        //{
+        //    return View();
+        //}
     }
 }

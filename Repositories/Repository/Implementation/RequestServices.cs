@@ -99,8 +99,8 @@ namespace Repositories.Repository.Implementation
                 Email = client.Email ?? "",
                 Region = client.City,
                 RequestId = requestId,
-                //BusinessName = client.Firstname,---check if businesstype id or not then show name or address
                 BusinessName = (request.Requesttypeid == 1) ? client.Firstname : client.City,
+                RequestStatusType= request.Status,
             };
             return data;
         }

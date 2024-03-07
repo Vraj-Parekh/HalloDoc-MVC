@@ -48,7 +48,7 @@ namespace HalloDoc_Project.Controllers
 
         [HttpPost]
         public IActionResult PatientInfo(PatientRequestDTO data)
-        {
+       {
             ModelState.Remove("Password");
             ModelState.Remove("ConfirmPassword");
             if (ModelState.IsValid)
@@ -106,7 +106,7 @@ namespace HalloDoc_Project.Controllers
 
                 if (!IsPatientPresent(data.Email))
                 {
-                    var aspNetUser = new Aspnetuser
+                    Aspnetuser? aspNetUser = new Aspnetuser
                     {
                         Aspnetuserid = Guid.NewGuid().ToString(),
                         Username = data.Email,
@@ -116,7 +116,7 @@ namespace HalloDoc_Project.Controllers
                         Createddate = DateTime.Now,
                     };
 
-                    var user = new User
+                    User? user = new User
                     {
                         Firstname = data.FirstName,
                         Lastname = data.LastName,
@@ -133,8 +133,13 @@ namespace HalloDoc_Project.Controllers
                         Createdby = "patient",
                         Aspnetuser = aspNetUser
                     };
+
+                    Aspnetrole? patientRoleId = _context.Aspnetroles.Where(a => a.Name == "Patient").FirstOrDefault();
+                    aspNetUser.Roles.Add(patientRoleId);
+                    
                     _context.Users.Add(user);
                     _context.Aspnetusers.Add(aspNetUser);
+
                 }
                 try
                 {

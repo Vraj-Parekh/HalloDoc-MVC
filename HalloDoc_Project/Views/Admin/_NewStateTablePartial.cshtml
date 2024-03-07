@@ -81,8 +81,8 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item assignCase" role="button" data-bs-toggle="modal" data-bs-target="#assignModal" data-reqid="@a.RequestId"><i class="fa-regular fa-file-lines pe-2"></i>Assign Case</a></li>
                                 <li><a class="dropdown-item cancelCase" role="button" onclick="SetCancelInfo(@a.RequestId,'@a.Name')"><i class="fa-solid fa-xmark pe-2"></i>Cancel Case</a></li>
-                                <li><a class="dropdown-item viewCase" role="button" href="@Url.Action("ViewCase", "Admin", new { requestId = a.RequestId })"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
-                                <li><a class="dropdown-item viewNotes" role="button" href="@Url.Action("ViewNotes", "Admin", new { requestId = a.RequestId })"><i class="fa-solid fa-book pe-2"></i>View Notes</a></li>
+                                <li><a class="dropdown-item viewCase" role="button" asp-route-requestId="@a.RequestId" asp-action="ViewCase"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
+                                <li><a class="dropdown-item viewNotes" role="button" asp-route-requestId="@a.RequestId" asp-action="ViewNotes"><i class="fa-solid fa-book pe-2"></i>View Notes</a></li>
                                 <li><a class="dropdown-item blockCase" role="button" onclick="SetBlockInfo(@a.RequestId,'@a.Name')"><i class="fa-solid fa-ban pe-2"></i>Block Patient</a></li>
                             </ul>
                         </div>

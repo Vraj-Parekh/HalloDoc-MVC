@@ -20,12 +20,14 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddTransient<IRequestServices, RequestServices>();
 builder.Services.AddTransient<IRequestStatusLogServices, RequestStatusLogServices>();
 builder.Services.AddTransient<IRequestClientServices, RequestClientServices>();
-builder.Services.AddTransient<IRequestNotesServices,RequestNotesServices>();
-builder.Services.AddTransient<IBlockRequestService,BlockRequestService>();
-builder.Services.AddTransient<IRegionService,RegionService>();
-builder.Services.AddTransient<IPhysicianService,PhysicianService>();
-builder.Services.AddTransient<IRequestWiseFilesServices,RequestWiseFilesService>();
-builder.Services.AddTransient<IJwtService,JwtService>();
+builder.Services.AddTransient<IRequestNotesServices, RequestNotesServices>();
+builder.Services.AddTransient<IBlockRequestService, BlockRequestService>();
+builder.Services.AddTransient<IRegionService, RegionService>();
+builder.Services.AddTransient<IPhysicianService, PhysicianService>();
+builder.Services.AddTransient<IRequestWiseFilesServices, RequestWiseFilesService>();
+builder.Services.AddTransient<IJwtService, JwtService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 
 var app = builder.Build();
 
