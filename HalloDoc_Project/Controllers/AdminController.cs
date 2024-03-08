@@ -5,6 +5,8 @@ using Entities.ViewModels;
 using MimeKit;
 using HalloDoc_Project.Attributes;
 using Microsoft.AspNetCore.Authorization;
+using Org.BouncyCastle.Asn1.Ocsp;
+using Repositories.Repository.Implementation;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -21,10 +23,13 @@ namespace HalloDoc_Project.Controllers
         private readonly IRegionService regionService;
         private readonly IPhysicianService physicianService;
         private readonly IRequestWiseFilesServices requestWiseFilesServices;
+        private readonly IHealthProfessionalTypeService healthProfessionalTypeService;
+        private readonly IHealthProfessionalsService healthProfessionalsService;
+        private readonly IOrderDetailsService orderDetailsService;
 
         public IRegionService RegionService { get; }
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService,IHealthProfessionalsService healthProfessionalsService,IOrderDetailsService orderDetailsService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -34,6 +39,9 @@ namespace HalloDoc_Project.Controllers
             this.regionService = regionService;
             this.physicianService = physicianService;
             this.requestWiseFilesServices = requestWiseFilesServices;
+            this.healthProfessionalTypeService = healthProfessionalTypeService;
+            this.healthProfessionalsService = healthProfessionalsService;
+            this.orderDetailsService = orderDetailsService;
         }
         public IActionResult Index()
         {
@@ -185,16 +193,34 @@ namespace HalloDoc_Project.Controllers
             //return RedirectToAction("ViewDocument", "Patient", new { requestId });
         }
 
-        [HttpGet("requestId")]
-        public IActionResult SendOrder()
+        [HttpGet("{requestId}")]
+        public IActionResult SendOrder(int requestId)
         {
+            ViewBag.requestId = requestId;
             return View();
         }
 
-        //[HttpPost("{requestId}")]
-        //public IActionResult SendOrder()
-        //{
-        //    return View();
-        //}
+        public List<Healthprofessionaltype> FetchProfession()
+        {
+            return healthProfessionalTypeService.GetProfession();
+        }
+
+        [HttpGet("{professionId}")]
+        public List<Healthprofessional> FetchBusiness(int professionId)
+        {
+            return healthProfessionalsService.GetBusiness(professionId);
+        }
+
+        [HttpPost("{requestId}")]
+        public IActionResult SendOrder(SendOrderDTO data,int requestId)
+        {
+            if(ModelState.IsValid)
+            {
+                orderDetailsService.AddOrderDetails(data, requestId);
+            }
+            return View();
+        }
+        
+
     }
 }

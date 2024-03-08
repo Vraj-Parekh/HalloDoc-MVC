@@ -25,6 +25,10 @@ builder.Services.AddTransient<IBlockRequestService, BlockRequestService>();
 builder.Services.AddTransient<IRegionService, RegionService>();
 builder.Services.AddTransient<IPhysicianService, PhysicianService>();
 builder.Services.AddTransient<IRequestWiseFilesServices, RequestWiseFilesService>();
+builder.Services.AddTransient<IHealthProfessionalTypeService, HealthProfessionalTypeService>();
+builder.Services.AddTransient<IHealthProfessionalsService, HealthProfessionalsService>();
+builder.Services.AddTransient<IOrderDetailsService, OrderDetailsService>();
+
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

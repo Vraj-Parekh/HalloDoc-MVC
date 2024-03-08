@@ -9,11 +9,13 @@ namespace Entities.ViewModels
 {
     public class SendOrderDTO
     {
+        //public int RequestId { get; set; }
+
         [Required(ErrorMessage = "Please select a profession.")]
         public string Profession { get; set; }
 
         [Required(ErrorMessage = "Please enter a business name.")]
-        public string Business { get; set; }
+        public int Business { get; set; }
 
         [Required(ErrorMessage = "Please enter a business contact.")]
         public string BusinessContact { get; set; }
@@ -26,8 +28,8 @@ namespace Entities.ViewModels
         public string FaxNumber { get; set; }
 
         [Required(ErrorMessage = "Please enter prescription or order details.")]
-        public string Prescription { get; set; }
+        public string? Prescription { get; set; }
 
-        public string Refill { get; set; }
+        public int Refill { get; set; }
     }
 }
