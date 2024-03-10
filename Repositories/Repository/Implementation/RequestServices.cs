@@ -100,14 +100,30 @@ namespace Repositories.Repository.Implementation
                 Region = client.City,
                 RequestId = requestId,
                 BusinessName = (request.Requesttypeid == 1) ? client.Firstname : client.City,
-                RequestStatusType= request.Status,
+                RequestStatusType = request.Status,
             };
             return data;
         }
 
-        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status)
+        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int count)
         {
-            List<Request>? request = _context.Requests.Where(a => a.Status == status).Include(a => a.Requestclients).ToList();
+            //Dictionary<int, int> requestTypeId = new Dictionary<int, int>()
+            //{
+            //    {0,0 },{1,2},{2,3}, {3,1},{4,4},{5,0}
+            //};
+            Dictionary<int, int[]> statusMap = new()
+            {
+                {1, new int[1]{ 1} },
+                {2, new int[1]{ 16} },
+                {3, new int[3]{ 3,5,6} },
+                {4, new int[1]{ 18} },
+                {5, new int[3]{ 3,21,8} },
+                {6, new int[1]{ 19} }
+            };
+            List<Request>? request = _context.Requests.Where(a => statusMap[status].Contains(a.Status) && (requesttypeid == 5 || requesttypeid == a.Requesttypeid)).Include(a => a.Requestclients).ToList();
+
+
+            request = request.Skip(pageIndex > 0 ? (pageIndex - 1) * 10 : 0).Take(10).ToList();
 
             List<AdminDashboardDTO> admin = new List<AdminDashboardDTO>();
             foreach (Request req in request)
@@ -116,7 +132,7 @@ namespace Repositories.Repository.Implementation
                 AdminDashboardDTO? AdminDashboard = new AdminDashboardDTO
                 {
                     RequestId = req.Requestid,
-                    Name = requestClient.Firstname,
+                    FirstName = requestClient.Firstname,
                     Dob = GenerateDateOfBirth(requestClient.Intyear, requestClient.Strmonth, requestClient.Intdate),
                     Requestor = (RequestTypeId)req.Requesttypeid + ", " + req.Firstname,
                     RequestedDate = req.Createddate,
@@ -157,7 +173,7 @@ namespace Repositories.Repository.Implementation
         public ViewDocumentList GetDocumentData(int requestId)
         {
             var request = _context.Requests.Where(a => a.Requestid == requestId).Include(a => a.Requestclients).Include(a => a.Requestwisefiles).FirstOrDefault();
-            if(request is null)
+            if (request is null)
             {
                 return null;
             }

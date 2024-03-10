@@ -50,7 +50,7 @@
             @foreach (var a in Model)
             {
                 <tr class="align-middle table-@{ @GetColor(a.RequestTypeId) }" data-request-type="RequestTypeId">
-                    <td scope="row">@a.Name, @a.RequestId</td>
+                    <td scope="row">@a.FirstName, @a.RequestId</td>
                     <td>@a.Dob.ToString("MMM,dd yyyy")</td>
                     <td>@a.Requestor</td>
                     <td>@a.PhysicianName</td>

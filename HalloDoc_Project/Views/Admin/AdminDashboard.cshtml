@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<AdminDashboardDTO>
+
+@{
     ViewData["Title"] = "AdminDashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
@@ -9,7 +11,6 @@
 
 
 <div class="tab-pane container-fluid active" id="dashboard">
-    <form asp-action="AdminDashboard">
         <div class="row justify-content-center mt-3">
             <div class="col-xl-2 col-sm-4 col-6">
                 <div class="mt-1 p-3 rounded d-flex flex-column pointer" role="button" id="NewState" onclick="activateTab('NewState')">
@@ -55,7 +56,6 @@
             </div>
         </div>
 
-    </form>
 
     <div class="row m-lg-2 ">
         <div class="d-flex justify-content-between m-2">
@@ -88,12 +88,12 @@
 
             <div class="col-md-8 col-sm-12">
                 <div class="text-end text-sm-start d-md-flex justify-content-md-end req-container">
-                    <button class="btn btn-white me-2 d-none d-lg-block" style="border-color:gainsboro;">All</button>
-                    <span class="p-2 border-info" type="button"><i class="bi bi-circle-fill me-1" style="color: #5fbc61;"></i>Patient</span>
-                    <span class="p-2" type="button"><i class="bi bi-circle-fill me-1" style="color: #ed9124;"></i>Family</span>
-                    <span class="p-2 border-info" type="button"><i class="bi bi-circle-fill me-1" style="color: #dd75b8;"></i>Business</span>
-                    <span class=" p-2 " type="button"><i class="bi bi-circle-fill me-1" style="color: #007ec7;"></i>Concierge</span>
-                    <span class="p-2 " type="button"><i class="bi bi-circle-fill me-1" style="color: #6d4bd2;"></i>VIP</span>
+                    <button class="btn btn-white me-2" id="AllFilter" onclick="activateFilter('AllFilter')">All</button>
+                    <button class="btn btn-white me-2" type="button" id="PatientFilter" onclick="activateFilter('PatientFilter')"><i class="bi bi-circle-fill me-1" style="color: #5fbc61;"></i>Patient</button>
+                    <button class="btn btn-white me-2" type="button" id="FamilyFilter" onclick="activateFilter('FamilyFilter')"><i class="bi bi-circle-fill me-1" style="color: #ed9124;"></i>Family</button>
+                    <button class="btn btn-white me-2" type="button" id="BusinessFilter" onclick="activateFilter('BusinessFilter')"><i class="bi bi-circle-fill me-1" style="color: #dd75b8;"></i>Business</button>
+                    <button class="btn btn-white me-2" type="button" id="ConciergeFilter" onclick="activateFilter('ConciergeFilter')"><i class="bi bi-circle-fill me-1" style="color: #007ec7;"></i>Concierge</button>
+                    <button class="btn btn-white me-2" type="button" id="VipFilter" onclick="activateFilter('VipFilter')"><i class="bi bi-circle-fill me-1" style="color: #6d4bd2;"></i>VIP</button>
                 </div>
             </div>
 
@@ -105,14 +105,19 @@
     </div>
 
     <div id="tableRecords" class="tableData"></div>
+
+
 </div>
 
 @section Scripts{
 
     <script>
-        requestTypeId = 5;
-        status = 1;
+        var requestTypeId = 5;
+        var status = 1;
+        var pageIndex = 1;
+        var count = 10;
         var previousTab = null;
+        var previousFilter = null;
         function activateTab(tabId) {
             // Deactivate previous tab
             if (previousTab !== null) {
@@ -120,89 +125,173 @@
             }
 
             // Activate the clicked tab
-            var clickedTab = document.getElementById(tabId);
+            let clickedTab = document.getElementById(tabId);
             clickedTab.classList.add('active');
+
+            switch(tabId){
+                case "NewState":
+                    status = 1;
+                    getData();
+                    break;
+                case "PendingState":
+                    status = 2;
+                    getData();
+                    break;
+                case "ActiveState":
+                    status = 3;
+                    getData();
+                    break;
+                case "ConcludeState":
+                    status = 4;
+                    getData();
+                    break;
+                case "ToCloseState":
+                    status = 5;
+                    getData();
+                    break;
+                case "UnpaidState":
+                    status = 6;
+                    getData();
+                    break;
+            }
+
 
             // Update the previousTab variable
             previousTab = clickedTab;
         }
+
+        function activateFilter(tabId) {
+            // Deactivate previous tab
+            if (previousFilter !== null) {
+                previousFilter.classList.remove('box');
+            }
+
+            // Activate the clicked tab
+            let clickedfilter = document.getElementById(tabId);
+            clickedfilter.classList.add('box');
+
+            switch (tabId) {
+                case "AllFilter":
+                    requestTypeId = 5;
+                    getData();
+                    break;
+                case "PatientFilter":
+                    requestTypeId = 2;
+                    getData();
+                    break;
+                case "FamilyFilter":
+                    requestTypeId = 3;
+                    getData();
+                    break;
+                case "ConciergeFilter":
+                    requestTypeId = 4;
+                    getData();
+                    break;
+                case "BusinessFilter":
+                    requestTypeId = 1;
+                    getData();
+                    break;
+                case "VipFilter":
+                    requestTypeId = 5;
+                    getData();
+                    break;
+            }
+
+
+            // Update the previousTab variable
+            previousFilter = clickedfilter;
+        }
         activateTab('NewState');
+        activateFilter('AllFilter');
 
         $(document).ready(function () {
             $('#NewState').trigger('click');
-
+            $('#All').trigger('click');
         });
 
-
-
-        $('#NewState').on('click ', function (type = "All") {
-            status = 1;
+        function getData(){
+            // alert(requestTypeId);
             $.ajax({
-                url: '@Url.Action("NewStateTable", "Admin")',
+                url: '@Url.Action("TableTest", "Admin")',
                 type: 'get',
-                data: { status: status, requestTypeId: 5 },
+                data: { status: status, requestTypeId: requestTypeId, pageIndex:pageIndex, count :count},
+                async: false,
                 success: function (result) {
                     // console.log(result);
                     $(".tableData").html(result);
                 }
             });
-        });
+        }
 
-        $('#PendingState').on('click ', function () {
+        // $('#NewState').on('click ', function (type = "All") {
+        //     status = 1;
+        //     $.ajax({
+        //         url: '@Url.Action("TableTest", "Admin")',
+        //         type: 'get',
+        //         data: { status: status, requestTypeId: 5 },
+        //         async:false,
+        //         success: function (result) {
+        //             console.log(result);
+        //             $(".tableData").html(result);
+        //         }
+        //     });
+        // });
 
-            $.ajax({
-                url: '@Url.Action("PendingStateTable", "Admin")',
-                type: 'get',
-                data: { status: status, requestTypeId: 5 },
-                success: function (result) {
-                    $(".tableData").html(result);
-                }
-            });
-        });
+        // $('#PendingState').on('click ', function () {
 
-        $('#ActiveState').on('click ', function () {
-            $.ajax({
-                url: '@Url.Action("ActiveStateTable", "Admin")',
-                type: 'get',
-                data: { status: status, requestTypeId: 5 },
-                success: function (result) {
-                    $(".tableData").html(result);
-                }
-            });
-        });
+        //     $.ajax({
+        //         url: '@Url.Action("PendingStateTable", "Admin")',
+        //         type: 'get',
+        //         data: { status: status, requestTypeId: 5 },
+        //         success: function (result) {
+        //             $(".tableData").html(result);
+        //         }
+        //     });
+        // });
 
-        $('#ConcludeState').on('click ', function () {
-            $.ajax({
-                url: '@Url.Action("ConcludeStateTable", "Admin")',
-                type: 'get',
-                data: { status: status, requestTypeId: 5 },
-                success: function (result) {
-                    $(".tableData").html(result);
-                }
-            });
-        });
+        // $('#ActiveState').on('click ', function () {
+        //     $.ajax({
+        //         url: '@Url.Action("ActiveStateTable", "Admin")',
+        //         type: 'get',
+        //         data: { status: status, requestTypeId: 5 },
+        //         success: function (result) {
+        //             $(".tableData").html(result);
+        //         }
+        //     });
+        // });
 
-        $('#ToCloseState').on('click ', function () {
-            $.ajax({
-                url: '@Url.Action("ToCloseStateTable", "Admin")',
-                type: 'get',
-                data: { status: status, requestTypeId: 5 },
-                success: function (result) {
-                    $(".tableData").html(result);
-                }
-            });
-        });
+        // $('#ConcludeState').on('click ', function () {
+        //     $.ajax({
+        //         url: '@Url.Action("ConcludeStateTable", "Admin")',
+        //         type: 'get',
+        //         data: { status: status, requestTypeId: 5 },
+        //         success: function (result) {
+        //             $(".tableData").html(result);
+        //         }
+        //     });
+        // });
 
-        $('#UnpaidState').on('click ', function () {
-            $.ajax({
-                url: '@Url.Action("UnpaidStateTable", "Admin")',
-                type: 'get',
-                data: { status: status, requestTypeId: 5 },
-                success: function (result) {
-                    $(".tableData").html(result);
-                }
-            });
-        });
+        // $('#ToCloseState').on('click ', function () {
+        //     $.ajax({
+        //         url: '@Url.Action("ToCloseStateTable", "Admin")',
+        //         type: 'get',
+        //         data: { status: status, requestTypeId: 5 },
+        //         success: function (result) {
+        //             $(".tableData").html(result);
+        //         }
+        //     });
+        // });
+
+        // $('#UnpaidState').on('click ', function () {
+        //     $.ajax({
+        //         url: '@Url.Action("UnpaidStateTable", "Admin")',
+        //         type: 'get',
+        //         data: { status: status, requestTypeId: 5 },
+        //         success: function (result) {
+        //             $(".tableData").html(result);
+        //         }
+        //     });
+        // });
 
 
 

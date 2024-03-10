@@ -59,39 +59,10 @@ namespace HalloDoc_Project.Controllers
         //{
 
         //}
-
-        [HttpGet]
-        public IActionResult NewStateTable(int requestTypeId, int status)
+        public IActionResult TableTest(int requestTypeId,int status, int pageIndex, int count)
         {
-            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, 1);
-            return PartialView("_NewStateTablePartial", data);
-        }
-        public IActionResult PendingStateTable(int requestTypeId, int status)
-        {
-            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, 16);
-            return PartialView("_PendingStateTablePartial", data);
-        }
-        public IActionResult ActiveStateTable(int requestTypeId, int status)
-        {
-#warning Map other status also 
-            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, 5);
-            return PartialView("_ActiveStateTablePartial", data);
-        }
-        public IActionResult ConcludeStateTable(int requestTypeId, int status)
-        {
-            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, 18);
-            return PartialView("_ConcludeStateTablePartial", data);
-        }
-        public IActionResult ToCloseStateTable(int requestTypeId, int status)
-        {
-#warning Map other status also 
-            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, 3);
-            return PartialView("_ToCloseStateTablePartial", data);
-        }
-        public IActionResult UnpaidStateTable(int requestTypeId, int status)
-        {
-            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, 19);
-            return PartialView("_UnpaidStateTablePartial", data);
+            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, count);
+                return PartialView("_TablePartial" , data);
         }
 
         public IActionResult AdminDashboard()
@@ -221,6 +192,5 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
         
-
     }
 }

@@ -20,4 +20,5 @@
     Conclude = 18,
     Unpaid = 19,
     Blocked = 20,
+    CCApprovedByPatient = 21,
 }
