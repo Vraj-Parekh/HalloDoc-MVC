@@ -71,7 +71,7 @@
         <div class="row g-2 mt-2 pt-2 pb-2 bg-white shadow rounded-1">
             <div class="col-md-2 col-sm-12">
                 <i class="bi bi-search text-muted position-absolute" style="padding-top: 5px; padding-left:9px;"></i>
-                <input type="search" class="form-control" style="padding-left:35px;" id="floatingInputGrid" placeholder="Search Patients">
+                <input type="search" class="form-control" style="padding-left:35px;" id="search" placeholder="Search Patients">
             </div>
 
             <div class="col-md-2 col-sm-12">
@@ -99,7 +99,7 @@
         </div>
     </div>
 
-    <div id="tableRecords" class="tableData"></div>
+    <div id="tableRecords" class="tableData mb-5"></div>
 </div>
 
 @section Scripts {
@@ -202,13 +202,20 @@
         function getData() {
             // alert(requestTypeId);
             $.ajax({
-                url: '@Url.Action("TableTest", "Admin")',
+                url: '@Url.Action("Table", "Admin")',
                 type: 'get',
                 data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, count: count },
                 async: false,
                 success: function (result) {
                     // console.log(result);
-                    $(".tableData").html(result);
+                    if (result.includes('table')) 
+                    { 
+                        $(".tableData").html(result);
+                    }
+                    else
+                    {
+                        window.location.reload();
+                    }
                 }
             });
         }

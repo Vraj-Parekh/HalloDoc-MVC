@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Ocsp;
 using Repositories.Repository.Interface;
 using System.Globalization;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace Repositories.Repository.Implementation
@@ -105,12 +106,8 @@ namespace Repositories.Repository.Implementation
             return data;
         }
 
-        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int count)
+        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageCount)
         {
-            //Dictionary<int, int> requestTypeId = new Dictionary<int, int>()
-            //{
-            //    {0,0 },{1,2},{2,3}, {3,1},{4,4},{5,0}
-            //};
             Dictionary<int, int[]> statusMap = new()
             {
                 {1, new int[1]{ 1} },
@@ -122,8 +119,8 @@ namespace Repositories.Repository.Implementation
             };
             List<Request>? request = _context.Requests.Where(a => statusMap[status].Contains(a.Status) && (requesttypeid == 5 || requesttypeid == a.Requesttypeid)).Include(a => a.Requestclients).ToList();
 
-
-            request = request.Skip(pageIndex > 0 ? (pageIndex - 1) * 10 : 0).Take(10).ToList();
+            //int count = request.Count;
+            //request = request.Skip(pageIndex > 0 ? (pageIndex - 1) * 10 : 0).Take(10).ToList();
 
             List<AdminDashboardDTO> admin = new List<AdminDashboardDTO>();
             foreach (Request req in request)
@@ -139,14 +136,15 @@ namespace Repositories.Repository.Implementation
                     Phone = req.Phonenumber,
                     Address = requestClient.Address,
                     PhysicianName = _context.Physicians.Where(a => a.Physicianid == req.Physicianid).Select(phy => phy.Firstname).FirstOrDefault(),
-                    Notes = _context.Requeststatuslogs.Where(a => a.Requestid == req.Requestid).Select(log => log.Notes).FirstOrDefault(),
+                    Notes = _context.Requeststatuslogs.Where(a => a.Requestid == req.Requestid).OrderBy(a => a.Createddate).LastOrDefault()?.Notes,
                     RequestTypeId = req.Requesttypeid,
+                    Status = status,
                 };
                 admin.Add(AdminDashboard);
             }
             return admin;
         }
-        public void AssignCase(int requestId, string phyRegion, string phyId, string assignNote)
+        public void AssignCase(int requestId, string phyRegion, string phyId, string notes)
         {
             Request? request = GetRequest(requestId);
             if (request != null)
@@ -155,7 +153,7 @@ namespace Repositories.Repository.Implementation
 
                 Requeststatuslog model = new();
                 model.Requestid = requestId;
-                model.Notes = assignNote;
+                model.Notes = notes;
                 model.Status = 16; //pending
                 model.Createddate = DateTime.Now;
                 model.Physicianid = physicianId;
@@ -172,7 +170,7 @@ namespace Repositories.Repository.Implementation
 
         public ViewDocumentList GetDocumentData(int requestId)
         {
-            var request = _context.Requests.Where(a => a.Requestid == requestId).Include(a => a.Requestclients).Include(a => a.Requestwisefiles).FirstOrDefault();
+            Request? request = _context.Requests.Where(a => a.Requestid == requestId).Include(a => a.Requestclients).Include(a => a.Requestwisefiles).FirstOrDefault();
             if (request is null)
             {
                 return null;
@@ -203,6 +201,28 @@ namespace Repositories.Repository.Implementation
                 RequestId = request.Requestid,
             };
             return doc;
+        }
+
+        public void ClearCase(int requestId)
+        {
+            Request? request = GetRequest(requestId);
+
+            if (request is not null)
+            {
+                request.Status = 12;//Clear
+                request.Modifieddate = DateTime.Now;
+
+                Requeststatuslog? requestStatusLog = new Requeststatuslog()
+                {
+                    Status = 12, //clear
+                    Createddate = DateTime.Now,
+                    Requestid = requestId,
+                };
+
+                _context.Requests.Update(request);
+                _context.Requeststatuslogs.Add(requestStatusLog);
+                _context.SaveChanges();
+            }
         }
     }
 }

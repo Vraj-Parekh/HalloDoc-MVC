@@ -33,7 +33,7 @@ namespace Repositories.Repository.Implementation
             //Get key from configuration
             SymmetricSecurityKey? key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("7b5e8fb32a9c046b1e4f8dcf02014a307d2f3fe3d820d1f70f9df2f4c6a8b9e5"));
 
-            DateTime expires = DateTime.UtcNow.AddMinutes(10);
+            DateTime expires = DateTime.UtcNow.AddMinutes(60);
             SigningCredentials? creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
             //Brought this things from configuration

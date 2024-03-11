@@ -1,0 +1,305 @@
+﻿ <!-- Modal For Assign Case For Patient-->
+<div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form class="assignCaseForm" method="post">
+                <div class="modal-header bg-info text-white ">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Request</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col text-muted">
+                            To assign this request, search and select another physician
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                <select class="form-select pt-0 pb-0 regionDropDown" id="floatingSelect" name="phyRegion">
+                                    <option selected>Narrow Search by Region</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                <select class="form-select pt-0 pb-0 physicianDropDown" id="floatingSelect" aria-label="Floating label select example" name="phyId">
+                                    <option selected>Select Physician</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="desc" id="floatingTextarea2" name="notes" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Description</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info text-white" id="assignCaseSubmit">Confirm</button>
+                    <button type="button" class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    //for assign case
+    function SetAssignId(id) {
+        console.log("start");
+        console.log(id);
+        const myModal = new bootstrap.Modal("#assignModal", {});
+        myModal.show();
+        $(".assignCaseForm").attr("action", "/Admin/AssignCase/" + id);
+    }
+
+    function fetchPhysicianByRegion(regionId) {
+        $.ajax({
+            url: './FetchPhysicianByRegion/' + regionId,
+            method: 'GET',
+            success: function (response) {
+                $('.physicianDropDown').empty();
+                response.forEach(function (res) {
+                    console.log("calls phy");
+                    $('.physicianDropDown').append("<option value='" + res.physicianid + "'>" + res.firstname + "</option>");
+                });
+            }
+        });
+    }
+
+    $('.regionDropDown').on('change', function () {
+        var selectedRegionId = $(this).val();
+        fetchPhysicianByRegion(selectedRegionId);
+    })
+
+    $.ajax({
+        url: './FetchRegions',
+        method: 'GET',
+        success: function (response) {
+            response.forEach(function (res) {
+                console.log("calls region");
+                $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
+            });
+        }
+    });
+</script>
+
+<!-- Modal For Block Case For Patient-->
+<div class="modal fade" id="blockModal" tabindex="-1" aria-labelledby="bloackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" id="blockForm">
+                <input type="text" hidden id="requestId" name="requestId" />
+                <div class="modal-header bg-info text-white ">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Block</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col text-muted">
+                            Patient Name: <span class="text-info" id="p-name-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <textarea class="form-control" name="blockReason" placeholder="comment for block request" id="floatingTextarea2" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Reason for Block Request</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info text-white" id="confirmbtn">Confirm</button>
+                    <button class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    //for block case
+    function SetBlockInfo(id, name) {
+        console.log("start");
+        console.log(name);
+        console.log(id);
+        $("#p-name-block").text(name);
+        const myModal = new bootstrap.Modal("#blockModal", {});
+        myModal.show();
+        $("#blockForm").attr("action", "/Admin/BlockCase/" + id);
+    }
+</script>
+
+<!-- Modal For Cancel Case For Patient-->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" id="cancelForm">
+                <input type="text" hidden id="requestId" name="requestId" />
+                <div class="modal-header bg-info text-white ">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Cancellation</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col text-muted">
+                            Patient Name: <span class="text-info" id="p-name-cancel"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                <select class="form-select pt-0 pb-0" id="floatingSelect" aria-label="Floating label select example" name="reason">
+                                    <option selected>Reasons For Cancellation</option>
+                                    <option value="No Response to call or text, left message">No Response to call or text, left message</option>
+                                    <option value="Cost issue">Cost issue</option>
+                                    <option value="Insurance Issue">Insurance Issue</option>
+                                    <option value="Out of servie Area">Out of servie Area</option>
+                                    <option value="Not appropriate for service">Not appropriate for service</option>
+                                    <option value="Refferal to Clinic or Hospital">Refferal to Clinic or Hospital</option>
+                                </select>
+                                @* <label for="floatingSelect">Reasons For Cancellation</label> *@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <textarea class="form-control" name="notes" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Provide Additional Notes</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info text-white" id="confirmbtn">Confirm</button>
+                    <button class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    //for cancel case
+    function SetCancelInfo(id, name) {
+        console.log("start");
+        console.log(name);
+        console.log(id);
+        $("#p-name-cancel").text(name);
+        const myModal = new bootstrap.Modal("#cancelModal", {});
+        myModal.show();
+        $("#cancelForm").attr("action", "/Admin/CancelCase/" + id);
+    }
+</script>
+
+<!-- Modal For Transfer Case-->
+<div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form class="transferCaseForm" method="post">
+                <div class="modal-header bg-info text-white ">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Transfer Request</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col text-muted">
+                            To transfer this request, search and select another physician
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                <select class="form-select pt-0 pb-0 regionDropDown" id="floatingSelect" aria-label="Floating label select example" name="phyRegion">
+                                    <option selected>Narrow Search by Region</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                <select class="form-select pt-0 pb-0 physicianDropDown" id="floatingSelect" aria-label="Floating label select example" name="phyId">
+                                    <option selected>Select Physician</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="desc" id="floatingTextarea2" name="notes" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Description</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info text-white" id="assignCaseSubmit">Confirm</button>
+                    <button type="button" class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    //for transfer case
+    function SetTransferId(id) {
+        console.log("start");
+        console.log(id);
+        const myModal = new bootstrap.Modal("#transferModal", {});
+        myModal.show();
+        $(".transferCaseForm").attr("action", "/Admin/AssignCase/" + id);
+    }
+</script>
+
+
+<div class="modal fade" id="clearCaseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class=" p-2 py-3 modal-content text-center justify-content-center">
+            <div class="modal-body px-5 pt-5 text-center">
+                <form method="post" class="clearCaseForm">
+                    <h1 class="text-warning text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-info-circle-fill info-i" viewBox="0 0 16 16">
+                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2" />
+                        </svg>
+                    </h1>
+                    <h4 class="text-center pt-3">Confirmation for clear case</h4>
+                    <p class="text-center fs-7 pt-2 text-secondary">
+                        Are sure you want to clear this request ? Once clear this request then you are not able to see this request
+                    </p>
+                    @* <input type="hidden" value="" id="RequestID_Input_ModelClearCase" name="RequestId" /> *@
+                    <button type="submit" class="mb-3 btn btn-info text-white" data-bs-dismiss="modal">Clear</button>
+                    <button type="button" class="mb-3 btn border border-info text-info ms-2" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //for clear case case
+    function SetCancelId(id) {
+        console.log("start");
+        console.log(id);
+        const myModal = new bootstrap.Modal("#clearCaseModal", {});
+        myModal.show();
+        $(".clearCaseForm").attr("action", "/Admin/ClearCase/" + id);
+    } 
+</script>

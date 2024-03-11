@@ -4,262 +4,248 @@
 @{
     var status = Model.Count > 0 ? Model[0].Status : 1;
 }
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+<div class="table-responsive">
+    <table id="myTable" class="table">
+        <thead>
+            <tr class="bg-light request-data-lg fw-bold mx-1">
+                <th class="">Name</th>
 
-<table class="table w-100 request-table">
-    <thead>
-        <tr class="bg-light request-data-lg fw-bold w-100 mx-1">
-            <th class="">Name</th>
-
-            @if (status != 6)
-            {
-                <th class="">Date of Birth</th>
-            }
-
-            @if (status == 5)
-            {
-                <th class=" ">Region</th>
-            }
-            @if (status <= 3)
-            {
-                <th class=" ">Requstor</th>
-            }
-
-            @if (status >= 2)
-            {
-                <th class=" ">Physician Name</th>
-            }
-
-            @if (status == 1)
-            {
-                <th class=" ">Requested Date</th>
-            }
-
-            @if (status >= 2)
-            {
-                <th class=" ">Date of Service</th>
-            }
-            @if (status != 5)
-            {
-                <th class=" ">Phone</th>
-            }
-            <th class=" ">Address</th>
-            @if (status == 4 || status == 6)
-            {
-            }
-            else
-            {
-                <th class=" ">Notes</th>
-            }
-            <th class=" ">Chat with</th>
-            <th class=" ">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-
-        @foreach (var items in Model)
-        {
-            string BgColor = "patienttype";
-            switch (items.RequestTypeId)
-            {
-                case 1:
-                    BgColor = "patienttype";
-                    break;
-                case 2:
-                    BgColor = "patienttype";
-                    break;
-                case 3:
-                    BgColor = "friendtype";
-                    break;
-                case 4:
-                    BgColor = "concarigetype";
-                    break;
-                case 5:
-                    BgColor = "businesstype";
-                    break;
-                default:
-                    BgColor = "patienttype";
-                    break;
-            }
-
-            <tr class="request-data-lg @BgColor text-white mx-1 border-bottom-white">
-                <td class="">
-                    @items.FirstName @items.LastName, @items.RequestId
-                    <a class="btn bi bi-envelope border-1 border-white text-white"></a>
-                </td>
                 @if (status != 6)
                 {
-                    <td class=" ">@items.Dob.ToString("MMM,dd yyyy")</td>
+                    <th class="">Date of Birth</th>
                 }
+
                 @if (status == 5)
                 {
-                    <td class=" ">Region 1</td>
-
+                    <th class=" ">Region</th>
                 }
                 @if (status <= 3)
                 {
-                    <td class=" ">Patient @items.FirstName @items.LastName</td>
-                }
-                @if (status >= 2)
-                {
-                    <td class=" ">@items.PhysicianName</td>
-                }
-                @if (status == 1)
-                {
-                    <td class=" ">@items.RequestedDate.ToString("MMM,dd yyyy")</td>
-                }
-                @if (status >= 2)
-                {
-                    <td class=" ">--</td>
+                    <th class=" ">Requstor</th>
                 }
 
+                @if (status >= 2)
+                {
+                    <th class=" ">Physician Name</th>
+                }
+
+                @if (status == 1)
+                {
+                    <th class=" ">Requested Date</th>
+                }
+
+                @if (status >= 2)
+                {
+                    <th class=" ">Date of Service</th>
+                }
                 @if (status != 5)
                 {
-                    <td class=" ">
-                        <a class="btn border-1 border-white text-white text-nowrap">
-                            <i class="bi bi-telephone mx-2"></i>
-                            @items.Phone
-                        </a>
-                        <p>(Patient)</p>
-                    </td>
+                    <th class=" ">Phone</th>
                 }
-                <td class=" ">@items.Address</td>
+                <th class=" ">Address</th>
                 @if (status == 4 || status == 6)
                 {
                 }
                 else
                 {
-                    <td class=" ">@items.Notes</td>
+                    <th class=" ">Notes</th>
+                }
+                <th class=" ">Chat with</th>
+                <th class=" ">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var items in Model)
+            {
+                string BgColor = "patienttype";
+                switch (items.RequestTypeId)
+                {
+                    case 1:
+                        BgColor = "patienttype";
+                        break;
+                    case 2:
+                        BgColor = "patienttype";
+                        break;
+                    case 3:
+                        BgColor = "friendtype";
+                        break;
+                    case 4:
+                        BgColor = "concarigetype";
+                        break;
+                    case 5:
+                        BgColor = "businesstype";
+                        break;
+                    default:
+                        BgColor = "patienttype";
+                        break;
                 }
 
-                <td class=" text-nowrap">
-                    @if (status != 1)
+                <tr class="request-data-lg @BgColor text-white mx-1 border-bottom-white">
+                    <td class="">
+                        @items.FirstName @items.LastName, @items.RequestId
+                        <a class="btn bi bi-envelope border-1 border-white text-white"></a>
+                    </td>
+                    @if (status != 6)
                     {
-                        <a class="btn border-1 border-white text-white fs-6">
-                            <i class="bi bi-person-square mx-1"></i>
-                            Patient
-                        </a>
+                        <td class=" ">@items.Dob.ToString("MMM,dd yyyy")</td>
                     }
-                    <a class="btn border-1 border-white text-white">
-                        <i class="bi bi-person-square mx-1">
-                        </i>Provider
-                    </a>
-                </td>
+                    @if (status == 5)
+                    {
+                        <td class=" ">Region 1</td>
 
-                <td class="dropdown">
-                    <a class="btn border-1 border-white text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        Actions
-                    </a>
-                    <ul class="dropdown-menu">
-                        @if (status == 1)
-                        {
-                            <li>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#AssignCaseModal">
-                                    <i class="bi bi-list-check m-1"></i>
-                                    Assign Case
-                                </a>
-                            </li>
+                    }
+                    @if (status <= 3)
+                    {
+                        <td class=" ">Patient @items.FirstName @items.LastName</td>
+                    }
+                    @if (status >= 2)
+                    {
+                        <td class=" ">@items.PhysicianName</td>
+                    }
+                    @if (status == 1)
+                    {
+                        <td class=" ">@items.RequestedDate.ToString("MMM,dd yyyy")</td>
+                    }
+                    @if (status >= 2)
+                    {
+                        <td class=" ">--</td>
+                    }
 
-                            <li>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#CancleCaseModal">
-                                    <i class="bi bi-x-circle m-1"></i>
-                                    Cancle Case
-                                </a>
-                            </li>
-                        }
-                        <li>
-                            <a class="dropdown-item">
-                                <i class="bi bi-search m-1"></i>
-                                View Case
+                    @if (status != 5)
+                    {
+                        <td class=" ">
+                            <a class="btn border-1 border-white text-white text-nowrap">
+                                <i class="bi bi-telephone mx-2"></i>
+                                @items.Phone
                             </a>
-                        </li>
+                            <p>(Patient)</p>
+                        </td>
+                    }
+                    <td class=" ">@items.Address</td>
+                    @if (status == 4 || status == 6)
+                    {
+                    }
+                    else
+                    {
+                        <td class=" ">@items.Notes</td>
+                    }
+
+                    <td class=" text-nowrap">
                         @if (status != 1)
                         {
-                            <li>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#CancleInfoModal">
-                                    <i class="bi bi-journal-text m-1"></i>
-                                    View Uploads
-                                </a>
-                            </li>
-                        }
-                        <li>
-                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#CancleInfoModal">
-                                <i class="bi bi-journal-text m-1"></i>
-                                View Notes
+                            <a class="btn border-1 border-white text-white fs-6">
+                                <i class="bi bi-person-square mx-1"></i>
+                                Patient
                             </a>
-                        </li>
-
-                        @if (status == 1)
-                        {
-                            <li>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#BlockCaseModal">
-                                    <i class="bi bi-ban m-1"></i>
-                                    Block Patient
-                                </a>
-                            </li>
                         }
+                        <a class="btn border-1 border-white text-white">
+                            <i class="bi bi-person-square mx-1">
+                            </i>Provider
+                        </a>
+                    </td>
 
-                        @if (status == 2)
-                        {
-                            <li>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#TransferCaseModal">
-                                    <i class="bi bi-journal-plus m-1"></i>
-                                    Transfer
-                                </a>
-                            </li>
-                        }
+                    <td class="dropdown">
+                        <button class="btn border border-white text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Action
+                        </button>
+                        <ul class="dropdown-menu">
+                            @if (status == 1)
+                            {
+                                <li><a class="dropdown-item assignCase" role="button" onclick="SetAssignId(@items.RequestId)"><i class="fa-regular fa-file-lines pe-2"></i>Assign Case</a></li>
+                                <li><a class="dropdown-item cancelCase" role="button" onclick="SetCancelInfo(@items.RequestId,'@items.FirstName')"><i class="fa-solid fa-xmark pe-2"></i>Cancel Case</a></li>
+                            }
 
-                        @if (status == 3 || status == 4 || status == 5)
-                        {
-                            <li>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#SendAgreementModal">
-                                    <i class="bi bi-journal-plus m-1"></i>
-                                    Orders
-                                </a>
-                            </li>
-                        }
+                            <li><a class="dropdown-item viewCase" role="button" asp-route-requestId="@items.RequestId" asp-action="ViewCase"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
 
-                        @if (status == 2 || status == 5)
-                        {
-                            <li>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#SendAgreementModal">
-                                    <i class="bi bi-journal-plus m-1"></i>
-                                    Clear Case
-                                </a>
-                            </li>
-                        }
+                            @if (status != 1)
+                            {
+                                <li><a class="dropdown-item" role="button" asp-route-requestId="@items.RequestId" asp-action="ViewUploads"><i class="fa-solid fa-file-arrow-up pe-2"></i>View Uploads</a></li>
+                            }
+                            <li><a class="dropdown-item viewNotes" role="button" asp-route-requestId="@items.RequestId" asp-action="ViewNotes"> <i class="fa-solid fa-book pe-2"></i>View Notes</a></li>
 
-                        @if (status == 3 || status == 4 || status == 5)
-                        {
-                            <li>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#SendAgreementModal">
-                                    <i class="bi bi-journal-plus m-1"></i>
-                                    Doctors Note
-                                </a>
-                            </li>
-                        }
+                            @if (status == 1)
+                            {
+                                <li><a class="dropdown-item blockCase" role="button" onclick="SetBlockInfo(@items.RequestId,'@items.FirstName')"><i class="fa-solid fa-ban pe-2"></i>Block Patient</a></li>
+                            }
 
-                        @if (status == 2)
-                        {
-                            <li>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#SendAgreementModal">
-                                    <i class="bi bi-journal-plus m-1"></i>
-                                    Send Agreement
-                                </a>
-                            </li>
-                        }
+                            @if (status == 2)
+                            {
+                                <li><a class="dropdown-item" role="button" onclick="SetTransferId(@items.RequestId)"><i class="fa-solid fa-file-import pe-2"></i>Transfer</a></li>
+                            }
 
-                        @if (status == 3 || status == 4 || status == 5)
-                        {
-                            <li>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#SendAgreementModal">
-                                    <i class="bi bi-journal-plus m-1"></i>
-                                    Encounter
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                            @if (status == 3 || status == 4 || status == 5)
+                            {
+                                <li><a class="dropdown-item" role="button" asp-route-requestId="@items.RequestId" asp-action="SendOrder">Orders</a></li>
+                            }
+
+                            @if (status == 2 || status == 5)
+                            {
+                                <li><a class="dropdown-item" role="button" onclick="SetCancelId(@items.RequestId)"><i class="fa-regular fa-circle-xmark pe-2"></i>Clear Case</a></li>
+                            }
+
+                            @if (status == 3 || status == 4 || status == 5)
+                            {
+                                <li>
+                                    <a class="dropdown-item">
+                                        <i class="bi bi-journal-plus m-1"></i>
+                                        Doctors Note
+                                    </a>
+                                </li>
+                            }
+
+                            @if (status == 2)
+                            {
+                                <li><a class="dropdown-item " role="button"><i class="fa-regular fa-file-lines pe-2"></i>Send Agreement</a></li>
+                            }
+
+                            @if (status == 3 || status == 4 || status == 5)
+                            {
+                                <li>
+                                    <a class="dropdown-item">
+                                        <i class="bi bi-journal-plus m-1"></i>
+                                        Encounter
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<partial name="_ModalPartial" />
+
+
+<script>
+    // $(document).ready(function () {
+
+    //     if (!$.fn.DataTable.isDataTable('#myTable')) {
+    //         $('#myTable').DataTable({
+    //             "initComplete": function (settings,
+    //                 json) {
+
+    //                 $('#search').val(settings.oPreviousSearch.sSearch);
+
+    //                 $('#search').on('keyup', function () {
+    //                     var searchValue = $(this).val();
+    //                     settings.oPreviousSearch.sSearch = searchValue;
+    //                     settings.oApi._fnReDraw(settings);
+    //                 });
+    //             },
+    //             "lengthMenu": [[5, 10, -1], [5, 10, "All"]],
+    //             "pageLength": 5,
+    //             language: {
+    //                 oPaginate: {
+    //                     sNext: '<i class="bi bi-caret-right-fill text-info"></i>',
+    //                     sPrevious: '<i class="bi bi-caret-left-fill text-info"></i>'
+    //                 }
+    //             }
+    //         });
+    //     }
+
+    //     // $('.dataTables_filter').hide();
+    // });
+</script>

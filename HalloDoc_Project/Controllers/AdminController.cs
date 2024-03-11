@@ -82,7 +82,7 @@ namespace HalloDoc_Project.Controllers
                 return View(data);
             }
         }
-        public IActionResult TableTest(int requestTypeId,int status, int pageIndex, int count)
+        public IActionResult Table(int requestTypeId,int status, int pageIndex, int count)
         {
             List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, count);
                 return PartialView("_TablePartial" , data);
@@ -92,7 +92,6 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
-
 
         [HttpGet("{requestId}")]
         public IActionResult ViewCase(int requestId)
@@ -137,9 +136,11 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        public void AssignCase(int requestId, string phyRegion, string phyId, string assignNote)
+        [HttpPost("{requestId}")]
+        public IActionResult AssignCase(int requestId, string phyRegion, string phyId, string notes)
         {
-            requestServices.AssignCase(requestId, phyRegion, phyId, assignNote);
+            requestServices.AssignCase(requestId, phyRegion, phyId, notes);
+            return RedirectToAction("AdminDashboard");
         }
 
 
@@ -214,6 +215,12 @@ namespace HalloDoc_Project.Controllers
             }
             return View();
         }
-        
+
+        [HttpPost("{requestId}")]
+        public IActionResult ClearCase(int requestId)
+        {
+            requestServices.ClearCase(requestId);
+            return RedirectToAction("AdminDashboard");
+        }
     }
 }
