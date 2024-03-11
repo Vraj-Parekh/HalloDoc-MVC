@@ -30,6 +30,7 @@ namespace HalloDoc_Project.Attributes
 
             if (token == null || !JwtService.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
             {
+
                 context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Patient", action = "PatientLogin" }));
                 return;
             }

@@ -4,57 +4,57 @@
     ViewData["Title"] = "AdminDashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-@section style{
+@section style {
     <link rel="stylesheet" href="~/css/admin_dashboard.css" asp-append-version="true" />
 
 }
 
 
 <div class="tab-pane container-fluid active" id="dashboard">
-        <div class="row justify-content-center mt-3">
-            <div class="col-xl-2 col-sm-4 col-6">
-                <div class="mt-1 p-3 rounded d-flex flex-column pointer" role="button" id="NewState" onclick="activateTab('NewState')">
-                    <span><i class="bi bi-compass"></i> NEW</span>
-                    <span class="h3 fw-bold">12345</span>
-                </div>
-            </div>
-
-            <div class="col-xl-2 col-sm-4 col-6">
-                <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="PendingState" onclick="activateTab('PendingState')">
-                    <span><i class="bi bi-person"></i> PENDING</span>
-                    <span class="h3 fw-bold">12345</span>
-                </div>
-            </div>
-
-            <div class="col-xl-2 col-sm-4 col-6">
-                <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="ActiveState" onclick="activateTab('ActiveState')">
-                    <span><i class="bi bi-check2-circle"></i> ACTIVE</span>
-                    <span class="h3 fw-bold">12345</span>
-                </div>
-
-            </div>
-
-            <div class="col-xl-2 col-sm-4 col-6">
-                <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="ConcludeState" onclick="activateTab('ConcludeState')">
-                    <span><i class="bi bi-clock"></i> CONCLUDE</span>
-                    <span class="h3 fw-bold">12345</span>
-                </div>
-            </div>
-
-            <div class="col-xl-2 col-sm-4 col-6">
-                <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="ToCloseState" onclick="activateTab('ToCloseState')">
-                    <span><i class="bi bi-person-x-fill"></i> TO CLOSE</span>
-                    <span class="h3 fw-bold">12345</span>
-                </div>
-            </div>
-
-            <div class="col-xl-2 col-sm-4 col-6 ">
-                <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="UnpaidState" onclick="activateTab('UnpaidState')">
-                    <span><i class="fa-solid fa-dollar-sign"></i> UNPAID</span>
-                    <span class="h3 fw-bold">12345</span>
-                </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-xl-2 col-sm-4 col-6">
+            <div class="mt-1 p-3 rounded d-flex flex-column pointer" role="button" id="NewState" onclick="activateTab('NewState')">
+                <span><i class="bi bi-compass"></i> NEW</span>
+                <span class="h3 fw-bold">12345</span>
             </div>
         </div>
+
+        <div class="col-xl-2 col-sm-4 col-6">
+            <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="PendingState" onclick="activateTab('PendingState')">
+                <span><i class="bi bi-person"></i> PENDING</span>
+                <span class="h3 fw-bold">12345</span>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-sm-4 col-6">
+            <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="ActiveState" onclick="activateTab('ActiveState')">
+                <span><i class="bi bi-check2-circle"></i> ACTIVE</span>
+                <span class="h3 fw-bold">12345</span>
+            </div>
+
+        </div>
+
+        <div class="col-xl-2 col-sm-4 col-6">
+            <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="ConcludeState" onclick="activateTab('ConcludeState')">
+                <span><i class="bi bi-clock"></i> CONCLUDE</span>
+                <span class="h3 fw-bold">12345</span>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-sm-4 col-6">
+            <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="ToCloseState" onclick="activateTab('ToCloseState')">
+                <span><i class="bi bi-person-x-fill"></i> TO CLOSE</span>
+                <span class="h3 fw-bold">12345</span>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-sm-4 col-6 ">
+            <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="UnpaidState" onclick="activateTab('UnpaidState')">
+                <span><i class="fa-solid fa-dollar-sign"></i> UNPAID</span>
+                <span class="h3 fw-bold">12345</span>
+            </div>
+        </div>
+    </div>
 
 
     <div class="row m-lg-2 ">
@@ -96,24 +96,16 @@
                     <button class="btn btn-white me-2" type="button" id="VipFilter" onclick="activateFilter('VipFilter')"><i class="bi bi-circle-fill me-1" style="color: #6d4bd2;"></i>VIP</button>
                 </div>
             </div>
-
-
         </div>
-
-
-
     </div>
 
     <div id="tableRecords" class="tableData"></div>
-
-
 </div>
 
-@section Scripts{
-
+@section Scripts {
     <script>
-        var requestTypeId = 5;
-        var status = 1;
+        var requestTypeId = 5;//for all
+        var status = 1;//new state
         var pageIndex = 1;
         var count = 10;
         var previousTab = null;
@@ -128,7 +120,7 @@
             let clickedTab = document.getElementById(tabId);
             clickedTab.classList.add('active');
 
-            switch(tabId){
+            switch (tabId) {
                 case "NewState":
                     status = 1;
                     getData();
@@ -196,9 +188,7 @@
                     getData();
                     break;
             }
-
-
-            // Update the previousTab variable
+            // Update the previousFilter
             previousFilter = clickedfilter;
         }
         activateTab('NewState');
@@ -209,12 +199,12 @@
             $('#All').trigger('click');
         });
 
-        function getData(){
+        function getData() {
             // alert(requestTypeId);
             $.ajax({
                 url: '@Url.Action("TableTest", "Admin")',
                 type: 'get',
-                data: { status: status, requestTypeId: requestTypeId, pageIndex:pageIndex, count :count},
+                data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, count: count },
                 async: false,
                 success: function (result) {
                     // console.log(result);
@@ -222,78 +212,5 @@
                 }
             });
         }
-
-        // $('#NewState').on('click ', function (type = "All") {
-        //     status = 1;
-        //     $.ajax({
-        //         url: '@Url.Action("TableTest", "Admin")',
-        //         type: 'get',
-        //         data: { status: status, requestTypeId: 5 },
-        //         async:false,
-        //         success: function (result) {
-        //             console.log(result);
-        //             $(".tableData").html(result);
-        //         }
-        //     });
-        // });
-
-        // $('#PendingState').on('click ', function () {
-
-        //     $.ajax({
-        //         url: '@Url.Action("PendingStateTable", "Admin")',
-        //         type: 'get',
-        //         data: { status: status, requestTypeId: 5 },
-        //         success: function (result) {
-        //             $(".tableData").html(result);
-        //         }
-        //     });
-        // });
-
-        // $('#ActiveState').on('click ', function () {
-        //     $.ajax({
-        //         url: '@Url.Action("ActiveStateTable", "Admin")',
-        //         type: 'get',
-        //         data: { status: status, requestTypeId: 5 },
-        //         success: function (result) {
-        //             $(".tableData").html(result);
-        //         }
-        //     });
-        // });
-
-        // $('#ConcludeState').on('click ', function () {
-        //     $.ajax({
-        //         url: '@Url.Action("ConcludeStateTable", "Admin")',
-        //         type: 'get',
-        //         data: { status: status, requestTypeId: 5 },
-        //         success: function (result) {
-        //             $(".tableData").html(result);
-        //         }
-        //     });
-        // });
-
-        // $('#ToCloseState').on('click ', function () {
-        //     $.ajax({
-        //         url: '@Url.Action("ToCloseStateTable", "Admin")',
-        //         type: 'get',
-        //         data: { status: status, requestTypeId: 5 },
-        //         success: function (result) {
-        //             $(".tableData").html(result);
-        //         }
-        //     });
-        // });
-
-        // $('#UnpaidState').on('click ', function () {
-        //     $.ajax({
-        //         url: '@Url.Action("UnpaidStateTable", "Admin")',
-        //         type: 'get',
-        //         data: { status: status, requestTypeId: 5 },
-        //         success: function (result) {
-        //             $(".tableData").html(result);
-        //         }
-        //     });
-        // });
-
-
-
     </script>
 }

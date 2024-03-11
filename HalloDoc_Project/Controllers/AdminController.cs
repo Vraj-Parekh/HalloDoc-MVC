@@ -7,11 +7,13 @@ using HalloDoc_Project.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Repositories.Repository.Implementation;
+using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc_Project.Controllers
 {
     [Route("[controller]/[action]")]
-    //[CustomAuthorization("Admin")]
+    [CustomAuthorization("Admin")]
 
     public class AdminController : Controller
     {
@@ -26,10 +28,11 @@ namespace HalloDoc_Project.Controllers
         private readonly IHealthProfessionalTypeService healthProfessionalTypeService;
         private readonly IHealthProfessionalsService healthProfessionalsService;
         private readonly IOrderDetailsService orderDetailsService;
+        private readonly IAspNetUserService aspNetUserService;
 
         public IRegionService RegionService { get; }
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService,IHealthProfessionalsService healthProfessionalsService,IOrderDetailsService orderDetailsService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService,IHealthProfessionalsService healthProfessionalsService,IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -42,23 +45,43 @@ namespace HalloDoc_Project.Controllers
             this.healthProfessionalTypeService = healthProfessionalTypeService;
             this.healthProfessionalsService = healthProfessionalsService;
             this.orderDetailsService = orderDetailsService;
+            this.aspNetUserService = aspNetUserService;
         }
         public IActionResult Index()
         {
             return View();
         }
 
-        //[AllowAnonymous]
-        //public IActionResult AdminLogin()
-        //{
-        //    return View();
-        //}
-        //[HttpPost]
-        //[AllowAnonymous]
-        //public IActionResult AdminLogin()
-        //{
+        [AllowAnonymous]
+        public IActionResult AdminLogin()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult AdminLogin(LoginDTO data)
+        {
+            string token = aspNetUserService.AuthenticateUser(data);
 
-        //}
+            if (token != null)
+            {
+                CookieOptions cookieOptions = new CookieOptions()
+                {
+                    Expires = DateTime.UtcNow.AddMinutes(20),
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict
+                };
+                Response.Cookies.Append("Token", token, cookieOptions);
+
+                return RedirectToAction("AdminDashboard", "Admin");
+            }
+            else
+            {
+                ModelState.AddModelError(nameof(data.Password), "Incorrect Email or Password.");
+                return View(data);
+            }
+        }
         public IActionResult TableTest(int requestTypeId,int status, int pageIndex, int count)
         {
             List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, count);

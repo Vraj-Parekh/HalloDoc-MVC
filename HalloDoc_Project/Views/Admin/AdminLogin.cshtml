@@ -1,4 +1,49 @@
-﻿@{
+﻿@model LoginDTO
+@{
     ViewData["Title"] = "AdminLogin";
-    Layout = null;}@model LoginDTO<div class="row" style="overflow : hidden">    <div class="adminSubDivs col-lg-6 p-0">        <img src="~/images/11116016_415.jpg" class="h-100 w-100 mainImage" />    </div>    <div class="d-flex align-items-center justify-content-center flex-column adminSubDivs col-lg-6" id="subDiv2">        <div class="mt-2 mr-2S" style="position:absolute; right:0; top:0;">            <img src="~/Images/light.png" onclick="myFunction()" height="40px" alt="" />        </div>        <div class="d-flex justify-content-center mt-5">            <img src="~/Images/image_2024_01_17T04_17_17_750Z.png" height="150px" alt="" />        </div>        <div class="d-flex flex-column align-items-center h-100 wid-admin" style="width:360px">            <div class="login d-flex justify-content-center flex-column mt-5 w-100">                <div class="h3 mt-3 d-flex justify-content-center">Login To Your Account</div>                <form asp-action="AdminLogin" asp-controller="Admin" method="post">                    <div class="form-floating mt-4">                        <input type="email" asp-for="Email" class="form-control" id="floatinginput" placeholder="name@example.com">                        <label for="floatinginput">Email</label>                        <i class="bi bi-person-circle login-icon" style="position:relative; bottom:40px; left:93%;"></i>                        <span asp-validation-for="Email" class="text-danger" style="position:relative;  right:20px;"></span>                    </div>                    <div class="form-floating">                        <input type="password" asp-for="Password" class="form-control" id="password" placeholder="password">                        <label for="floatingpassword">password</label>                        <i class="bi bi-eye-slash-fill" onclick="fun()" id="eye" style="position:relative; bottom:40px; left:93%;"></i>                        <span asp-validation-for="Password" class="text-danger" style="position:relative;  right:20px;"></span>                    </div>                    <button type="submit" class="d-flex justify-content-center btn btn-primary fields bg-info rounded-2 border border-0 w-100 py-2 fw-bold">Log In</button><br>                </form>                <div class="d-flex justify-content-center">                    <a asp-controller="home" asp-action="resetpwd" class="link text-info text-decoration-none fw-bold">Forgot Password?</a>                </div>                <div class="d-flex justify-content-center">                    <div class="terms bg-body-tertiary p-1 border-0  d-flex justify-content-between position-fixed bottom-0 mb-3">                        <a href="#" class="text-decoration-none text-secondary">terms of conditions</a>                        <span class="mx-1">|</span>                        <a href="#" class="text-decoration-none text-secondary">privacy policy</a>                    </div>                </div>            </div>        </div>    </div></div><script>    const path = document.getElementById("eye");    const password = document.getElementById('password')    function fun() {        console.log(password);        if (password.type === "password") {            path.classList.remove("bi-eye-slash-fill");            path.classList.add("bi-eye-fill");            password.type = "text";        }        else {            path.classList.remove("bi-eye-fill");            path.classList.add("bi-eye-slash-fill");            password.type = "password";        }    }</script>@if (TempData["Error"] != null)
-{    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />    <script src="~/lib/jquery/dist/jquery.min.js"></script>    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>    <script type="text/javascript">        toastr.error('@TempData["Error"]');    </script>}
+    Layout = null;}
+@section style {
+    <link rel="stylesheet" href="~/css/patient_login.css" asp-append-version="true" />
+}
+<div class="main">
+    <a asp-action="AdminLogin" asp-controller="Admin" class="mb-2">< Back</a>
+
+    <h1 class="mb-4 text-center">Login to your account</h1>
+
+    <form asp-action="AdminLogin" class="login-form-control">
+
+        <div class="form-floating input-group mb-3">
+            <input type="email"
+                   asp-for="Email"
+                   class="form-control border-end-0 bg-transparent border-focus-none"
+                   id="floatingInput"
+                   placeholder="email" />
+            <label for="floatingInput">Email</label>
+            <span class="input-group-text bg-transparent">
+                <i class="bi bi-person-circle"></i>
+            </span>
+        </div>
+        <span asp-validation-for="Email" class="text-danger"></span>
+
+        <div class="form-floating input-group mb-3">
+            <input type="password"
+                   asp-for="Password" class="form-control border-end-0 bg-transparent border-focus-none"
+                   id="floatingPassword"
+                   placeholder="password" />
+            <label for="floatingPassword">Password</label>
+            <span class="input-group-text bg-transparent">
+                <i class="bi bi-eye"></i>
+            </span>
+        </div>
+        <span asp-validation-for="Password" class="text-danger"></span>
+
+        <button class="btn btn-primary custom-btn mb-4">
+            Login
+        </button>
+
+        @* <a asp-action="ResetPwd" asp-controller="Patient" class="d-flex justify-content-center">Forgot Password ?</a> *@
+    </form>
+
+</div>
+@* <div class="row" style="overflow : hidden">    <div class="adminSubDivs col-lg-6 p-0">        <img src="~/images/11116016_415.jpg" class="h-100 w-100 mainImage" />    </div>    <div class="d-flex align-items-center justify-content-center flex-column adminSubDivs col-lg-6" id="subDiv2">        <div class="mt-2 mr-2S" style="position:absolute; right:0; top:0;">            <img src="~/Images/light.png" onclick="myFunction()" height="40px" alt="" />        </div>        <div class="d-flex justify-content-center mt-5">            <img src="~/Images/image_2024_01_17T04_17_17_750Z.png" height="150px" alt="" />        </div>        <div class="d-flex flex-column align-items-center h-100 wid-admin" style="width:360px">            <div class="login d-flex justify-content-center flex-column mt-5 w-100">                <div class="h3 mt-3 d-flex justify-content-center">Login To Your Account</div>                <form asp-action="AdminLogin" asp-controller="Admin" method="post">                    <div class="form-floating mt-4">                        <input type="email" asp-for="Email" class="form-control" id="floatinginput" placeholder="name@example.com">                        <label for="floatinginput">Email</label>                        <i class="bi bi-person-circle login-icon" style="position:relative; bottom:40px; left:93%;"></i>                        <span asp-validation-for="Email" class="text-danger" style="position:relative;  right:20px;"></span>                    </div>                    <div class="form-floating">                        <input type="password" asp-for="Password" class="form-control" id="password" placeholder="password">                        <label for="floatingpassword">password</label>                        <i class="bi bi-eye-slash-fill" onclick="fun()" id="eye" style="position:relative; bottom:40px; left:93%;"></i>                        <span asp-validation-for="Password" class="text-danger" style="position:relative;  right:20px;"></span>                    </div>                    <button type="submit" class="d-flex justify-content-center btn btn-primary fields bg-info rounded-2 border border-0 w-100 py-2 fw-bold">Log In</button><br>                </form>                <div class="d-flex justify-content-center">                    <a asp-controller="home" asp-action="resetpwd" class="link text-info text-decoration-none fw-bold">Forgot Password?</a>                </div>                <div class="d-flex justify-content-center">                    <div class="terms bg-body-tertiary p-1 border-0  d-flex justify-content-between position-fixed bottom-0 mb-3">                        <a href="#" class="text-decoration-none text-secondary">terms of conditions</a>                        <span class="mx-1">|</span>                        <a href="#" class="text-decoration-none text-secondary">privacy policy</a>                    </div>                </div>            </div>        </div>    </div></div><script>    const path = document.getElementById("eye");    const password = document.getElementById('password')    function fun() {        console.log(password);        if (password.type === "password") {            path.classList.remove("bi-eye-slash-fill");            path.classList.add("bi-eye-fill");            password.type = "text";        }        else {            path.classList.remove("bi-eye-fill");            path.classList.add("bi-eye-slash-fill");            password.type = "password";        }    }</script>@if (TempData["Error"] != null)
+{    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />    <script src="~/lib/jquery/dist/jquery.min.js"></script>    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>    <script type="text/javascript">        toastr.error('@TempData["Error"]');    </script>} *@
