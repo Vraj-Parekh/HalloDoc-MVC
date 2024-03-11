@@ -8,6 +8,7 @@ namespace Repositories.Repository.Interface
         Task<bool> AgreeWithAgreementAsync(int requestId);
         void AssignCase(int assignReqId, string phyRegion, string phyId, string assignNote);
         void ClearCase(int requestId);
+        object GetCount();
         ViewDocumentList GetDocumentData(int requestId);
         List<AdminDashboardDTO> GetPatientdata(int requesttypeid,int status, int pageIndex, int count);
         Request? GetRequest(int requestId);

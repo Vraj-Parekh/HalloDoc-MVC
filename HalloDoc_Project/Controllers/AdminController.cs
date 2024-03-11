@@ -90,6 +90,8 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult AdminDashboard()
         {
+            object? count = requestServices.GetCount();
+            ViewBag.count = count;
             return View();
         }
 

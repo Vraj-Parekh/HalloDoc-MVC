@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "AdminDashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var count = ViewBag.count;
 }
 @section style {
     <link rel="stylesheet" href="~/css/admin_dashboard.css" asp-append-version="true" />
@@ -15,21 +16,21 @@
         <div class="col-xl-2 col-sm-4 col-6">
             <div class="mt-1 p-3 rounded d-flex flex-column pointer" role="button" id="NewState" onclick="activateTab('NewState')">
                 <span><i class="bi bi-compass"></i> NEW</span>
-                <span class="h3 fw-bold">12345</span>
+                <span class="h3 fw-bold">@count.NewCount </span>
             </div>
         </div>
 
         <div class="col-xl-2 col-sm-4 col-6">
             <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="PendingState" onclick="activateTab('PendingState')">
                 <span><i class="bi bi-person"></i> PENDING</span>
-                <span class="h3 fw-bold">12345</span>
+                <span class="h3 fw-bold">@count.PendingCount</span>
             </div>
         </div>
 
         <div class="col-xl-2 col-sm-4 col-6">
             <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="ActiveState" onclick="activateTab('ActiveState')">
                 <span><i class="bi bi-check2-circle"></i> ACTIVE</span>
-                <span class="h3 fw-bold">12345</span>
+                <span class="h3 fw-bold">@count.ActiveCount</span>
             </div>
 
         </div>
@@ -37,21 +38,21 @@
         <div class="col-xl-2 col-sm-4 col-6">
             <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="ConcludeState" onclick="activateTab('ConcludeState')">
                 <span><i class="bi bi-clock"></i> CONCLUDE</span>
-                <span class="h3 fw-bold">12345</span>
+                <span class="h3 fw-bold">@count.ConcludeCount</span>
             </div>
         </div>
 
         <div class="col-xl-2 col-sm-4 col-6">
             <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="ToCloseState" onclick="activateTab('ToCloseState')">
                 <span><i class="bi bi-person-x-fill"></i> TO CLOSE</span>
-                <span class="h3 fw-bold">12345</span>
+                <span class="h3 fw-bold">@count.ToCloseCount</span>
             </div>
         </div>
 
         <div class="col-xl-2 col-sm-4 col-6 ">
             <div class="mt-1 p-3 rounded d-flex flex-column" role="button" id="UnpaidState" onclick="activateTab('UnpaidState')">
                 <span><i class="fa-solid fa-dollar-sign"></i> UNPAID</span>
-                <span class="h3 fw-bold">12345</span>
+                <span class="h3 fw-bold">@count.UnpaidCount</span>
             </div>
         </div>
     </div>

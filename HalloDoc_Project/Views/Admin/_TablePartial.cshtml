@@ -4,7 +4,30 @@
 @{
     var status = Model.Count > 0 ? Model[0].Status : 1;
 }
-<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<style>
+    .dataTables_info {
+        text-align: center !important;
+        font-size: 20px;
+        font-weight: bold;
+        color: black;
+    }
+
+    .dataTables_paginate {
+        text-align: center;
+    }
+
+    .paginate_button {
+        font-size: 25px;
+        text-decoration: none;
+        margin-right: 20px;
+        color: black;
+        cursor: pointer;
+    }
+</style>
 <div class="table-responsive">
     <table id="myTable" class="table">
         <thead>
@@ -248,4 +271,21 @@
 
     //     // $('.dataTables_filter').hide();
     // });
+
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+
+            "lengthMenu": [[5, 10, -1], [5, 10, "All"]],
+            "pageLength": 5,
+            language: {
+                oPaginate: {
+                    sNext: '<i class="bi bi-caret-right-fill text-info"></i>',
+                    sPrevious: '<i class="bi bi-caret-left-fill text-info"></i>'
+
+                }
+            }
+        });
+    });
+        $('.dataTables_length').hide();
+        $('.dataTables_filter').hide();
 </script>

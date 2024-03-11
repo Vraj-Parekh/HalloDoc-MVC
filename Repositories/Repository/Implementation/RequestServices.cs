@@ -106,6 +106,19 @@ namespace Repositories.Repository.Implementation
             return data;
         }
 
+        public Object GetCount()
+        {
+            RequestCount? count = new RequestCount
+            {
+                NewCount = _context.Requests.Where(r => r.Status == 1).Count(),
+                PendingCount = _context.Requests.Where(r => r.Status == 2).Count(),
+                ActiveCount = _context.Requests.Where(r => r.Status == 4 || r.Status == 5).Count(),
+                ConcludeCount = _context.Requests.Where(r => r.Status == 6).Count(),
+                ToCloseCount = _context.Requests.Where(r => r.Status == 3 || r.Status == 7 || r.Status == 8).Count(),
+                UnpaidCount = _context.Requests.Where(r => r.Status == 9).Count()
+            };
+            return count;
+        }
         public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageCount)
         {
             Dictionary<int, int[]> statusMap = new()
