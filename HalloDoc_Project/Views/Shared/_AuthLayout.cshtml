@@ -10,30 +10,30 @@
     @await RenderSectionAsync("style", required: false)
 </head>
 <body class="bg-body-tertiary">
-    
-        <header>
-            <div class="d-flex justify-content-center">
-                <img src="~/img/hallodoc_img.png"
-                     class="img-fluid logo-img"
-                     alt="hallodoc_img" />
+
+    <header>
+        <div class="d-flex justify-content-center">
+            <img src="~/img/hallodoc_img.png"
+                 class="img-fluid logo-img"
+                 alt="hallodoc_img" />
             <button type="button" class="btn btn-outline-info theme_btn" id="toggle_theme_btn">
-                    <i class="bi bi-moon"></i>
-                </button>
-            </div>
-        </header>
-
-        <div class="container">
-                  @RenderBody()
+                <i class="bi bi-moon"></i>
+            </button>
         </div>
+    </header>
 
-        <footer>
-            <div class="fixed-bottom footer d-flex justify-content-center align-items-center gap-2 pe-2">
-                <a href="#">Terms and condition</a>
-                |
-                <a href="#">Privacy policy</a>
-            </div>
-        </footer>
-   
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    <footer>
+        <div class="fixed-bottom footer d-flex justify-content-center align-items-center gap-2 pe-2">
+            <a href="#">Terms and condition</a>
+            |
+            <a href="#">Privacy policy</a>
+        </div>
+    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/toggle_btn.js" asp-append-version="true"></script>

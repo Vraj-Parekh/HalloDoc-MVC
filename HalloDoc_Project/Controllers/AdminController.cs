@@ -67,7 +67,7 @@ namespace HalloDoc_Project.Controllers
             {
                 CookieOptions cookieOptions = new CookieOptions()
                 {
-                    Expires = DateTime.UtcNow.AddMinutes(20),
+                    Expires = DateTime.UtcNow.AddMinutes(60),
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Strict
