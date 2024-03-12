@@ -139,11 +139,37 @@
                     @if (status != 5)
                     {
                         <td class=" ">
-                            <a class="btn border-1 border-white text-white text-nowrap">
-                                <i class="bi bi-telephone mx-2"></i>
-                                @items.Phone
-                            </a>
-                            <p>(Patient)</p>
+                            @if (items.RequestTypeId == 2 && !string.IsNullOrEmpty(items.ClientPhone))
+                            {
+                                <a class="btn border-1 border-white text-white text-nowrap">
+                                    <i class="bi bi-telephone mx-2"></i>
+                                    @items.ClientPhone
+                                </a>
+                                <p>(Patient)</p>
+                            }
+                            @if (!string.IsNullOrEmpty(items.Phone))
+                            {
+                                <a class="btn border-1 border-white text-white text-nowrap">
+                                    <i class="bi bi-telephone mx-2"></i>
+                                    @items.Phone
+                                </a>
+                                @if (items.RequestTypeId == 1)
+                                {
+                                    <p>(Business)</p>
+                                }
+                                @if (items.RequestTypeId == 2)
+                                {
+                                    <p>(Patient)</p>
+                                }
+                                @if (items.RequestTypeId == 3)
+                                {
+                                    <p>(Family/Friend)</p>
+                                }
+                                @if (items.RequestTypeId == 4)
+                                {
+                                    <p>(Concierge)</p>
+                                }
+                            }
                         </td>
                     }
                     <td class=" ">@items.Address</td>
@@ -220,7 +246,7 @@
 
                             @if (status == 2)
                             {
-                                <li><a class="dropdown-item " role="button"><i class="fa-regular fa-file-lines pe-2"></i>Send Agreement</a></li>
+                                <li><a class="dropdown-item " role="button" onclick="SetAgreementInfo(@items.RequestId,@items.RequestTypeId,'@items.ClientPhone','@items.Email')"><i class="fa-regular fa-file-lines pe-2"></i>Send Agreement</a></li>
                             }
 
                             @if (status == 3 || status == 4 || status == 5)
@@ -239,7 +265,7 @@
         </tbody>
     </table>
 </div>
-<partial name="_ModalPartial" />
+<partial name="_ModalPartial" model=null />
 
 
 <script>
@@ -286,6 +312,6 @@
             }
         });
     });
-        $('.dataTables_length').hide();
-        $('.dataTables_filter').hide();
+    $('.dataTables_length').hide();
+    $('.dataTables_filter').hide();
 </script>

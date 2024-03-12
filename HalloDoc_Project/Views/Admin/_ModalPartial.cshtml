@@ -1,4 +1,6 @@
-﻿ <!-- Modal For Assign Case For Patient-->
+﻿@model SendAgreement 
+
+<!-- Modal For Assign Case For Patient-->
 <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -51,8 +53,8 @@
     </div>
 </div>
 
+<!-- For assign case-->
 <script>
-    //for assign case
     function SetAssignId(id) {
         console.log("start");
         console.log(id);
@@ -127,8 +129,8 @@
     </div>
 </div>
 
+<!-- For block case-->
 <script>
-    //for block case
     function SetBlockInfo(id, name) {
         console.log("start");
         console.log(name);
@@ -190,8 +192,8 @@
     </div>
 </div>
 
+<!-- For cancel case-->
 <script>
-    //for cancel case
     function SetCancelInfo(id, name) {
         console.log("start");
         console.log(name);
@@ -258,8 +260,8 @@
     </div>
 </div>
 
+<!-- For transfer case-->
 <script>
-    //for transfer case
     function SetTransferId(id) {
         console.log("start");
         console.log(id);
@@ -270,6 +272,7 @@
 </script>
 
 
+<!-- Modal For Clear Case For Patient-->
 <div class="modal fade" id="clearCaseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class=" p-2 py-3 modal-content text-center justify-content-center">
@@ -293,13 +296,83 @@
     </div>
 </div>
 
+<!-- For Clear case-->
 <script>
-    //for clear case case
     function SetCancelId(id) {
         console.log("start");
         console.log(id);
         const myModal = new bootstrap.Modal("#clearCaseModal", {});
         myModal.show();
         $(".clearCaseForm").attr("action", "/Admin/ClearCase/" + id);
-    } 
+    }
+</script>
+
+<!-- Modal For Send Agreement-->
+<div class="modal fade text-start" id="sendAgreementModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title fs-5" id="exampleModalLabel">Send Agreement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" class="sendAgreementForm">
+                <div class="modal-body">
+                    <div class="d-md-flex gap-1 mx-auto text-center align-items-center">
+
+                        <i class="bi bi-circle-fill pe-2"></i>
+                        <span class="text-sm-start" id="displayName"></span>
+                    </div>
+                    <p> To Send Agreement please make sure you are updating the correct contact information below for the responsible party. </p>
+                    <div class="form-floating mb-3">
+                        <input type="text" id="phoneNumber" class="input-outline w-100 h-100 fs-6 form-control shadow-none" >
+                        <label class="inputs-label inputs-label fs-6">Phone Number</label>
+                        @* <span asp-validation-for="PhoneNumber" class="text-danger"></span> *@
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input id="email" class="input-outline w-100 h-100 fs-6 form-control shadow-none" type="email" />
+                        <label class="inputs-label inputs-label-textarea fs-6" id="notedata">Email</label>
+                        @* <span asp-validation-for="Email" class="text-danger"></span> *@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class=" btn btn-info text-white">Send</button>
+                    <a class="btn btn-outline-info" data-bs-dismiss="modal">Close</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- For Send agreement-->
+<script>
+    function SetAgreementInfo(requestId, requestTypeId,phone,email) {
+        console.log("start");
+        console.log(requestId);
+        console.log(requestTypeId);
+        if (requestTypeId == 1) 
+        {
+            $("#displayName").text('Business');
+            $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 pink-color');
+        } else if (requestTypeId == 2) 
+        {
+            $("#displayName").text('Patient');
+            $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 green-color');
+        } else if (requestTypeId == 3) 
+        {
+            $("#displayName").text('Family');
+            $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 orange-color');
+        } else if (requestTypeId == 4)
+        {
+            $("#displayName").text('Concierge');
+            $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 blue-color');
+        }
+
+        document.getElementById('phoneNumber').value=phone;
+        document.getElementById('email').value=email;
+
+        const myModal = new bootstrap.Modal("#sendAgreementModal", {});
+        myModal.show();
+
+        $(".sendAgreementForm").attr("action", "/Admin/SendAgreement/" + requestId);
+    }
 </script>

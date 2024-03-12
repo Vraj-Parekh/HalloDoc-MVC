@@ -82,6 +82,7 @@ namespace HalloDoc_Project.Controllers
                 return View(data);
             }
         }
+
         public IActionResult Table(int requestTypeId,int status, int pageIndex, int count)
         {
             List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, count);
@@ -223,6 +224,13 @@ namespace HalloDoc_Project.Controllers
         {
             requestServices.ClearCase(requestId);
             return RedirectToAction("AdminDashboard");
+        }
+
+        [HttpPost("{requestId}")]
+        public IActionResult SendAgreement(SendAgreement model,int requestId)
+        {
+            SendAgreement? data =requestServices.GetMobileEmail(model, requestId);
+            return View(data);
         }
     }
 }

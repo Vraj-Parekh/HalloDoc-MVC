@@ -10,6 +10,7 @@ namespace Repositories.Repository.Interface
         void ClearCase(int requestId);
         object GetCount();
         ViewDocumentList GetDocumentData(int requestId);
+        SendAgreement GetMobileEmail(SendAgreement model, int requestId);
         List<AdminDashboardDTO> GetPatientdata(int requesttypeid,int status, int pageIndex, int count);
         Request? GetRequest(int requestId);
         ViewCaseDTO GetViewCase(int requestId);

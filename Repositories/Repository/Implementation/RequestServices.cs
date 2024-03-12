@@ -111,11 +111,11 @@ namespace Repositories.Repository.Implementation
             RequestCount? count = new RequestCount
             {
                 NewCount = _context.Requests.Where(r => r.Status == 1).Count(),
-                PendingCount = _context.Requests.Where(r => r.Status == 2).Count(),
-                ActiveCount = _context.Requests.Where(r => r.Status == 4 || r.Status == 5).Count(),
-                ConcludeCount = _context.Requests.Where(r => r.Status == 6).Count(),
-                ToCloseCount = _context.Requests.Where(r => r.Status == 3 || r.Status == 7 || r.Status == 8).Count(),
-                UnpaidCount = _context.Requests.Where(r => r.Status == 9).Count()
+                PendingCount = _context.Requests.Where(r => r.Status == 16).Count(),
+                ActiveCount = _context.Requests.Where(r => r.Status == 3 || r.Status == 5 || r.Status == 6).Count(),
+                ConcludeCount = _context.Requests.Where(r => r.Status == 18).Count(),
+                ToCloseCount = _context.Requests.Where(r => r.Status == 3 || r.Status == 21 || r.Status == 8).Count(),
+                UnpaidCount = _context.Requests.Where(r => r.Status == 19).Count()
             };
             return count;
         }
@@ -147,6 +147,8 @@ namespace Repositories.Repository.Implementation
                     Requestor = (RequestTypeId)req.Requesttypeid + ", " + req.Firstname,
                     RequestedDate = req.Createddate,
                     Phone = req.Phonenumber,
+                    ClientPhone = requestClient.Phonenumber,
+                    Email = req.Email,
                     Address = requestClient.Address,
                     PhysicianName = _context.Physicians.Where(a => a.Physicianid == req.Physicianid).Select(phy => phy.Firstname).FirstOrDefault(),
                     Notes = _context.Requeststatuslogs.Where(a => a.Requestid == req.Requestid).OrderBy(a => a.Createddate).LastOrDefault()?.Notes,
@@ -236,6 +238,18 @@ namespace Repositories.Repository.Implementation
                 _context.Requeststatuslogs.Add(requestStatusLog);
                 _context.SaveChanges();
             }
+        }
+
+        public SendAgreement GetMobileEmail(SendAgreement model, int requestId)
+        {
+            Request? request = GetRequest(requestId);
+            if (request is not null)
+            {
+                model.PhoneNumber = request.Phonenumber;
+                model.Email = request.Email;
+                return model;
+            }
+            return null;
         }
     }
 }

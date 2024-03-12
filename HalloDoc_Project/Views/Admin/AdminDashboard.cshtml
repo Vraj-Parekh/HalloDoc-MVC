@@ -60,7 +60,7 @@
 
     <div class="row m-lg-2 ">
         <div class="d-flex justify-content-between m-2">
-            <h3 class="p-2">Patients <span style="color:#00008b">(New)</span></h3>
+            <h3 class="p-2">Patients <span style="color:#00008b" id="spanText"></span></h3>
             <div class="p-2">
                 <button type="button" class="btn btn-info fs-6 fw-semibold mx-1 p-2 text-white"><i class="fa-regular fa-paper-plane pe-1"></i><span class=""> Send Link</span></button>
                 <button type="button" class="btn btn-info fs-6 fw-semibold mx-1 p-2 text-white"><i class="fa-solid fa-notes-medical pe-1"></i><span> Create Request</span></button>
@@ -90,11 +90,11 @@
             <div class="col-md-8 col-sm-12">
                 <div class="text-end text-sm-start d-md-flex justify-content-md-end req-container">
                     <button class="btn btn-white me-2" id="AllFilter" onclick="activateFilter('AllFilter')">All</button>
-                    <button class="btn btn-white me-2" type="button" id="PatientFilter" onclick="activateFilter('PatientFilter')"><i class="bi bi-circle-fill me-1" style="color: #5fbc61;"></i>Patient</button>
-                    <button class="btn btn-white me-2" type="button" id="FamilyFilter" onclick="activateFilter('FamilyFilter')"><i class="bi bi-circle-fill me-1" style="color: #ed9124;"></i>Family</button>
-                    <button class="btn btn-white me-2" type="button" id="BusinessFilter" onclick="activateFilter('BusinessFilter')"><i class="bi bi-circle-fill me-1" style="color: #dd75b8;"></i>Business</button>
-                    <button class="btn btn-white me-2" type="button" id="ConciergeFilter" onclick="activateFilter('ConciergeFilter')"><i class="bi bi-circle-fill me-1" style="color: #007ec7;"></i>Concierge</button>
-                    <button class="btn btn-white me-2" type="button" id="VipFilter" onclick="activateFilter('VipFilter')"><i class="bi bi-circle-fill me-1" style="color: #6d4bd2;"></i>VIP</button>
+                    <button class="btn btn-white me-2" type="button" id="PatientFilter" onclick="activateFilter('PatientFilter')"><i class="bi bi-circle-fill me-1 green-color"></i>Patient</button>
+                    <button class="btn btn-white me-2" type="button" id="FamilyFilter" onclick="activateFilter('FamilyFilter')"><i class="bi bi-circle-fill me-1 orange-color"></i>Family</button>
+                    <button class="btn btn-white me-2" type="button" id="BusinessFilter" onclick="activateFilter('BusinessFilter')"><i class="bi bi-circle-fill me-1 pink-color"></i>Business</button>
+                    <button class="btn btn-white me-2" type="button" id="ConciergeFilter" onclick="activateFilter('ConciergeFilter')"><i class="bi bi-circle-fill me-1 blue-color"></i>Concierge</button>
+                    <button class="btn btn-white me-2" type="button" id="VipFilter" onclick="activateFilter('VipFilter')"><i class="bi bi-circle-fill me-1 blue-color"></i>VIP</button>
                 </div>
             </div>
         </div>
@@ -120,6 +120,8 @@
             // Activate the clicked tab
             let clickedTab = document.getElementById(tabId);
             clickedTab.classList.add('active');
+            var spanEle = document.getElementById('spanText');
+            spanEle.textContent = "(" + tabId.substring(0, tabId.indexOf("State")) + ")";
 
             switch (tabId) {
                 case "NewState":
@@ -206,7 +208,6 @@
                 url: '@Url.Action("Table", "Admin")',
                 type: 'get',
                 data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, count: count },
-                async: false,
                 success: function (result) {
                     // console.log(result);
                     if (result.includes('table')) 

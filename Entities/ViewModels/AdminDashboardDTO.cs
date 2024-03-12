@@ -19,11 +19,13 @@ namespace Entities.ViewModels
         public DateTime DateOfService { get; set; }
         public string? Region { get; set; }
         public string? Phone { get; set; }
+        public string? ClientPhone { get; set; }
         public string? Physician { get; set; }
         public string? Address { get; set; }
         public string? Notes { get; set; }
         public string? ChatWith { get; set; }
         public int? Status { get; set; }
         public int? RegionId { get; set; }
+        public string? Email { get; set; }
     }
 }

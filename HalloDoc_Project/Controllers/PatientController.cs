@@ -197,9 +197,8 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult Profile()
         {
-            var email = User.Identities.ElementAt(1).Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
-            
-
+            //var email = User.Identities.ElementAt(1).Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
+            var email = User.FindFirstValue(ClaimTypes.Email);
 
             var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
 
@@ -226,7 +225,7 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                var email = HttpContext.Session.GetString("email");
+                var email = User.FindFirstValue(ClaimTypes.Email);
                 var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
 
                 patientData.Firstname = data.FirstName;
@@ -253,7 +252,7 @@ namespace HalloDoc_Project.Controllers
         [HttpGet("[controller]/[action]/{requestId:int}")]
         public IActionResult ReviewAgreement(int requestId)
         {
-            string? email = HttpContext.Session.GetString("Email");
+            var email = User.FindFirstValue(ClaimTypes.Email);
             bool requestPending = requestServices.IsRequestPending(requestId, email);
             if (requestPending)
             {
@@ -383,7 +382,7 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult RequestforMe()
         {
-            var email = HttpContext.Session.GetString("email");
+            var email = User.FindFirstValue(ClaimTypes.Email);
             var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
 
             if (patientData == null)
@@ -479,7 +478,7 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult RequestForSomeoneElse()
         {
-            var email = HttpContext.Session.GetString("email");
+            var email = User.FindFirstValue(ClaimTypes.Email);
             var user = _context.Users.FirstOrDefault(a => a.Email == email);
 
             FamilyRequestDTO model = new()
