@@ -9,7 +9,7 @@ namespace HalloDoc.Utility
     {
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            var emailToSend = new MimeMessage();
+            MimeMessage? emailToSend = new MimeMessage();
             emailToSend.From.Add(MailboxAddress.Parse("vraj.parekh@etatvasoft.com"));
             emailToSend.To.Add(MailboxAddress.Parse(email));
             emailToSend.Subject = subject;

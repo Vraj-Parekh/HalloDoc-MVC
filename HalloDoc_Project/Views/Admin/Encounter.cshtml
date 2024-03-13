@@ -1,0 +1,402 @@
+﻿@model EncounterDTO
+@{
+    ViewData["Title"] = "Encounter";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link asp-append-version="true" rel="stylesheet" href="~/css/view_case.css" />
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4 class="">Encounter Form</h4>
+
+        <a asp-controller="Admin" asp-action="AdminDashboard" class="btn btn-outline-info text-info"> < Back </a>
+    </div>
+
+    <div class="bg mt-2 mb-3">
+        <h1 class="text-info text-center fw-bold">Medical Report-Confidential</h1>
+
+        <form asp-action="Encounter" method="post" class="login-form-control mt-3">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                        asp-for="FirstName"
+                               class="form-control "
+                               id="fname"
+                               placeholder="First name" />
+                        <label for="floatingPassword">First Name</label>
+                    </div>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                        asp-for="LastName"
+                               class="form-control "
+                               id="lname"
+                               placeholder="Last name" />
+                        <label for="floatingPassword">Last Name</label>
+                    </div>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                        asp-for="Location"
+                               class="form-control"
+                               id="location"
+                               placeholder="Location" />
+                        <label for="floatingPassword">Location</label>
+                    </div>
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="date"
+                        asp-for="DateOfBirth"
+                               class="form-control "
+                               id="dob" />
+                        <label for="floatingPassword">Date of Birth</label>
+                    </div>
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="date"
+                        asp-for="DateOfService"
+                               class="form-control "
+                               id="dateofservice" />
+                        <label for="floatingPassword">Date</label>
+                    </div>
+                    <span asp-validation-for="DateOfService" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="PhoneNumber"
+                               type="tel"
+                               class="form-control"
+                               id="phone"
+                               placeholder=""
+                               style="height: 58px" />
+                    </div>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Email"
+                               type="email"
+                               class="form-control"
+                               id="email"
+                               placeholder="name@example.com" />
+                        <label for="floatingInput">Email</label>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Email"
+                               class="form-control"
+                               placeholder="Presenthistory"
+                               id="presenthistory"
+                               style="height: 80px" />
+                        <label for="presenthistory">History Of Present Illness Or Injury</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="MedicalHistory"
+                               class="form-control"
+                               placeholder="MedicalHistory"
+                               id="MedicalHistory"
+                               style="height: 80px" />
+                        <label for="MedicalHistory">Medical History</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Medications"
+                               class="form-control"
+                               placeholder="medications"
+                               id="medications"
+                               style="height: 80px" />
+                        <label for="medications">Medications</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Allergies"
+                               class="form-control"
+                               placeholder="Allergies"
+                               id="Allergies"
+                               style="height: 80px" />
+                        <label for="Allergies">Allergies</label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Temp"
+                               class="form-control"
+                               placeholder="temp"
+                               id="temp" />
+                        <label for="temp">Temp</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="HR"
+                               class="form-control"
+                               placeholder="hr"
+                               id="hr" />
+                        <label for="hr">HR</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="RR"
+                               class="form-control"
+                               placeholder="rr"
+                               id="rr" />
+                        <label for="rr">RR</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="BloodPressureSystolic"
+                               class="form-control"
+                               placeholder="bloodPressure"
+                               id="bloodPressure" />
+                        <label for="temp">Blood Pressure (Systolic)</label>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="BloodPressureDiastolic"
+                               class="form-control"
+                               placeholder="bloodPressure"
+                               id="bloodPressure" />
+                        <label for="temp">Blood Pressure (Diastolic)</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="O2"
+                               class="form-control"
+                               placeholder="o2"
+                               id="o2" />
+                        <label for="o2">O2</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Pain"
+                               class="form-control"
+                               placeholder="pain"
+                               id="pain" />
+                        <label for="rr">Pain</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Heent"
+                               class="form-control"
+                               placeholder="Heent"
+                               id="heent"
+                               style="height: 80px" />
+                        <label for="Allergies">Heent</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="CV"
+                               class="form-control"
+                               placeholder="CV"
+                               id="cv"
+                               style="height: 80px" />
+                        <label for="Allergies">CV</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Chest"
+                               class="form-control"
+                               placeholder="Chest"
+                               id="Chest"
+                               style="height: 80px" />
+                        <label for="Allergies">Chest</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="ABD"
+                               class="form-control"
+                               placeholder="ABD"
+                               id="ABD"
+                               style="height: 80px" />
+                        <label for="Allergies">ABD</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Extr"
+                               class="form-control"
+                               placeholder="Extr"
+                               id="Extr"
+                               style="height: 80px" />
+                        <label for="Allergies">Extr</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Skin"
+                               class="form-control"
+                               placeholder="Skin"
+                               id="Skin"
+                               style="height: 80px" />
+                        <label for="Skin">Skin</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Neuro"
+                               class="form-control"
+                               placeholder="Neuro"
+                               id="Neuro"
+                               style="height: 80px" />
+                        <label for="Neuro">Neuro</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Other"
+                               class="form-control"
+                               placeholder="Other"
+                               id="Other"
+                               style="height: 80px" />
+                        <label for="Other">Other</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Diagnosis"
+                               class="form-control"
+                               placeholder="Diagnosis"
+                               id="Diagnosis"
+                               style="height: 80px" />
+                        <label for="Diagnosis">Diagnosis</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="TreatmentPlan"
+                               class="form-control"
+                               placeholder="Treatment plan"
+                               id="Treatmentplan"
+                               style="height: 80px" />
+                        <label for="Treatmentplan">Treatment Plan</label>
+                    </div>
+                    <span asp-validation-for="TreatmentPlan" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Dispensed"
+                               class="form-control"
+                               placeholder="dispensed"
+                               id="dispensed"
+                               style="height: 80px" />
+                        <label for="dispensed">Medicationas Dispensed</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Procedures"
+                               class="form-control"
+                               placeholder="Procedures"
+                               id="Procedures"
+                               style="height: 80px" />
+                        <label for="Procedures">Procedures</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="Followup"
+                               class="form-control"
+                               placeholder="followup"
+                               id="followup"
+                               style="height: 80px" />
+                        <label for="followup">Followup</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-info text-white rounded-2 border-0 me-2"> Save Changes </button>
+                    <button type="button" class="btn btn-info text-white rounded-2 border-0 me-2" style="background-color: #6f42c1"> Finalize </button>
+                    <button type="button" class="btn btn-outline-info text-info rounded-2"> Cancel </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="~/js/datetime.js"></script>
+<script src="~/js/intel_input.js"></script>

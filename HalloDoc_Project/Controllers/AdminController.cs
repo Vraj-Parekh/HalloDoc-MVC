@@ -6,7 +6,6 @@ using MimeKit;
 using HalloDoc_Project.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Org.BouncyCastle.Asn1.Ocsp;
-using Repositories.Repository.Implementation;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -227,10 +226,22 @@ namespace HalloDoc_Project.Controllers
         }
 
         [HttpPost("{requestId}")]
-        public IActionResult SendAgreement(SendAgreement model,int requestId)
+        public IActionResult SendAgreement(int requestId,[FromForm]string phoneNumber, [FromForm] string email)
         {
-            SendAgreement? data =requestServices.GetMobileEmail(model, requestId);
-            return View(data);
+            requestClientServices.SendAgreement(requestId, phoneNumber, email);
+            return RedirectToAction("AdminDashboard");
         }
+
+        public IActionResult Encounter()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Encounter(EncounterDTO model)
+        {
+            return View();
+        }
+
     }
 }

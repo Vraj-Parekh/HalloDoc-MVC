@@ -36,7 +36,7 @@ namespace HalloDoc_Project.Attributes
                 }
                 else
                 {
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Patient", action = "PatientLogin" }));
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Patient", action = "PatientLogin" ,returnUrl = request.Path }));
                 }
                 return;
             }

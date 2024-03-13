@@ -4,7 +4,7 @@
     right: 20px;
 }
 
-@@media only screen and (max-width:1000px) {
+@media only screen and (max-width:1000px) {
     .mainPhoto {
         z-index: -1;
         height: 100vh;
@@ -20,19 +20,34 @@
     }
 }
 
+.adminSubDivs{
+    height:100vh;
+}
 .mainPhoto {
     height: 100vh;
 }
-
-.footer {
-    height: 40px;
-    padding-right: 10px;
-    font-size: 18px;
-    color: dimgray;
+.theme_btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
 }
 
-    .footer a {
-        text-decoration: none;
-        font-weight: 100;
-        color: dimgray;
+.input-group-text {
+    border-left: none;
+}
+.form-control:focus {
+    box-shadow: none;
+}
+
+.form-floating.input-group:focus-within {
+    border: 1px solid #01bce9;
+    border-radius: var(--bs-border-radius);
+}
+
+    .form-floating.input-group:focus-within label {
+        color: #01bce9;
     }
+
+.border-focus-none:focus {
+    border: none;
+}

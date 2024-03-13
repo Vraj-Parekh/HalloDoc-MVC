@@ -6,6 +6,7 @@ using HalloDoc_Project.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using NuGet.Protocol.Plugins;
 using Repositories.Repository.Implementation;
@@ -38,17 +39,19 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
         [AllowAnonymous]
-        public IActionResult PatientLogin()
+        public IActionResult PatientLogin(string returnUrl = null)
         {
+            TempData["ReturnUrl"] = returnUrl;
+           
             return View();
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult PatientLogin(LoginDTO data)
+        public IActionResult PatientLogin(LoginDTO data, string returnUrl = null)
         {
 
-            var user = _context.Aspnetusers.Where(u => u.Email == data.Email).Include(a=>a.Roles).FirstOrDefault();
+            Aspnetuser? user = _context.Aspnetusers.Where(u => u.Email == data.Email).Include(a => a.Roles).FirstOrDefault();
 
             if (user != null && user.Passwordhash == data.Password)
             {
@@ -62,9 +65,18 @@ namespace HalloDoc_Project.Controllers
                 };
                 Response.Cookies.Append("Token", token, cookieOptions);
 
-                return RedirectToAction("PatientDashboard", "Patient");
+                if (TempData.ContainsKey("ReturnUrl") && Url.IsLocalUrl(TempData["ReturnUrl"]?.ToString()))
+                {
+                    returnUrl = TempData["ReturnUrl"]?.ToString();
+                    TempData.Keep("ReturnUrl"); // Retain TempData for one more request
+                    return Redirect(returnUrl);
+                }
+                else
+                {
+                    return RedirectToAction("PatientDashboard", "Patient");
+                }
             }
-            else if(user == null)
+            else if (user == null)
             {
                 ModelState.AddModelError(nameof(data.Email), "An account with this email does not exists.");
                 return View(data);
@@ -215,7 +227,7 @@ namespace HalloDoc_Project.Controllers
                 City = patientData.City,
                 State = patientData.State,
                 ZipCode = patientData.Zipcode,
-                DateOfBirth = GenerateDateOfBirth(patientData.Intyear,patientData.Strmonth,patientData.Intdate)
+                DateOfBirth = GenerateDateOfBirth(patientData.Intyear, patientData.Strmonth, patientData.Intdate)
             };
             return View(patientProfile);
         }
@@ -252,7 +264,7 @@ namespace HalloDoc_Project.Controllers
         [HttpGet("[controller]/[action]/{requestId:int}")]
         public IActionResult ReviewAgreement(int requestId)
         {
-            var email = User.FindFirstValue(ClaimTypes.Email);
+            string? email = User.FindFirstValue(ClaimTypes.Email);
             bool requestPending = requestServices.IsRequestPending(requestId, email);
             if (requestPending)
             {
@@ -271,7 +283,7 @@ namespace HalloDoc_Project.Controllers
             }
             return RedirectToAction("ReviewAgreement", new { requestId = requestId });
         }
-         
+
         [HttpPost]
         public async Task<IActionResult> RejectAgreement(AgreementDTO model)
         {

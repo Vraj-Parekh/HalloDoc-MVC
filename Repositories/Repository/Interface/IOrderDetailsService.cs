@@ -1,6 +1,6 @@
 ﻿using Entities.ViewModels;
 
-namespace Repositories.Repository.Implementation
+namespace Repositories.Repository.Interface
 {
     public interface IOrderDetailsService
     {
