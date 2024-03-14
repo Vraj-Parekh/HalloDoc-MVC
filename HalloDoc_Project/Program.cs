@@ -29,6 +29,7 @@ builder.Services.AddTransient<IHealthProfessionalTypeService, HealthProfessional
 builder.Services.AddTransient<IHealthProfessionalsService, HealthProfessionalsService>();
 builder.Services.AddTransient<IOrderDetailsService, OrderDetailsService>();
 builder.Services.AddTransient<IAspNetUserService, AspNetUserService>();
+builder.Services.AddTransient<IEncounterFormService, EncounterFormService>();
 
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

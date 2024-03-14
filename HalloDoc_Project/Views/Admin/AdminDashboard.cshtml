@@ -6,7 +6,7 @@
     var count = ViewBag.count;
 }
 @section style {
-    <link rel="stylesheet" href="~/css/admin_dashboard.css" asp-append-version="true" />
+    <link asp-append-version="true" rel="stylesheet" href="~/css/admin_dashboard.css" />
 
 }
 
@@ -107,7 +107,7 @@
                 <button class="btn btn-white me-2" type="button" id="FamilyFilter" onclick="activateFilter('FamilyFilter')"><i class="bi bi-circle-fill me-1 orange-color"></i>Family</button>
                 <button class="btn btn-white me-2" type="button" id="BusinessFilter" onclick="activateFilter('BusinessFilter')"><i class="bi bi-circle-fill me-1 pink-color"></i>Business</button>
                 <button class="btn btn-white me-2" type="button" id="ConciergeFilter" onclick="activateFilter('ConciergeFilter')"><i class="bi bi-circle-fill me-1 blue-color"></i>Concierge</button>
-                <button class="btn btn-white me-2" type="button" id="VipFilter" onclick="activateFilter('VipFilter')"><i class="bi bi-circle-fill me-1 blue-color"></i>VIP</button>
+                <button class="btn btn-white me-2" type="button" id="VipFilter" onclick="activateFilter('VipFilter')"><i class="bi bi-circle-fill me-1 purple-color"></i>VIP</button>
             </div>
         </div>
     </div>
@@ -123,13 +123,14 @@
         var count = 10;
         var previousTab = null;
         var previousFilter = null;
+
         function activateTab(tabId) {
-            // Deactivate previous tab
+            // Deactivate previous
             if (previousTab !== null) {
                 previousTab.classList.remove('active');
             }
 
-            // Activate the clicked tab
+            // Activate clicked tab
             let clickedTab = document.getElementById(tabId);
             clickedTab.classList.add('active');
             var spanEle = document.getElementById('spanText');
@@ -168,12 +169,12 @@
         }
 
         function activateFilter(tabId) {
-            // Deactivate previous tab
+            // Deactivate previous filter
             if (previousFilter !== null) {
                 previousFilter.classList.remove('box');
             }
 
-            // Activate the clicked tab
+            // Activate clicked filter
             let clickedfilter = document.getElementById(tabId);
             clickedfilter.classList.add('box');
 
@@ -203,9 +204,10 @@
                     getData();
                     break;
             }
-            // Update the previousFilter
+            // Update previous Filter
             previousFilter = clickedfilter;
         }
+
         activateTab('NewState');
         activateFilter('AllFilter');
 

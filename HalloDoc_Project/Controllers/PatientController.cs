@@ -210,9 +210,9 @@ namespace HalloDoc_Project.Controllers
         public IActionResult Profile()
         {
             //var email = User.Identities.ElementAt(1).Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
-            var email = User.FindFirstValue(ClaimTypes.Email);
+            string? email = User.FindFirstValue(ClaimTypes.Email);
 
-            var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
+            User? patientData = _context.Users.FirstOrDefault(a => a.Email == email);
 
             if (patientData == null)
                 return View();
@@ -237,8 +237,8 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                var email = User.FindFirstValue(ClaimTypes.Email);
-                var patientData = _context.Users.FirstOrDefault(a => a.Email == email);
+                string? email = User.FindFirstValue(ClaimTypes.Email);
+                User? patientData = _context.Users.FirstOrDefault(a => a.Email == email);
 
                 patientData.Firstname = data.FirstName;
                 patientData.Lastname = data.LastName;

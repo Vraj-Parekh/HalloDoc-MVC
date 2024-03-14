@@ -9,6 +9,8 @@ namespace Entities.ViewModels
 {
     public class EncounterDTO
     {
+        public int RequestId { get; set; }
+
         [Required(ErrorMessage = "First Name is required")]
         public string FirstName { get; set; }
 
@@ -30,7 +32,7 @@ namespace Entities.ViewModels
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
 
@@ -42,16 +44,16 @@ namespace Entities.ViewModels
 
         public string? Allergies { get; set; }
 
-        public decimal? Temp { get; set; }
+        public string? Temp { get; set; }
 
-        public int? HR { get; set; }
+        public string? HR { get; set; }
 
-        public int? RR { get; set; }
+        public string? RR { get; set; }
 
         public string? BloodPressureSystolic { get; set; }
         public string? BloodPressureDiastolic { get; set; }
 
-        public decimal? O2 { get; set; }
+        public string? O2 { get; set; }
 
         public string? Pain { get; set; }
 

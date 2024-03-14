@@ -28,10 +28,11 @@ namespace HalloDoc_Project.Controllers
         private readonly IHealthProfessionalsService healthProfessionalsService;
         private readonly IOrderDetailsService orderDetailsService;
         private readonly IAspNetUserService aspNetUserService;
+        private readonly IEncounterFormService encounterFormService;
 
         public IRegionService RegionService { get; }
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService,IHealthProfessionalsService healthProfessionalsService,IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService,IHealthProfessionalsService healthProfessionalsService,IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService,IEncounterFormService encounterFormService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -45,6 +46,7 @@ namespace HalloDoc_Project.Controllers
             this.healthProfessionalsService = healthProfessionalsService;
             this.orderDetailsService = orderDetailsService;
             this.aspNetUserService = aspNetUserService;
+            this.encounterFormService = encounterFormService;
         }
         public IActionResult Index()
         {
@@ -232,13 +234,16 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult Encounter()
+        [HttpGet("{requestId}")]
+        public IActionResult Encounter(int requestId)
         {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Encounter(EncounterDTO model)
+            ViewBag.requestId = requestId;
+            EncounterDTO? data = encounterFormService.GetEncounterInfo(requestId);
+            return View(data);
+        }  
+        
+        [HttpPost("{requestId}")]
+        public IActionResult Encounter(int requestId,EncounterDTO model)
         {
             return View();
         }

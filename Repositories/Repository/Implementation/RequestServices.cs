@@ -143,13 +143,15 @@ namespace Repositories.Repository.Implementation
                 {
                     RequestId = req.Requestid,
                     FirstName = requestClient.Firstname,
+                    LastName =requestClient.Lastname,
                     Dob = GenerateDateOfBirth(requestClient.Intyear, requestClient.Strmonth, requestClient.Intdate),
                     Requestor = (RequestTypeId)req.Requesttypeid + ", " + req.Firstname,
                     RequestedDate = req.Createddate,
                     Phone = req.Phonenumber,
                     ClientPhone = requestClient.Phonenumber,
                     Email = req.Email,
-                    Address = requestClient.Address,
+#warning:add address in requestCLient table
+                    Address = requestClient.City,
                     PhysicianName = _context.Physicians.Where(a => a.Physicianid == req.Physicianid).Select(phy => phy.Firstname).FirstOrDefault(),
                     Notes = _context.Requeststatuslogs.Where(a => a.Requestid == req.Requestid).OrderBy(a => a.Createddate).LastOrDefault()?.Notes,
                     RequestTypeId = req.Requesttypeid,
