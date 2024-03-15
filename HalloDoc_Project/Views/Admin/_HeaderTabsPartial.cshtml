@@ -1,4 +1,83 @@
-﻿<ul class="nav nav-tabs tabs bg-white shadow hideonmobile ps-4 pe-4">
+﻿<style>
+
+
+    .aside-cont ul li {
+        height: 55px;
+        border: 1px solid white;
+        font-size: 20px;
+        font-weight: normal;
+    }
+
+        .aside-cont ul li span {
+            width: 78px;
+            height: 21px;
+            text-align: left;
+            font-size: 22px;
+            align-items: center;
+        }
+
+    .offcanvas-body {
+        padding: 1rem 1rem;
+    }
+
+    a {
+        color: black;
+        text-decoration: none;
+    }
+</style>
+
+
+<div class="header_nav d-flex justify-content-between align-items-center ps-3 pe-3">
+    <div class="">
+        <button class="btn text-info bg-white d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" style="border: 1px solid cyan;">
+            <i class="bi bi-list fs-5"></i>
+        </button>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="width:320px;">
+            <div class="offcanvas-header d-flex justify-content-between">
+                <div class="">
+                    <button class="btn text-info bg-white d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" style="border: 1px solid cyan;">
+                        <i class="bi bi-list fs-5"></i>
+                    </button>
+                    <img src="/img/hallodoc_img.png" class="img-fluid" alt="logo_img">
+                </div>
+            </div>
+
+            <div class="offcanvas-body aside-cont">
+                <span class="fw-light fs-5">Welcome,</span><span class="h5 ps-1">Admin,admin2</span>
+                <ul class="list-group">
+                    <li class="list-group-item mt-1">
+                        <a asp-action="AdminDashboard">Dashboard</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a asp-action="">Provider Location</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a asp-action="">My Profile</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a asp-action="">Providers</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a asp-action="">Partners</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a asp-action="">Access</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a asp-action="">Records</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <img src="/img/hallodoc_img.png" class="img-fluid" alt="logo_img">
+    </div>
+    <button type="button" class="btn btn-outline-info" id="toggle_theme_btn">
+        <i class="bi bi-moon"></i>
+    </button>
+</div>
+
+<ul class="nav nav-underline tabs bg-white shadow ps-4 pe-4 d-lg-flex d-none">
     <li class="nav-item">
         <a class="nav-link active fs-5 fw-normal" data-bs-toggle="tab" href="#dashboard">Dashboard</a>
     </li>
@@ -21,109 +100,3 @@
         <a class="nav-link  fs-5 fw-medium" data-bs-toggle="tab" href="#records">Records</a>
     </li>
 </ul>
-
-@* <style>
-    @@media(max-width:768px) {
-        .hideonmobile {
-            display: none !important;
-        }
-
-        .showonmobile {
-            display: block !important;
-        }
-
-        .sideBar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 250px;
-            z-index: 1;
-            background-color: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            display: none;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-        }
-
-
-            .sideBar li {
-                width: 100%;
-            }
-
-            .sideBar a {
-                width: 100%;
-            }
-    }
-</style>
-<nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom">
-    <div class="container-fluid">
-        <button class="theme-btn-header  mt-3 showonmobile" style="display:none" id="toggle-btn" onclick="showSidebar()">
-            <i class="fa-solid fa-bars" style="color: #54B4D3;"></i>
-        </button>
-        <ul class="nav nav-tabs tabs sideBar shadow">
-            <li style="text-align: end;">
-                <a onclick="hideSidebar()" class="mt-5 me-3 pt-5" href="#"><svg xmlns="http://www.w3.org/2000/svg" height="14" width="10.5" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#dashboard">Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#providerLocation">Provider Location</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link " data-bs-toggle="tab" href="#myProfile">My Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#providers">Providers</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link " data-bs-toggle="tab" href="#partners">Partners</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#access">Access</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#records">Records</a>
-            </li>
-        </ul>
-
-
-    </div>
-</nav>
-<ul class="nav nav-tabs tabs bg-white shadow hideonmobile">
-    <li class="nav-item">
-        <a class="nav-link active" data-bs-toggle="tab" href="#dashboard">Dashboard</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#providerLocation">Provider Location</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link " data-bs-toggle="tab" href="#myProfile">My Profile</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#providers">Providers</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link " data-bs-toggle="tab" href="#partners">Partners</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#access">Access</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#records">Records</a>
-    </li>
-
-</ul>
-
-
-<script>
-    function showSidebar() {
-        document.querySelector(".sideBar").style.display = "flex";
-    }
-    function hideSidebar() {
-        document.querySelector(".sideBar").style.display = "none";
-    }
-
-</script> *@
