@@ -34,5 +34,17 @@ namespace Repositories.Repository.Implementation
                 return null;
             }
         }
+        public bool isUserPresent(LoginDTO data)
+        {
+            return _context.Aspnetusers.Any(u => u.Email == data.Email);
+        }
+        public void ChnagePassword(LoginDTO data)
+        {
+            Aspnetuser? aspNetUserData = new Aspnetuser();
+            aspNetUserData.Passwordhash = data.ConfirmPassword;
+
+            _context.Aspnetusers.Update(aspNetUserData);
+            _context.SaveChanges();
+        }
     }
 }

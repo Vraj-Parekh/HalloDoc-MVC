@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using HalloDoc.Utility;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -29,10 +30,11 @@ namespace HalloDoc_Project.Controllers
         private readonly IOrderDetailsService orderDetailsService;
         private readonly IAspNetUserService aspNetUserService;
         private readonly IEncounterFormService encounterFormService;
+        private readonly IEmailSender emailSender;
 
         public IRegionService RegionService { get; }
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService,IHealthProfessionalsService healthProfessionalsService,IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService,IEncounterFormService encounterFormService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -47,6 +49,7 @@ namespace HalloDoc_Project.Controllers
             this.orderDetailsService = orderDetailsService;
             this.aspNetUserService = aspNetUserService;
             this.encounterFormService = encounterFormService;
+            this.emailSender = emailSender;
         }
         public IActionResult Index()
         {
@@ -84,10 +87,54 @@ namespace HalloDoc_Project.Controllers
             }
         }
 
-        public IActionResult Table(int requestTypeId,int status, int pageIndex, int count)
+        [AllowAnonymous]
+        public IActionResult ResetPwd()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult ResetPwd(LoginDTO data)
+        {
+            if (aspNetUserService.isUserPresent(data))
+            {
+                emailSender.SendEmailAsync(data.Email, "Reset Password", $"Tap the link to reset the password: <a href=\"https://localhost:44396/admin/changepassword/{data.Email}\">Reset now</a>");
+                return RedirectToAction("AdminLogin", "Admin");
+            }
+            else
+            {
+                ModelState.AddModelError(nameof(data.Email), "An account with this email does not exists.");
+                return View(data);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{email}")]
+        public IActionResult ChangePassword(string email)
+        {
+            ViewBag.email = email;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(LoginDTO data)
+        {
+            string email = ViewBag.email;
+
+            if (aspNetUserService.isUserPresent(data))
+            {
+                aspNetUserService.ChnagePassword(data);
+                return RedirectToAction("PatientLogin");
+            }
+
+            ModelState.AddModelError(nameof(data.ConfirmPassword), "An account with this email does not exists.");
+            return View(data);
+        }
+        public IActionResult Table(int requestTypeId, int status, int pageIndex, int count)
         {
             List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, count);
-                return PartialView("_TablePartial" , data);
+            return PartialView("_TablePartial", data);
         }
 
         public IActionResult AdminDashboard()
@@ -211,9 +258,9 @@ namespace HalloDoc_Project.Controllers
         }
 
         [HttpPost("{requestId}")]
-        public IActionResult SendOrder(SendOrderDTO data,int requestId)
+        public IActionResult SendOrder(SendOrderDTO data, int requestId)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 orderDetailsService.AddOrderDetails(data, requestId);
             }
@@ -228,7 +275,7 @@ namespace HalloDoc_Project.Controllers
         }
 
         [HttpPost("{requestId}")]
-        public IActionResult SendAgreement(int requestId,[FromForm]string phoneNumber, [FromForm] string email)
+        public IActionResult SendAgreement(int requestId, [FromForm] string phoneNumber, [FromForm] string email)
         {
             requestClientServices.SendAgreement(requestId, phoneNumber, email);
             return RedirectToAction("AdminDashboard");
@@ -240,10 +287,10 @@ namespace HalloDoc_Project.Controllers
             ViewBag.requestId = requestId;
             EncounterDTO? data = encounterFormService.GetEncounterInfo(requestId);
             return View(data);
-        }  
-        
+        }
+
         [HttpPost("{requestId}")]
-        public IActionResult Encounter(int requestId,EncounterDTO model)
+        public IActionResult Encounter(int requestId, EncounterDTO model)
         {
             return View();
         }

@@ -11,7 +11,7 @@
 
     <h1 class="mb-4 text-center">Reset Your Password</h1>
 
-    <form asp-action="ResetPwd" class="login-form-control">
+    <form asp-action="ResetPwd" asp-controller="Patient" class="login-form-control">
         <div class="form-floating input-group mb-3">
             <input type="email"
                    asp-for="Email"

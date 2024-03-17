@@ -26,13 +26,15 @@ namespace HalloDoc_Project.Controllers
         private readonly IWebHostEnvironment env;
         private readonly IEmailSender emailSender;
         private readonly IRequestServices requestServices;
+        private readonly IAspNetUserService aspNetUserService;
 
-        public PatientController(HalloDocDbContext context, IWebHostEnvironment env, IEmailSender emailSender, IRequestServices requestServices)
+        public PatientController(HalloDocDbContext context, IWebHostEnvironment env, IEmailSender emailSender, IRequestServices requestServices,IAspNetUserService aspNetUserService)
         {
             _context = context;
             this.env = env;
             this.emailSender = emailSender;
             this.requestServices = requestServices;
+            this.aspNetUserService = aspNetUserService;
         }
         public IActionResult Index()
         {
@@ -98,14 +100,15 @@ namespace HalloDoc_Project.Controllers
         [AllowAnonymous]
         public IActionResult ResetPwd(LoginDTO data)
         {
-            if (_context.Aspnetusers.Any(u => u.Email == data.Email))
+            if (aspNetUserService.isUserPresent(data))
             {
                 emailSender.SendEmailAsync(data.Email, "Reset Password", $"Tap the link to reset the password: <a href=\"https://localhost:44396/patient/changepassword/{data.Email}\">Reset now</a>");
                 return RedirectToAction("PatientLogin", "Patient");
             }
             else
             {
-                throw new Exception("User Not Found");
+                ModelState.AddModelError(nameof(data.Email), "An account with this email does not exists.");
+                return View(data);
             }
         }
 
@@ -121,7 +124,7 @@ namespace HalloDoc_Project.Controllers
         {
             string email = TempData["email"] as string;
 
-            var aspNetUserData = _context.Aspnetusers.FirstOrDefault(a => a.Email == email);
+            Aspnetuser? aspNetUserData = _context.Aspnetusers.FirstOrDefault(a => a.Email == email);
 
             aspNetUserData.Passwordhash = data.ConfirmPassword;
 
@@ -133,7 +136,7 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult PatientDashboard()
         {
-            string? email = User.Identities.ElementAt(index: 1).Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
+            string? email = User.FindFirstValue(ClaimTypes.Email);
             List<PatientRequestList> data = new();
 
             var patientData = _context.Requests.Where(a => a.Email == email && a.Requesttypeid == 2).Include(a => a.Requestwisefiles);
