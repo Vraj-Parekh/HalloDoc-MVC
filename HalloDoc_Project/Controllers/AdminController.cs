@@ -9,6 +9,8 @@ using Org.BouncyCastle.Asn1.Ocsp;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using HalloDoc.Utility;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -61,6 +63,7 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [AllowAnonymous]
         public IActionResult AdminLogin(LoginDTO data)
@@ -85,6 +88,13 @@ namespace HalloDoc_Project.Controllers
                 ModelState.AddModelError(nameof(data.Password), "Incorrect Email or Password.");
                 return View(data);
             }
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync();
+            Response.Cookies.Delete("Token");
+            return RedirectToAction("AdminLogin", "Admin");
         }
 
         [AllowAnonymous]
@@ -131,9 +141,16 @@ namespace HalloDoc_Project.Controllers
             ModelState.AddModelError(nameof(data.ConfirmPassword), "An account with this email does not exists.");
             return View(data);
         }
-        public IActionResult Table(int requestTypeId, int status, int pageIndex, int count)
+        public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize)
         {
-            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, count);
+            int totalCount;
+            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, pageSize,out totalCount);
+            
+            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            ViewBag.TotalCount = totalCount;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageIndex = pageIndex;
             return PartialView("_TablePartial", data);
         }
 

@@ -23,7 +23,7 @@ namespace Repositories.Repository.Implementation
 
         public string AuthenticateUser(LoginDTO data)
         {
-            Aspnetuser? user = _context.Aspnetusers.Where(u=>u.Email == data.Email).Include(a=>a.Roles).FirstOrDefault();
+            Aspnetuser? user = _context.Aspnetusers.Where(u=>u.Email == data.Email).Include(a=>a.Roles).Include(a=>a.Users).FirstOrDefault();
 
             if(user != null && user.Passwordhash == data.Password)
             {

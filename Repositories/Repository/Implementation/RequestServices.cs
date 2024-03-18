@@ -119,7 +119,7 @@ namespace Repositories.Repository.Implementation
             };
             return count;
         }
-        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageCount)
+        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, out int totalCount)
         {
             Dictionary<int, int[]> statusMap = new()
             {
@@ -130,10 +130,17 @@ namespace Repositories.Repository.Implementation
                 {5, new int[3]{ 3,21,8} },
                 {6, new int[1]{ 19} }
             };
-            List<Request>? request = _context.Requests.Where(a => statusMap[status].Contains(a.Status) && (requesttypeid == 5 || requesttypeid == a.Requesttypeid)).Include(a => a.Requestclients).ToList();
 
-            //int count = request.Count;
-            //request = request.Skip(pageIndex > 0 ? (pageIndex - 1) * 10 : 0).Take(10).ToList();
+          totalCount = _context.Requests.Count(a => statusMap[status].Contains(a.Status) && (requesttypeid == 5 || requesttypeid == a.Requesttypeid));
+
+            List<Request>? request = _context.Requests
+                .Where(a => statusMap[status]
+                .Contains(a.Status) && (requesttypeid == 5 || requesttypeid == a.Requesttypeid))
+                .Include(a => a.Requestclients)
+                .Skip(pageIndex > 0 ? (pageIndex - 1) * pageSize : 0)
+                .Take(pageSize)
+                .ToList();
+
 
             List<AdminDashboardDTO> admin = new List<AdminDashboardDTO>();
             foreach (Request req in request)

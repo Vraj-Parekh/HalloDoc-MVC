@@ -1,13 +1,10 @@
-﻿@model List<AdminDashboardDTO>
-
-@{
+﻿@{
     ViewData["Title"] = "AdminDashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var count = ViewBag.count;
 }
 @section style {
     <link asp-append-version="true" rel="stylesheet" href="~/css/admin_dashboard.css" />
-
 }
 
 
@@ -113,6 +110,29 @@
     </div>
 
     <div id="tableRecords" class="tableData mb-5"></div>
+
+    <div class="pagination">
+        <ul>
+            <!-- Previous button -->
+            <li class="page-item">
+                <a class="page-link" onclick="previousPage()">&laquo; Previous</a>
+            </li>
+
+            <!-- Page links -->
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.PageIndex ? "active" : "")">
+                    <a class="page-link" onclick="changePage(@i)">@i</a>
+                </li>
+            }
+
+            <!-- Next button -->
+            <li class="page-item">
+                <a href="#" class="page-link" onclick="nextPage()">Next &raquo;</a>
+            </li>
+        </ul>
+    </div>
+
 </div>
 
 @section Scripts {
@@ -120,7 +140,7 @@
         var requestTypeId = 5;//for all
         var status = 1;//new state
         var pageIndex = 1;
-        var count = 10;
+        var pageSize = 5;
         var previousTab = null;
         var previousFilter = null;
 
@@ -216,12 +236,31 @@
             $('#All').trigger('click');
         });
 
+        function changePage(page) {
+            pageIndex = page;
+            getData();
+        }
+
+        function previousPage() {
+            if (pageIndex > 1) {
+                pageIndex--;
+                getData();
+            }
+        }
+
+        function nextPage() {
+            if (pageIndex < totalPages) {
+                pageIndex++;
+                getData();
+            }
+        }
+
         function getData() {
             // alert(requestTypeId);
             $.ajax({
                 url: '@Url.Action("Table", "Admin")',
                 type: 'get',
-                data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, count: count },
+                data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, pageSize: pageSize },
                 success: function (result) {
                     // console.log(result);
                     if (result.includes('table')) {

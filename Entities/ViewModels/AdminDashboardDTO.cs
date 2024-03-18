@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Entities.ViewModels
 {
+
     public class AdminDashboardDTO
     {
         public int? RequestId { get; set; }

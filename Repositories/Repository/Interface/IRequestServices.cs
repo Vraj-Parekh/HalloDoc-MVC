@@ -11,7 +11,7 @@ namespace Repositories.Repository.Interface
         object GetCount();
         ViewDocumentList GetDocumentData(int requestId);
         SendAgreement GetMobileEmail(SendAgreement model, int requestId);
-        List<AdminDashboardDTO> GetPatientdata(int requesttypeid,int status, int pageIndex, int count);
+        List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, out int totalCount);
         Request? GetRequest(int requestId);
         ViewCaseDTO GetViewCase(int requestId);
         bool IsRequestPending(int requestId, string email);

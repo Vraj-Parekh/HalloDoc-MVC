@@ -5,30 +5,12 @@
     var status = Model.Count > 0 ? Model[0].Status : 1;
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link asp-append-version="true" rel="stylesheet" href="/css/admin_dashboard.css" />
 
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
-<style>
-    .dataTables_info {
-        text-align: center !important;
-        font-size: 20px;
-        font-weight: bold;
-        color: black;
-    }
 
-    .dataTables_paginate {
-        text-align: center;
-    }
-
-    .paginate_button {
-        font-size: 25px;
-        text-decoration: none;
-        margin-right: 20px;
-        color: black;
-        cursor: pointer;
-    }
-</style>
 <div class="table-responsive d-lg-block d-none">
     <table id="myTable" class="table">
         <thead>
@@ -291,41 +273,6 @@
     </table>
 </div>
 
-<style>
-    .viewCaseBtn {
-        border: 2px solid #906cb6;
-        background-color: #efeef4;
-        color: #906cb6;
-        /*  transform: translateY(-20px);
-                                    z-index: 2 !important; */
-    }
-
-
-    .accordion-button {
-        z-index: 0 !important;
-    }
-
-        .accordion-button:focus {
-            box-shadow: none;
-        }
-
-    .accordian-span {
-        display: flex;
-        height: 30px;
-        width: 30px;
-        border: 2px solid #1ab4d2;
-        border-radius: 50%;
-        justify-content: center
-    }
-
-    .bg-purple {
-        background: #c40eff;
-    }
-
-    .bg-dark-green {
-        background: #145545;
-    }
-</style>
 
 <div class="accordion accordion-flush d-lg-none d-block" id="accordionFlushExample">
     <div class="accordion-item">
@@ -518,7 +465,7 @@
 <partial name="_ModalPartial" model=null />
 
 
-<script>
+@* <script>
     $(document).ready(function () {
         $('#myTable').DataTable({
 
@@ -535,4 +482,4 @@
     });
     $('.dataTables_length').hide();
     $('.dataTables_filter').hide();
-</script>
+</script> *@
