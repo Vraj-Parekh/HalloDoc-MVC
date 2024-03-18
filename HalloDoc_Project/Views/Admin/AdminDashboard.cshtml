@@ -111,27 +111,7 @@
 
     <div id="tableRecords" class="tableData mb-5"></div>
 
-    <div class="pagination">
-        <ul>
-            <!-- Previous button -->
-            <li class="page-item">
-                <a class="page-link" onclick="previousPage()">&laquo; Previous</a>
-            </li>
 
-            <!-- Page links -->
-            @for (int i = 1; i <= ViewBag.TotalPages; i++)
-            {
-                <li class="page-item @(i == ViewBag.PageIndex ? "active" : "")">
-                    <a class="page-link" onclick="changePage(@i)">@i</a>
-                </li>
-            }
-
-            <!-- Next button -->
-            <li class="page-item">
-                <a href="#" class="page-link" onclick="nextPage()">Next &raquo;</a>
-            </li>
-        </ul>
-    </div>
 
 </div>
 

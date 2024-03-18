@@ -5,12 +5,8 @@ using Entities.ViewModels;
 using MimeKit;
 using HalloDoc_Project.Attributes;
 using Microsoft.AspNetCore.Authorization;
-using Org.BouncyCastle.Asn1.Ocsp;
-using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -31,7 +27,7 @@ namespace HalloDoc_Project.Controllers
         private readonly IHealthProfessionalsService healthProfessionalsService;
         private readonly IOrderDetailsService orderDetailsService;
         private readonly IAspNetUserService aspNetUserService;
-        private readonly IEncounterFormService encounterFormService;
+        private readonly IEncounterFormService encounterFormService;S
         private readonly IEmailSender emailSender;
 
         public IRegionService RegionService { get; }
@@ -80,7 +76,8 @@ namespace HalloDoc_Project.Controllers
                     SameSite = SameSiteMode.Strict
                 };
                 Response.Cookies.Append("Token", token, cookieOptions);
-
+                
+                
                 return RedirectToAction("AdminDashboard", "Admin");
             }
             else
