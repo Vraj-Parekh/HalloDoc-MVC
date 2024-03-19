@@ -25,7 +25,7 @@
                 }
                 @if (status <= 3)
                 {
-                    <th>Requstor</th>
+                    <th>Requestor</th>
                 }
 
                 @if (status >= 2)
@@ -119,40 +119,56 @@
                     @if (status != 5)
                     {
                         <td>
-                            @if (!string.IsNullOrEmpty(items.ClientPhone))
+                            @if (items.RequestTypeId == 1)
+                            {
+                                <a class="btn border-1 border-white text-white text-nowrap">
+                                    <i class="bi bi-telephone mx-2"></i>
+                                    @items.Phone
+                                </a>
+                                <p>(Business)</p>
+
+                                <a class="btn border-1 border-white text-white text-nowrap">
+                                    <i class="bi bi-telephone mx-2"></i>
+                                    @items.ClientPhone
+                                </a>
+                                <p>(Patient)</p>
+                            }
+                            @if (items.RequestTypeId == 2)
                             {
                                 <a class="btn border-1 border-white text-white text-nowrap">
                                     <i class="bi bi-telephone mx-2"></i>
                                     @items.ClientPhone
                                 </a>
-                                @if (items.RequestTypeId == 2)
-                                {
-                                    <p>(Patient)</p>
-                                }
-                                else
-                                {
-                                    @if (!string.IsNullOrEmpty(items.Phone))
-                                    {
-                                        <a class="btn border-1 border-white text-white text-nowrap">
-                                            <i class="bi bi-telephone mx-2"></i>
-                                            @items.Phone
-                                        </a>
-                                        @if (items.RequestTypeId == 1)
-                                        {
-                                            <p>(Business)</p>
-                                        }
-                                        else if (items.RequestTypeId == 3)
-                                        {
-                                            <p>(Family/Friend)</p>
-                                        }
-                                        else if (items.RequestTypeId == 4)
-                                        {
-                                            <p>(Concierge)</p>
-                                        }
-                                    }
-                                }
+                                <p>(Patient)</p>
                             }
+                            @if (items.RequestTypeId == 3)
+                            {
+                                <a class="btn border-1 border-white text-white text-nowrap">
+                                    <i class="bi bi-telephone mx-2"></i>
+                                    @items.Phone
+                                </a>
+                                <p>(Family/Friend)</p>
 
+                                <a class="btn border-1 border-white text-white text-nowrap">
+                                    <i class="bi bi-telephone mx-2"></i>
+                                    @items.ClientPhone
+                                </a>
+                                <p>(Patient)</p>
+                            }
+                            @if (items.RequestTypeId == 4)
+                            {
+                                <a class="btn border-1 border-white text-white text-nowrap">
+                                    <i class="bi bi-telephone mx-2"></i>
+                                    @items.Phone
+                                </a>
+                                <p>(Concierge)</p>
+
+                                <a class="btn border-1 border-white text-white text-nowrap">
+                                    <i class="bi bi-telephone mx-2"></i>
+                                    @items.ClientPhone
+                                </a>
+                                <p>(Patient)</p>
+                            }
                         </td>
                     }
                     <td>@items.Address</td>
