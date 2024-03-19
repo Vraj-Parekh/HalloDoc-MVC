@@ -16,14 +16,6 @@ body {
         color: #01bce9;
     }
 
-.nav-link {
-    color: black;
-}
-
-.nav-underline .nav-link.active,
-.nav-underline .show > .nav-link {
-    color: #01bce9;
-}
 
 .btn :hover {
     color: black;

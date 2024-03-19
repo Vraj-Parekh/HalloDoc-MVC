@@ -3,6 +3,7 @@ using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Ocsp;
+using Org.BouncyCastle.Utilities;
 using Repositories.Repository.Interface;
 using System.Globalization;
 using System.Linq;
@@ -72,12 +73,14 @@ namespace Repositories.Repository.Implementation
             }
             return false;
         }
+
         private DateTime GenerateDateOfBirth(int? year, string? month, int? date)
         {
 
             DateTime finalDate = new DateTime(year ?? 1900, DateTime.ParseExact(month ?? "January", "MMMM", CultureInfo.CurrentCulture).Month, date ?? 01);
             return finalDate;
         }
+
         public ViewCaseDTO GetViewCase(int requestId)
         {
             Request? request = GetRequest(requestId);
@@ -106,6 +109,7 @@ namespace Repositories.Repository.Implementation
             return data;
         }
 
+
         public Object GetCount()
         {
             RequestCount? count = new RequestCount
@@ -119,6 +123,7 @@ namespace Repositories.Repository.Implementation
             };
             return count;
         }
+
         public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, out int totalCount)
         {
             Dictionary<int, int[]> statusMap = new()
@@ -131,7 +136,9 @@ namespace Repositories.Repository.Implementation
                 {6, new int[1]{ 19} }
             };
 
-          totalCount = _context.Requests.Count(a => statusMap[status].Contains(a.Status) && (requesttypeid == 5 || requesttypeid == a.Requesttypeid));
+            totalCount = _context.Requests
+                  .Count(a => statusMap[status]
+                  .Contains(a.Status) && (requesttypeid == 5 || requesttypeid == a.Requesttypeid));
 
             List<Request>? request = _context.Requests
                 .Where(a => statusMap[status]
@@ -150,7 +157,7 @@ namespace Repositories.Repository.Implementation
                 {
                     RequestId = req.Requestid,
                     FirstName = requestClient.Firstname,
-                    LastName =requestClient.Lastname,
+                    LastName = requestClient.Lastname,
                     Dob = GenerateDateOfBirth(requestClient.Intyear, requestClient.Strmonth, requestClient.Intdate),
                     Requestor = (RequestTypeId)req.Requesttypeid + ", " + req.Firstname,
                     RequestedDate = req.Createddate,
@@ -168,6 +175,7 @@ namespace Repositories.Repository.Implementation
             }
             return admin;
         }
+
         public void AssignCase(int requestId, string phyRegion, string phyId, string notes)
         {
             Request? request = GetRequest(requestId);
@@ -175,12 +183,15 @@ namespace Repositories.Repository.Implementation
             {
                 int physicianId = int.Parse(phyId);
 
-                Requeststatuslog model = new();
-                model.Requestid = requestId;
-                model.Notes = notes;
-                model.Status = 16; //pending
-                model.Createddate = DateTime.Now;
-                model.Physicianid = physicianId;
+                Requeststatuslog model = new()
+                {
+                    Requestid = requestId,
+                    Notes = notes,
+                    Status = 16, //pending
+                    Createddate = DateTime.Now,
+                    Physicianid = physicianId,
+                };
+
 
                 request.Status = 16; //pending
                 request.Physicianid = physicianId;
@@ -194,7 +205,11 @@ namespace Repositories.Repository.Implementation
 
         public ViewDocumentList GetDocumentData(int requestId)
         {
-            Request? request = _context.Requests.Where(a => a.Requestid == requestId).Include(a => a.Requestclients).Include(a => a.Requestwisefiles).FirstOrDefault();
+            Request? request = _context.Requests
+                .Where(a => a.Requestid == requestId)
+                .Include(a => a.Requestclients)
+                .Include(a => a.Requestwisefiles)
+                .FirstOrDefault();
             if (request is null)
             {
                 return null;
@@ -252,13 +267,61 @@ namespace Repositories.Repository.Implementation
         public SendAgreement GetMobileEmail(SendAgreement model, int requestId)
         {
             Request? request = GetRequest(requestId);
-            if (request is not null)
+            Requestclient? requestClient = requestClientServices.GetClient(requestId);
+            if (request is not null && requestClient is not null)
             {
                 model.PhoneNumber = request.Phonenumber;
                 model.Email = request.Email;
                 return model;
             }
             return null;
+        }
+
+        public ViewDocumentList GetCloseCaseInfo(int requestId)
+        {
+            Request? request = GetRequest(requestId);
+            Requestclient? requestClient = requestClientServices.GetClient(requestId);
+
+            if (request is not null && requestClient is not null)
+            {
+                ViewDocumentList? data = GetDocumentData(requestId);
+                data.FirstName = requestClient.Firstname;
+                data.LastName = requestClient.Lastname;
+                data.DateOfBirth = GenerateDateOfBirth(requestClient.Intyear, requestClient.Strmonth, requestClient.Intdate);
+                data.PhoneNumber = requestClient.Phonenumber;
+                data.Email = requestClient.Email;
+
+                return data;
+            }
+            return null;
+        }
+
+        public void AddCloseCaseData(int requestId)
+        {
+            Request? request = GetRequest(requestId);
+            if (request != null)
+            {
+                Requeststatuslog requeststatuslog = new()
+                {
+                    Requestid = requestId,
+                    Status = 19, //unpaid
+                    Createddate = DateTime.Now,
+                };
+
+                Requestclosed requestClosed = new()
+                {
+                    Requestid = requestId,
+                    Requeststatuslog = requeststatuslog,
+                };
+
+                request.Status = 19; //unpaid
+
+
+                _context.Requeststatuslogs.Add(requeststatuslog);
+                _context.Requestcloseds.Add(requestClosed);
+                _context.Requests.Update(request);
+                _context.SaveChanges();
+            }
         }
     }
 }

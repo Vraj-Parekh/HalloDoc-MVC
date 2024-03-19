@@ -7,6 +7,7 @@ using HalloDoc_Project.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Authentication;
+using System.Reflection.Metadata.Ecma335;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -27,7 +28,7 @@ namespace HalloDoc_Project.Controllers
         private readonly IHealthProfessionalsService healthProfessionalsService;
         private readonly IOrderDetailsService orderDetailsService;
         private readonly IAspNetUserService aspNetUserService;
-        private readonly IEncounterFormService encounterFormService;S
+        private readonly IEncounterFormService encounterFormService;
         private readonly IEmailSender emailSender;
 
         public IRegionService RegionService { get; }
@@ -76,8 +77,12 @@ namespace HalloDoc_Project.Controllers
                     SameSite = SameSiteMode.Strict
                 };
                 Response.Cookies.Append("Token", token, cookieOptions);
-                
-                
+
+                //toastr notification
+                string message = "Successfully logged in!";
+                string script = $@"toastr.success('{message}');";
+                TempData["ToastrScript"] = script;
+
                 return RedirectToAction("AdminDashboard", "Admin");
             }
             else
@@ -309,5 +314,19 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [HttpGet("{requestId}")]
+        public IActionResult CloseCase(int requestId)
+        {
+            ViewBag.requestId = requestId;
+            ViewDocumentList? data = requestServices.GetCloseCaseInfo(requestId);
+            return View(data);
+        }
+
+        [HttpPost("{requestId}")]
+        public IActionResult CaseClose(int requestId)
+        {
+            requestServices.AddCloseCaseData(requestId);
+            return RedirectToAction("AdminDashboard");
+        }
     }
 }

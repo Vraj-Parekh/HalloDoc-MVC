@@ -1,0 +1,168 @@
+﻿@model ViewDocumentList
+@{
+    ViewData["Title"] = "CloseCase";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section style{
+    <link rel="stylesheet" href="~/css/view_case.css" asp-append-version="true" />
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Close Case</h4>
+
+        <a asp-controller="Admin" asp-action="AdminDashboard" class="btn btn-outline-info"> < Back </a>
+    </div>
+
+    <div class="bg">
+        <div class="row justify-content-between">
+            <div class="col-md-6">
+                Patient Name
+                <h5><span class="text-info"> Name </span> (ConfirmationNumber) </h5>
+            </div>
+
+            <div class="col-auto">
+                <a asp-controller="" asp-action="" class="btn btn-outline-info"> Create Invoice Through Quickbooks </a>
+            </div>
+        </div>
+
+        <h5 class="mt-4 mb-2">Documents</h5>
+
+        <table class="table mt-3">
+            <thead class="table-light">
+                <tr>
+                    <td>
+                        Documents
+                    </td>
+                    <td>Upload Date <i class="bi bi-arrow-up-short fs-4"></i> </td>
+                    <td>Actions</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Document)
+                {
+                    <tr>
+                        <td>
+                            @item.FileName
+                        </td>
+                        <td>
+                            @item.CreatedDate.ToString("MMM dd, yyyy")
+                        </td>
+                        <td>
+                            <a asp-route-docId="@item.DocumentId" asp-action="Download" class="btn btn-outline-info"><i class="bi bi-cloud-arrow-down fs-4"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h4 class="mb-4">Patient Information</h4>
+        <span class="mb-3">Confirmation Number <span class="h3 text-info">@Model.ConfirmationNumber</span> </span>
+
+        <form asp-action="CaseClose" asp-controller="Admin" asp-route-requestId="@ViewBag.requestId" method="post" class="login-form-control">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="FirstName"
+                               class="form-control "
+                               id="floatingInput"
+                               placeholder="First name"
+                               readonly />
+                        <label for="floatingPassword">First Name</label>
+                    </div>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="LastName"
+                               class="form-control "
+                               id="floatingInput"
+                               placeholder="Last name"
+                               readonly />
+                        <label for="floatingPassword">Last Name</label>
+                    </div>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="date"
+                               asp-for="DateOfBirth"
+                               class="form-control "
+                               id="dob"
+                               readonly />
+                        <label for="floatingPassword">Date of Birth</label>
+                    </div>
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+
+
+                <div class="col-md-5 col-10 mb-3 z-3 form-floating">
+                    <input type="tel"
+                           asp-for="PhoneNumber"
+                           class="form-control dis-field"
+                           id="phone"
+                           placeholder=""
+                           style="height: 58px"
+                           disabled />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-1 col-2 mb-3">
+                    <div class="form-floating">
+                        <a class="btn btn-outline-info icon dis-field"><i class="bi bi-telephone-fill"></i> </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input type="email"
+                                   asp-for="Email"
+                                   class="form-control dis-field"
+                                   id="email"
+                                   placeholder="name@example.com"
+                                   disabled />
+                            <label for="floatingInput">Email</label>
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-outline-info text-info btn-edit"> Edit </button>
+                    <button class="btn btn-info text-white btn-save" id="saveBtn">Save</button>
+                    <button class="btn btn-info text-white" type="submit">Close Case</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#saveBtn').click(function () {
+                $.ajax({
+                    url: '/Admin/UpdateRequestClientMobEmail/' + @ViewBag.requestId,
+                    type: 'POST',
+                    data: $('form').serialize(),
+                    success: function (response) {
+                        console.log('success');
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('error');
+                    }
+                });
+            });
+        });
+    </script>
+}

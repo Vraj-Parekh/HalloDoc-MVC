@@ -1,10 +1,13 @@
 ﻿using Entities.DataContext;
 using Entities.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repository.Interface;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -14,10 +17,12 @@ namespace Repositories.Repository.Implementation
     public class RequestStatusLogServices : IRequestStatusLogServices
     {
         private readonly HalloDocDbContext _context;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public RequestStatusLogServices(HalloDocDbContext _context)
+        public RequestStatusLogServices(HalloDocDbContext _context, IHttpContextAccessor httpContextAccessor)
         {
             this._context = _context;
+            this.httpContextAccessor = httpContextAccessor;
         }
         public async Task<Requeststatuslog> AddRequestStatusLogAsync(Request request, RequestStatus status)
         {
@@ -26,9 +31,8 @@ namespace Repositories.Repository.Implementation
                 Requestid = request.Requestid,
                 Status = (short)status,
                 Createddate = DateTime.Now,
-                Physician = request.Physician
+                Physician = request.Physician,
             };
-
             _context.Requeststatuslogs.Add(requeststatuslog);
             await _context.SaveChangesAsync();
 
@@ -81,6 +85,8 @@ namespace Repositories.Repository.Implementation
             }
 
         }
+
+
     }
 }
 

@@ -2,6 +2,13 @@
 @{
     Layout = null;
 }
+@if (TempData["ToastrScript"] != null)
+{
+    <script>
+        @Html.Raw(TempData["ToastrScript"])
+    </script>
+}
+
 <html lang="en">
 <head>
     <meta charset="utf-8" />
