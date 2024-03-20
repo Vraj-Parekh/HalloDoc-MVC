@@ -8,5 +8,6 @@ namespace Repositories.Repository.Interface
         Requestclient GetClient(int requestId);
         void SendAgreement(int requestId, string phoneNumber, string email);
         void UpdateCase(ViewCaseDTO data);
+        void UpdateMobileEmail(int requestId, string email, string phoneNumber);
     }
 }

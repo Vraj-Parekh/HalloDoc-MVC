@@ -34,6 +34,7 @@ namespace Entities.ViewModels
         public string Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
+        [RegularExpression(@"^\d{6}$", ErrorMessage = "ZIP code must be 6 digits")]
         public string ZipCode { get; set; }
         public string? RoomOrSuite { get; set; }
         public List<IFormFile>? File { get; set; }

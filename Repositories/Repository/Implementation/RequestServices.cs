@@ -223,13 +223,16 @@ namespace Repositories.Repository.Implementation
             {
                 foreach (Requestwisefile file in files)
                 {
-                    FileData FileDataList = new()
+                    if (file.Isdeleted == false)
                     {
-                        FileName = file.Filename,
-                        CreatedDate = file.Createddate,
-                        DocumentId = file.Requestwisefileid
-                    };
-                    data.Add(FileDataList);
+                        FileData FileDataList = new()
+                        {
+                            FileName = file.Filename,
+                            CreatedDate = file.Createddate,
+                            DocumentId = file.Requestwisefileid
+                        };
+                        data.Add(FileDataList);
+                    }
                 }
             }
             ViewDocumentList doc = new()

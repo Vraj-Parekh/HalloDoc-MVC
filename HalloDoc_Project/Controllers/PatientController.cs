@@ -43,6 +43,11 @@ namespace HalloDoc_Project.Controllers
         [AllowAnonymous]
         public IActionResult PatientLogin(string returnUrl = null)
         {
+            if (Request.Cookies != null)
+            {
+                return Redirect(returnUrl ?? Url.Action("PatientDashboard", "Patient"));
+            }
+
             TempData["ReturnUrl"] = returnUrl;
            
             return View();
@@ -58,6 +63,8 @@ namespace HalloDoc_Project.Controllers
             if (user != null && user.Passwordhash == data.Password)
             {
                 string? token = JwtService.GenerateJwtToken(user);//asp net user services
+                TempData["Token"] = token;
+
                 CookieOptions cookieOptions = new CookieOptions()
                 {
                     Expires = DateTime.UtcNow.AddMinutes(20),
@@ -158,9 +165,9 @@ namespace HalloDoc_Project.Controllers
         public IActionResult ViewDocument(int requestId)
         {
             TempData["requestId"] = requestId;
-            var files = _context.Requestwisefiles.Where(a => a.Requestid == requestId);//name from file to files
-            var req = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
-            var name = _context.Requestclients.Where(a => a.Requestid == requestId).FirstOrDefault();
+            IQueryable<Requestwisefile>? files = _context.Requestwisefiles.Where(a => a.Requestid == requestId);//name from file to files
+            Request? req = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Requestclient? name = _context.Requestclients.Where(a => a.Requestid == requestId).FirstOrDefault();
             List<FileData> data = new();
 
             if (files is not null)

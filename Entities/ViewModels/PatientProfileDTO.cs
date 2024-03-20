@@ -31,7 +31,7 @@ namespace Entities.ViewModels
         [Required(ErrorMessage = "State is required")]
         public string State { get; set; }
 
-        [Required(ErrorMessage = "ZipCode is required")]
+        [RegularExpression(@"^\d{6}$", ErrorMessage = "ZIP code must be 6 digits")]
         public string ZipCode { get; set; }
     }
 }

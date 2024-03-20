@@ -50,7 +50,7 @@ namespace Repositories.Repository.Implementation
                 Physician = request.Physician
             };
 
-            _context.Requeststatuslogs.Add(requeststatuslog);
+            await _context.Requeststatuslogs.AddAsync(requeststatuslog);
             await _context.SaveChangesAsync();
 
             return requeststatuslog;

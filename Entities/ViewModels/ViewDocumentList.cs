@@ -14,6 +14,7 @@ namespace Entities.ViewModels
 
         [Required(ErrorMessage = "Phone Number is required")]
         [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone Number must be 10 digits")]
+        //[RegularExpression(@"^\+(?:[0-9] ?){6,14}[0-9]$", ErrorMessage = "Invalid mobile number format")]
         public string? PhoneNumber { get; set; }
 
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]

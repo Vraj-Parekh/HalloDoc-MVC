@@ -46,5 +46,16 @@ namespace Repositories.Repository.Implementation
                 emailSender.SendEmailAsync(email, "Agreement", $"Tap the link to accept or cancel the agreement: <a href=\"https://localhost:44396/Patient/PatientLogin?returnUrl=/Patient/ReviewAgreement/{requestId}\">Agreement Link</a>");
             }
         }
+
+        public void UpdateMobileEmail(int requestId,string email,string phoneNumber)
+        {
+            Requestclient? clientData = GetClient(requestId);
+
+            clientData.Phonenumber = phoneNumber;
+            clientData.Email = email;
+
+            _context.Requestclients.Update(clientData);
+            _context.SaveChanges();
+        }
     }
 }

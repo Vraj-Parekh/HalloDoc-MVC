@@ -57,7 +57,6 @@
         </table>
 
         <h4 class="mb-4">Patient Information</h4>
-        <span class="mb-3">Confirmation Number <span class="h3 text-info">@Model.ConfirmationNumber</span> </span>
 
         <form asp-action="CaseClose" asp-controller="Admin" asp-route-requestId="@ViewBag.requestId" method="post" class="login-form-control">
             <div class="row">
@@ -93,7 +92,7 @@
                     <div class="form-floating">
                         <input type="date"
                                asp-for="DateOfBirth"
-                               class="form-control "
+                               class="form-control"
                                id="dob"
                                readonly />
                         <label for="floatingPassword">Date of Birth</label>
@@ -138,8 +137,8 @@
             <div class="row justify-content-end">
                 <div class="col-auto">
                     <button type="button" class="btn btn-outline-info text-info btn-edit"> Edit </button>
-                    <button class="btn btn-info text-white btn-save" id="saveBtn">Save</button>
-                    <button class="btn btn-info text-white" type="submit">Close Case</button>
+                    <button type="button" class="btn btn-info text-white btn-save" id="saveBtn">Save</button>
+                    <button class="btn btn-info text-white" id="closeCaseBtn">Close Case</button>
                 </div>
             </div>
         </form>
@@ -150,18 +149,35 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            
             $('#saveBtn').click(function () {
+                var email = $('#email').val();
+                var phoneNumber = $('#phone').val();
+                var data = {
+                    email: email,
+                    phoneNumber: phoneNumber
+                };
+
+
                 $.ajax({
                     url: '/Admin/UpdateRequestClientMobEmail/' + @ViewBag.requestId,
                     type: 'POST',
-                    data: $('form').serialize(),
+                    data: data,
                     success: function (response) {
+                        $('#phone').prop('disabled', true);
+                        $('#email').prop('disabled', true);
+                        // window.location.reload();
                         console.log('success');
                     },
                     error: function (xhr, status, error) {
                         console.log('error');
+                        window.location.reload();
                     }
                 });
+            });
+
+            $('#closeCaseBtn').click(function () {
+                $('form').submit();
             });
         });
     </script>

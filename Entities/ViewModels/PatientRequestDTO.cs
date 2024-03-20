@@ -37,6 +37,7 @@ namespace Entities.ViewModels
 
         public string State { get; set; }
 
+        [RegularExpression(@"^\d{6}$", ErrorMessage = "ZIP code must be 6 digits")]
         public string ZipCode { get; set; }
 
         public string? RoomOrSuite { get; set; }

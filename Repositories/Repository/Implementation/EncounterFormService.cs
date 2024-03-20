@@ -75,6 +75,9 @@ namespace Repositories.Repository.Implementation
                 Followup = data.Followup,
                 Requestid = requestId,
             };
+
+            _context.Encounterforms.Add(encounterform);
+            _context.SaveChanges();
         }
     }
 }

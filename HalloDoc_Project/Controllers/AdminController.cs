@@ -143,11 +143,12 @@ namespace HalloDoc_Project.Controllers
             ModelState.AddModelError(nameof(data.ConfirmPassword), "An account with this email does not exists.");
             return View(data);
         }
+
         public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize)
         {
             int totalCount;
-            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, pageSize,out totalCount);
-            
+            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, pageSize, out totalCount);
+
             int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
             ViewBag.TotalCount = totalCount;
@@ -213,7 +214,6 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-
         [HttpPost("{requestId}")]
         public IActionResult BlockCase([FromRoute] int requestId, [FromForm] string blockReason)
         {
@@ -251,11 +251,25 @@ namespace HalloDoc_Project.Controllers
         [HttpPost("{requestId}")]
         public void Upload(int requestId, List<IFormFile> files)
         {
-            //Request? request = requestServices.GetRequest(requestId);
-            //var result = await requestWiseFileService.AddFilesAsync(files, request);
+            Request? request = requestServices.GetRequest(requestId);
+            if (request is not null)
+            {
+                requestWiseFilesServices.AddFiles(files, request);
+            }
+        }
 
+        public IActionResult Delete(int docId)
+        {
+            HttpContext? path = HttpContext;
+            requestWiseFilesServices.Delete(docId);
+            return Redirect(HttpContext.Request.Headers.Referer!);
+        }
 
-            //return RedirectToAction("ViewDocument", "Patient", new { requestId });
+        [HttpPost]
+        public IActionResult DeleteSelectedFiles(List<int> fileIds)
+        {
+            requestWiseFilesServices.DeleteSelectedFiles(fileIds);
+            return Redirect(HttpContext.Request.Headers.Referer!);
         }
 
         [HttpGet("{requestId}")]
@@ -311,6 +325,7 @@ namespace HalloDoc_Project.Controllers
         [HttpPost("{requestId}")]
         public IActionResult Encounter(int requestId, EncounterDTO model)
         {
+            encounterFormService.AddEncounterInfo(requestId, model);
             return View();
         }
 
@@ -327,6 +342,19 @@ namespace HalloDoc_Project.Controllers
         {
             requestServices.AddCloseCaseData(requestId);
             return RedirectToAction("AdminDashboard");
+        }
+
+        [HttpPost("{requestId}")]
+        public IActionResult UpdateRequestClientMobEmail(int requestId, string email, string phoneNumber)
+        {
+            requestClientServices.UpdateMobileEmail(requestId, email, phoneNumber);
+            return View();
+        }
+
+        public IActionResult MyProfile()
+        {
+
+            return View();
         }
     }
 }
