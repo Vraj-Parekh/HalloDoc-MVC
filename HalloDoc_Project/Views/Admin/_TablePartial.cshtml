@@ -12,7 +12,7 @@
     <table id="myTable" class="table">
         <thead>
             <tr class="bg-light fw-bold mx-1">
-                <th>Name, @status</th>
+                <th>Name</th>
 
                 @if (status != 6)
                 {
@@ -47,10 +47,7 @@
                     <th>Phone</th>
                 }
                 <th>Address</th>
-                @if (status == 4 || status == 6)
-                {
-                }
-                else
+                @if (status != 4 && status != 6)
                 {
                     <th>Notes</th>
                 }
@@ -96,16 +93,34 @@
                     }
                     @if (status == 5)
                     {
-                        <td>Region 1</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(items.Region))
+                            {
+                                @items.Region
+                            }
+                            else
+                            {
+                                @:--
+                            }
+                        </td>
 
                     }
                     @if (status <= 3)
                     {
-                        <td>Patient @items.FirstName @items.LastName</td>
+                        <td>Patient @items.FirstName, @items.LastName</td>
                     }
                     @if (status >= 2)
                     {
-                        <td>@items.PhysicianName</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(items.PhysicianName))
+                            {
+                                @items.PhysicianName
+                            }
+                            else
+                            {
+                                @:--
+                            }
+                        </td>
                     }
                     @if (status == 1)
                     {
@@ -171,13 +186,21 @@
                             }
                         </td>
                     }
+
                     <td>@items.Address</td>
-                    @if (status == 4 || status == 6)
+
+                    @if (status != 4 && status != 6)
                     {
-                    }
-                    else
-                    {
-                        <td>@items.Notes</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(items.Notes))
+                            {
+                                @items.Notes
+                            }
+                            else
+                            {
+                                @:--
+                            }
+                        </td>
                     }
 
                     <td class="text-nowrap">
@@ -266,6 +289,36 @@
             }
         </tbody>
     </table>
+    @*Pagination code*@
+    <div class="pagination d-flex justify-content-center align-items-center">
+
+        @if (ViewBag.TotalPages != 0)
+        {
+            <ul class="mt-2 mb-2 ps-0">
+                <!-- Previous button -->
+                <li class="page-item">
+                    <a class="page-link" id="prevBtn" role="button" onclick="previousPage()">&laquo; Previous</a>
+                </li>
+
+                <!-- Page links -->
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.PageIndex ? "active" : "")">
+                        <a class="page-link" role="button" onclick="changePage(@i)">@i</a>
+                    </li>
+                }
+
+                <!-- Next button -->
+                <li class="page-item">
+                    <a class="page-link" role="button" onclick="nextPage(@ViewBag.TotalPages)">Next &raquo;</a>
+                </li>
+            </ul>
+        }
+        else
+        {
+            <h3>No data found</h3>
+        }
+    </div>
 </div>
 
 
@@ -458,36 +511,6 @@
 </div>
 
 
-@*Pagination code*@
-<div class="pagination d-flex justify-content-center align-items-center">
-
-    @if (ViewBag.TotalPages != 0)
-    {
-        <ul class="mt-2 mb-2 ps-0">
-            <!-- Previous button -->
-            <li class="page-item">
-                <a class="page-link" id="prevBtn" role="button" onclick="previousPage()">&laquo; Previous</a>
-            </li>
-
-            <!-- Page links -->
-            @for (int i = 1; i <= ViewBag.TotalPages; i++)
-            {
-                <li class="page-item @(i == ViewBag.PageIndex ? "active" : "")">
-                    <a class="page-link" role="button" onclick="changePage(@i)">@i</a>
-                </li>
-            }
-
-            <!-- Next button -->
-            <li class="page-item">
-                <a class="page-link" role="button" onclick="nextPage(@ViewBag.TotalPages)">Next &raquo;</a>
-            </li>
-        </ul>
-    }
-    else
-    {
-        <h3>No data found</h3>
-    }
-</div>
 
 
 @*Partial view for modals*@

@@ -116,7 +116,7 @@ namespace Repositories.Repository.Implementation
             {
                 NewCount = _context.Requests.Where(r => r.Status == 1).Count(),
                 PendingCount = _context.Requests.Where(r => r.Status == 16).Count(),
-                ActiveCount = _context.Requests.Where(r => r.Status == 3 || r.Status == 5 || r.Status == 6).Count(),
+                ActiveCount = _context.Requests.Where(r => r.Status == 2 || r.Status == 5 || r.Status == 6).Count(),
                 ConcludeCount = _context.Requests.Where(r => r.Status == 18).Count(),
                 ToCloseCount = _context.Requests.Where(r => r.Status == 3 || r.Status == 21 || r.Status == 8).Count(),
                 UnpaidCount = _context.Requests.Where(r => r.Status == 19).Count()
@@ -128,21 +128,21 @@ namespace Repositories.Repository.Implementation
         {
             Dictionary<int, int[]> statusMap = new()
             {
-                {1, new int[1]{ 1} },
-                {2, new int[1]{ 16} },
-                {3, new int[3]{ 3,5,6} },
-                {4, new int[1]{ 18} },
-                {5, new int[3]{ 3,21,8} },
-                {6, new int[1]{ 19} }
+                {1, new int[1]{ 1} },//new
+                {2, new int[1]{ 16} },//pending
+                {3, new int[3]{ 2,5,6} },//active
+                {4, new int[1]{ 18} },//conclude
+                {5, new int[3]{ 3,21,8} },//to close
+                {6, new int[1]{ 19} }//unpaid
             };
 
             totalCount = _context.Requests
                   .Count(a => statusMap[status]
-                  .Contains(a.Status) && (requesttypeid == 5 || requesttypeid == a.Requesttypeid));
+                  .Contains(a.Status) && (requesttypeid == 5 || a.Requesttypeid == requesttypeid));
 
             List<Request>? request = _context.Requests
                 .Where(a => statusMap[status]
-                .Contains(a.Status) && (requesttypeid == 5 || requesttypeid == a.Requesttypeid))
+                .Contains(a.Status) && (requesttypeid == 5 || a.Requesttypeid == requesttypeid))
                 .Include(a => a.Requestclients)
                 .Skip(pageIndex > 0 ? (pageIndex - 1) * pageSize : 0)
                 .Take(pageSize)
@@ -176,7 +176,7 @@ namespace Repositories.Repository.Implementation
             return admin;
         }
 
-        public void AssignCase(int requestId, string phyRegion, string phyId, string notes)
+        public void AssignCase(int requestId, string phyRegion, string phyId, string notes)//here notes is tranfer notes
         {
             Request? request = GetRequest(requestId);
             if (request != null)
@@ -190,6 +190,7 @@ namespace Repositories.Repository.Implementation
                     Status = 16, //pending
                     Createddate = DateTime.Now,
                     Physicianid = physicianId,
+                    Transtophysicianid = physicianId,
                 };
 
 

@@ -32,91 +32,91 @@
 // });
 
 
-let allFiles = [];
-let input = document.getElementById("upload");
-var button = document.getElementsByClassName("toggle-button")[0];
+//let allFiles = [];
+//let input = document.getElementById("upload");
+//var button = document.getElementsByClassName("toggle-button")[0];
 
-let div = document.getElementById("fileNames");
+//let div = document.getElementById("fileNames");
 
-input.addEventListener("change", function () {
-    let files = input.files;
-
-
-    for (let i = 0; i < files.length; i++) {
-        allFiles.push(files[i]);
-    }
-
-    console.log(allFiles)
-    button.style = "display:block"
-    showNames(files);
-});
-
-function showNames(files) {
-
-    for (let i = 0; i < files.length; i++) {
-
-        let icon = document.createElement('i');
-        icon.classList = 'bi bi-x-lg fileIcon';
-
-        let br = document.createElement('br');
-
-        let span = document.createElement('span');
-        span.className = "showFile"
-        span.style.color = 'black';
-        span.textContent = files[i].name;
-        span.appendChild(icon);
-        div.appendChild(span);
+//input.addEventListener("change", function () {
+//    let files = input.files;
 
 
-        div.appendChild(br);
+//    for (let i = 0; i < files.length; i++) {
+//        allFiles.push(files[i]);
+//    }
+
+//    console.log(allFiles)
+//    button.style = "display:block"
+//    showNames(files);
+//});
+
+//function showNames(files) {
+
+//    for (let i = 0; i < files.length; i++) {
+
+//        let icon = document.createElement('i');
+//        icon.classList = 'bi bi-x-lg fileIcon';
+
+//        let br = document.createElement('br');
+
+//        let span = document.createElement('span');
+//        span.className = "showFile"
+//        span.style.color = 'black';
+//        span.textContent = files[i].name;
+//        span.appendChild(icon);
+//        div.appendChild(span);
 
 
-        icon.onclick = function () {
-            let index = allFiles.indexOf(files[i]);
-            allFiles.splice(index, 1);
-            console.log(allFiles);
-            div.removeChild(span);
-            div.removeChild(br);
-
-            if (allFiles.length == 0) {
-                button.style = "display:none";
-            }
-        }
-    }
-}
-
-function removeAll() {
-    allFiles = [];
-    div.innerHTML = "";
-    button.style = "display:none";
-}
-
-function submitFile(id) {
-
-    console.log(allFiles);
-    console.log("ADFA");
-
-    const formData = new FormData();
-
-    for (let i = 0; i < allFiles.length; i++) {
-        formData.append('files', allFiles[i]);
-    }
+//        div.appendChild(br);
 
 
-    $.ajax({
-        type: 'POST',
-        url: "/ViewDocument/Upload/" + id,
-        data: (formData),
-        processData: false,
-        contentType: false,
+//        icon.onclick = function () {
+//            let index = allFiles.indexOf(files[i]);
+//            allFiles.splice(index, 1);
+//            console.log(allFiles);
+//            div.removeChild(span);
+//            div.removeChild(br);
 
-        success: function (response) {
-            console.log(response)
-            removeAll();
-            window.location.reload();
-        },
-        error: function (xhr, status, error) {
-            console.error("Error:", status, error);
-        }
-    });
-}
+//            if (allFiles.length == 0) {
+//                button.style = "display:none";
+//            }
+//        }
+//    }
+//}
+
+//function removeAll() {
+//    allFiles = [];
+//    div.innerHTML = "";
+//    button.style = "display:none";
+//}
+
+//function submitFile(id) {
+
+//    console.log(allFiles);
+//    console.log("ADFA");
+
+//    const formData = new FormData();
+
+//    for (let i = 0; i < allFiles.length; i++) {
+//        formData.append('files', allFiles[i]);
+//    }
+
+
+//    $.ajax({
+//        type: 'POST',
+//        url: "/ViewDocument/Upload/" + id,
+//        data: (formData),
+//        processData: false,
+//        contentType: false,
+
+//        success: function (response) {
+//            console.log(response)
+//            removeAll();
+//            window.location.reload();
+//        },
+//        error: function (xhr, status, error) {
+//            console.error("Error:", status, error);
+//        }
+//    });
+//}

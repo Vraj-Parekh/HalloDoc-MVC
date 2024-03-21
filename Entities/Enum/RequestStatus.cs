@@ -21,4 +21,25 @@
     Unpaid = 19,
     Blocked = 20,
     CCApprovedByPatient = 21,
+
+
+    //Request Status		 Dashboard Status
+
+    //1. Unassigned			New
+    //-------
+    //2. Accepted			Pending
+    //-------
+    //4. MDEnRoute			Active
+    //5. MDONSite			Active
+    //-------
+    //6. Conclude			Conclude
+    //-------
+    //3. Cancelled			To-close
+    //7. CancelledByPatient	To-close
+    //8. Closed				To-close
+    //-------
+    //9. Unpaid				Unpaid
+    //-------
+    //10. Clear				Will not show in dashboard
+
 }

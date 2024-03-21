@@ -112,7 +112,6 @@
         }
 
         console.log(allFiles)
-        console.log("sffwefw")
         button.style = "display:block"
         showNames(files);
     });
@@ -122,7 +121,6 @@
             let icon = document.createElement('i');
             icon.classList = 'bi bi-x-lg fileIcon';
 
-            // let br = document.createElement('br');
 
             let span = document.createElement('span');
             span.className = "showFile";
@@ -132,13 +130,11 @@
             let spanIcon = icon.cloneNode(true); // Clone the icon for each file
             span.appendChild(spanIcon);
             div.appendChild(span);
-            // div.appendChild(br);
 
             spanIcon.onclick = function () {
                 let index = allFiles.indexOf(files[i]);
                 allFiles.splice(index, 1);
                 div.removeChild(span);
-                // div.removeChild(br);
 
                 if (allFiles.length == 0) {
                     button.style = "display:none";

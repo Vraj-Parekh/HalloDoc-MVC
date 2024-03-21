@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.12" />
     <PackageReference Include="MimeKit" Version="4.3.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
+    <PackageReference Include="NPOI" Version="2.6.2" />
     <PackageReference Include="toastr" Version="2.1.1" />
   </ItemGroup>
 

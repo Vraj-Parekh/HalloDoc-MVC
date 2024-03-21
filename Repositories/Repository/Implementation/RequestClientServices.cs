@@ -43,7 +43,7 @@ namespace Repositories.Repository.Implementation
                 requestClient.Phonenumber = phoneNumber;
                 _context.Requestclients.Update(requestClient);
 
-                emailSender.SendEmailAsync(email, "Agreement", $"Tap the link to accept or cancel the agreement: <a href=\"https://localhost:44396/Patient/PatientLogin?returnUrl=/Patient/ReviewAgreement/{requestId}\">Agreement Link</a>");
+                emailSender.SendEmailAsync(email, "Agreement", $"Tap the link to accept or cancel the agreement: <a href=\"https://localhost:44396/Patient/ReviewAgreement/{requestId}\">Agreement Link</a>");
             }
         }
 

@@ -55,6 +55,23 @@
 
 <!-- For assign case-->
 <script>
+    $(document).ready(function () {
+        $('#assignModal').on('show.bs.modal', function (e) {
+            $('.regionDropDown').empty();
+            // Trigger the AJAX call for fetching regions
+            $.ajax({
+                url: './FetchRegions',
+                method: 'GET',
+                success: function (response) {
+                    response.forEach(function (res) {
+                        console.log("calls region");
+                        $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
+                    });
+                }
+            });
+        });
+    });
+
     function SetAssignId(id) {
         console.log("start");
         console.log(id);
@@ -82,16 +99,6 @@
         fetchPhysicianByRegion(selectedRegionId);
     })
 
-    $.ajax({
-        url: './FetchRegions',
-        method: 'GET',
-        success: function (response) {
-            response.forEach(function (res) {
-                console.log("calls region");
-                $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
-            });
-        }
-    });
 </script>
 
 <!-- Modal For Block Case For Patient-->
@@ -122,7 +129,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-info text-white" id="confirmbtn">Confirm</button>
-                    <button class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
         </div>
@@ -185,7 +192,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-info text-white" id="confirmbtn">Confirm</button>
-                    <button class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
         </div>
@@ -269,6 +276,23 @@
         myModal.show();
         $(".transferCaseForm").attr("action", "/Admin/AssignCase/" + id);
     }
+
+    $(document).ready(function () {
+        $('#transferModal').on('show.bs.modal', function (e) {
+            $('.regionDropDown').empty();
+            // Trigger the AJAX call for fetching regions
+            $.ajax({
+                url: './FetchRegions',
+                method: 'GET',
+                success: function (response) {
+                    response.forEach(function (res) {
+                        console.log("calls region");
+                        $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
+                    });
+                }
+            });
+        });
+    });
 </script>
 
 

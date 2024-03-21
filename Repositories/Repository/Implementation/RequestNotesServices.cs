@@ -30,23 +30,33 @@ namespace Repositories.Repository.Implementation
 
         public ViewNotesDTO GetViewRequestNotes(int requestId)
         {
-            Requestclient? client = requestClientServices.GetClient(requestId);
-            Requestnote? adminNotes = GetRequestNotes(requestId);
-            List<Requeststatuslog>? transferNotes = requestStatusLogServices.GetTransferNotes(requestId);
-            ViewNotesDTO model = new();
-
-            if (adminNotes != null)
+            Request? request = requestServices.GetRequest(requestId);
+            if (request is null)
             {
-                model.AdminNotes = adminNotes.Adminnotes;
-                model.TransferNotes = transferNotes.Select(a => a.Notes).ToList();
-                model.PhysicianNotes = adminNotes.Physiciannotes;
-                model.RequestId = requestId;
+                throw new Exception("Request not found");
             }
-            return model;
+
+            Requestnote? notes = GetRequestNotes(requestId);
+            List<Requeststatuslog>? transferNotes = requestStatusLogServices.GetTransferNotes(requestId);
+
+            if (notes != null)
+            {
+                ViewNotesDTO model = new ViewNotesDTO()
+                {
+                    AdminNotes = notes?.Adminnotes ?? "",
+                    PhysicianNotes = notes?.Physiciannotes??"",
+                };
+                return model;
+            }
+            return null;
         }
         public void AddNotes(ViewNotesDTO model, int requestId)
         {
             Request? request = requestServices.GetRequest(requestId);
+            if(request is null)
+            {
+                throw new Exception("Request not found");
+            }
             Requestnote? requestNotes = GetRequestNotes(requestId);
             //Requeststatuslog? transferNotes = requestStatusLogServices.GetTransferNotes(model.RequestId);
 

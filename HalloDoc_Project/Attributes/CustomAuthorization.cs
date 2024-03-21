@@ -18,7 +18,7 @@ namespace HalloDoc_Project.Attributes
             this._role = role;
         }
         public void OnAuthorization(AuthorizationFilterContext context)
-        {
+       {
             if (context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any())
                 return;
 

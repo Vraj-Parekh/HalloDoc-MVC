@@ -5,10 +5,10 @@ namespace Entities.ViewModels
     public class PatientProfileDTO
     {
         [Required(ErrorMessage = "First Name is required")]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
 
         [Required(ErrorMessage = "Last Name is required")]
-        public string LastName { get; set; }
+        public required string LastName { get; set; }
 
         [DataType(DataType.DateTime)]
         [Required(ErrorMessage = "Date of Birth is required")]
@@ -16,7 +16,7 @@ namespace Entities.ViewModels
 
         [Required(ErrorMessage = "Phone Number is required")]
         [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone Number must be 10 digits")]
-        public string PhoneNumber { get; set; }
+        public required string PhoneNumber { get; set; }
 
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]

@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Authentication;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.EntityFrameworkCore;
+using Repositories.Utility;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -77,11 +79,6 @@ namespace HalloDoc_Project.Controllers
                     SameSite = SameSiteMode.Strict
                 };
                 Response.Cookies.Append("Token", token, cookieOptions);
-
-                //toastr notification
-                string message = "Successfully logged in!";
-                string script = $@"toastr.success('{message}');";
-                TempData["ToastrScript"] = script;
 
                 return RedirectToAction("AdminDashboard", "Admin");
             }
@@ -186,12 +183,12 @@ namespace HalloDoc_Project.Controllers
         public IActionResult ViewNotes(int requestId)
         {
             ViewNotesDTO? data = requestNotesServices.GetViewRequestNotes(requestId);
-            ViewData["RequestId"] = requestId;
+            ViewBag.requestId = requestId;
             return View(data);
         }
 
         [HttpPost("{requestId}")]
-        public IActionResult ViewNotes(ViewNotesDTO data, [FromRoute] int requestId)
+        public IActionResult ViewNotes(ViewNotesDTO data, int requestId)
         {
             if (ModelState.IsValid)
             {
@@ -350,6 +347,14 @@ namespace HalloDoc_Project.Controllers
             requestClientServices.UpdateMobileEmail(requestId, email, phoneNumber);
             return View();
         }
+
+        //[HttpGet("download")]
+        //public async Task<FileResult> DownloadExcel(CancellationToken ct)
+        //{
+            //var products = await requestServices.ToListAsync(ct);
+            //var file = ExcelHelper.CreateFile(products);
+            //return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "products.xlsx");
+        //}
 
         public IActionResult MyProfile()
         {
