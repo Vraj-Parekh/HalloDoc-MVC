@@ -67,10 +67,10 @@
                 <button type="button" class="btn btn-info p-2 text-white fw-light">
                     <i class="fa-solid fa-notes-medical pe-1"></i><span class="d-lg-inline-block d-none"> Create Request</span>
                 </button>
-                <button type="button" class="btn btn-info p-2 text-white fw-light">
+                <button type="button" id="exportFiltered" class="btn btn-info p-2 text-white fw-light">
                     <i class="fa-solid fa-share pe-1"></i><span class="d-lg-inline-block d-none">Export</span>
                 </button>
-                <button type="button" class="btn btn-info p-2 text-white fw-light">
+                <button type="button" id="exportAll" class="btn btn-info p-2 text-white fw-light">
                     <i class="fa-solid fa-share pe-1"></i><span class="d-lg-inline-block d-none">Export All</span>
                 </button>
                 <button type="button" class="btn btn-info p-2 text-white fw-light">
@@ -223,13 +223,11 @@
 
 
         function getData() {
-            // alert(requestTypeId);
             $.ajax({
                 url: '@Url.Action("Table", "Admin")',
                 type: 'get',
                 data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, pageSize: pageSize },
                 success: function (result) {
-                    // console.log(result);
                     if (result.includes('table')) {
                         $(".tableData").html(result);
                     }
@@ -240,13 +238,63 @@
             });
         }
 
+        //export filtered
+        $(document).ready(function () {
+            $('#exportFiltered').click(function () {
+                console.log('after this ajax will call')
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ExportFiltered", "Admin")',
+                    data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, pageSize: pageSize },
+                    xhrFields: {
+                        responseType: 'blob' // Set the response type to blob
+                    },
+                    success: function (response) {
+                        var blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'patient_list.xlsx';
+                        link.click();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", status, error);
+                    }
+                });
+            });
+        });
+
+        //export all
+        $(document).ready(function () {
+            $('#exportAll').click(function () {
+                console.log('after this export all ajax will call')
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ExportAll", "Admin")',
+                    data: { status: status },
+                    xhrFields: {
+                        responseType: 'blob' // Set the response type to blob
+                    },
+                    success: function (response) {
+                        var blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'all_patient_list.xlsx';
+                        link.click();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", status, error);
+                    }
+                });
+            });
+        });
+
+
         function previousPage() {
             if (pageIndex > 1) {
                 pageIndex--;
                 getData();
             }
-            else
-            {
+            else {
                 console.log('else')
                 $('#prevBtn').prop('disabled', true);
             }

@@ -348,17 +348,22 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
-        //[HttpGet("download")]
-        //public async Task<FileResult> DownloadExcel(CancellationToken ct)
-        //{
-            //var products = await requestServices.ToListAsync(ct);
-            //var file = ExcelHelper.CreateFile(products);
-            //return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "products.xlsx");
-        //}
+        
+        public async Task<FileResult> ExportFiltered(int requestTypeId, int status, int pageIndex, int pageSize)
+        {
+            List<Request>? requests = await requestServices.GetFilteredRequests(requestTypeId, status,pageIndex,pageSize);
+            byte[]? file = ExcelHelper.CreateFile(requests);
+            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_list.xlsx");
+        }
 
+        public async Task<FileResult> ExportAll(int status)
+        {
+            List<Request>? requests = await requestServices.GetAllRequests(status);
+            byte[]? file = ExcelHelper.CreateFile(requests);
+            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "all_patient_list.xlsx");
+        }
         public IActionResult MyProfile()
         {
-
             return View();
         }
     }

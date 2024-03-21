@@ -124,6 +124,47 @@ namespace Repositories.Repository.Implementation
             return count;
         }
 
+        public async Task<List<Request>> GetFilteredRequests(int requesttypeid, int status, int pageIndex, int pageSize)
+        {
+            Dictionary<int, int[]> statusMap = new()
+            {
+                {1, new int[1]{ 1} },//new
+                {2, new int[1]{ 16} },//pending
+                {3, new int[3]{ 2,5,6} },//active
+                {4, new int[1]{ 18} },//conclude
+                {5, new int[3]{ 3,21,8} },//to close
+                {6, new int[1]{ 19} }//unpaid
+            };
+
+            List<Request>? request = await _context.Requests
+               .Where(a => statusMap[status]
+               .Contains(a.Status) && (requesttypeid == 5 || a.Requesttypeid == requesttypeid))
+               .Include(a => a.Requestclients)
+               .Skip(pageIndex > 0 ? (pageIndex - 1) * pageSize : 0)
+               .Take(pageSize)
+               .ToListAsync();
+
+            return request;
+        }
+
+        public async Task<List<Request>> GetAllRequests(int status)
+        {
+            Dictionary<int, int[]> statusMap = new()
+            {
+                {1, new int[1]{ 1} },//new
+                {2, new int[1]{ 16} },//pending
+                {3, new int[3]{ 2,5,6} },//active
+                {4, new int[1]{ 18} },//conclude
+                {5, new int[3]{ 3,21,8} },//to close
+                {6, new int[1]{ 19} }//unpaid
+            };
+
+            List<Request>? request = await _context.Requests
+               .Where(a => statusMap[status].Contains(a.Status))
+               .ToListAsync();
+
+            return request;
+        }
         public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, out int totalCount)
         {
             Dictionary<int, int[]> statusMap = new()

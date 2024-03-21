@@ -9,9 +9,11 @@ namespace Repositories.Repository.Interface
         Task<bool> AgreeWithAgreementAsync(int requestId);
         void AssignCase(int assignReqId, string phyRegion, string phyId, string assignNote);
         void ClearCase(int requestId);
+        Task<List<Request>> GetAllRequests(int status);
         ViewDocumentList GetCloseCaseInfo(int requestId);
         object GetCount();
         ViewDocumentList GetDocumentData(int requestId);
+        Task<List<Request>> GetFilteredRequests(int requesttypeid, int status, int pageIndex, int pageSize);
         SendAgreement GetMobileEmail(SendAgreement model, int requestId);
         List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, out int totalCount);
         Request? GetRequest(int requestId);
