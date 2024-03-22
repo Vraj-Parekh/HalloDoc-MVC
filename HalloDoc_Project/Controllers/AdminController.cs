@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Utility;
+using System.Security.Claims;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -32,10 +33,11 @@ namespace HalloDoc_Project.Controllers
         private readonly IAspNetUserService aspNetUserService;
         private readonly IEncounterFormService encounterFormService;
         private readonly IEmailSender emailSender;
+        private readonly IAdminService adminService;
 
         public IRegionService RegionService { get; }
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -51,6 +53,7 @@ namespace HalloDoc_Project.Controllers
             this.aspNetUserService = aspNetUserService;
             this.encounterFormService = encounterFormService;
             this.emailSender = emailSender;
+            this.adminService = adminService;
         }
         public IActionResult Index()
         {
@@ -348,10 +351,10 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
-        
+
         public async Task<FileResult> ExportFiltered(int requestTypeId, int status, int pageIndex, int pageSize)
         {
-            List<Request>? requests = await requestServices.GetFilteredRequests(requestTypeId, status,pageIndex,pageSize);
+            List<Request>? requests = await requestServices.GetFilteredRequests(requestTypeId, status, pageIndex, pageSize);
             byte[]? file = ExcelHelper.CreateFile(requests);
             return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_list.xlsx");
         }
@@ -364,7 +367,25 @@ namespace HalloDoc_Project.Controllers
         }
         public IActionResult MyProfile()
         {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            Admin? admin = adminService.GetAdmin(email);
+            if (admin is not null && admin.Aspnetuser is not null)
+            {
+                AdminProfileDTO? model = adminService.GetAdminInfo(admin);
+                return View(model);
+            }
             return View();
+        }
+
+        public IActionResult ResetPassword(AdminProfileDTO model)
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            Admin? admin = adminService.GetAdmin(email);
+            if(admin is not null && admin.Aspnetuser is not null)
+            {
+                adminService.ChangePassword(admin, model);
+            }
+            return RedirectToAction("MyProfile");
         }
     }
 }

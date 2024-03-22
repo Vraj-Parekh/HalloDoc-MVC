@@ -1,13 +1,30 @@
 ﻿public enum RequestStatus
 {
+    //new
     Unassigned = 1,
+
+    //pending
+    Pending = 16,
+
+    //active
     Active = 2,
-    Cancelled = 3,
-    Reserving = 4,
     MDEnRoute = 5,
     MDOnSite = 6,
-    FollowUp = 7,
+
+    //conclude
+    Conclude = 18,
+
+    //to close
+    Cancelled = 3,
     Closed = 8,
+    CCApprovedByPatient = 21,
+
+    //unpaid
+    Unpaid = 19,
+
+
+    Reserving = 4,
+    FollowUp = 7,
     Locked = 9,
     Declined = 10,
     Consult = 11,
@@ -15,12 +32,8 @@
     CancelledByProvider = 13,
     CCUploadedByClient = 14,
     CCApprovedByAdmin = 15,
-    Pending = 16,
     ToClosed = 17,
-    Conclude = 18,
-    Unpaid = 19,
     Blocked = 20,
-    CCApprovedByPatient = 21,
 
 
     //Request Status		 Dashboard Status

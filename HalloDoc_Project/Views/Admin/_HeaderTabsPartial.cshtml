@@ -19,27 +19,27 @@
         <div class="offcanvas-body aside-cont">
             <span class="fw-light fs-5">Welcome</span><span class="h5 ps-1">@User.FindFirst("firstname")?.Value,@User.FindFirst("lastname")?.Value</span>
             @* <ul class="list-group">
-                <li class="list-group-item mt-1">
-                    <a asp-action="AdminDashboard">Dashboard</a>
-                </li>
-                <li class="list-group-item">
-                    <a asp-action="ProviderLocation">Provider Location</a>
-                </li>
-                <li class="list-group-item">
-                    <a asp-action="MyProfile">My Profile</a>
-                </li>
-                <li class="list-group-item">
-                    <a asp-action="Providers">Providers</a>
-                </li>
-                <li class="list-group-item">
-                    <a asp-action="Partners">Partners</a>
-                </li>
-                <li class="list-group-item">
-                    <a asp-action="Access">Access</a>
-                </li>
-                <li class="list-group-item">
-                    <a asp-action="Records">Records</a>
-                </li>
+            <li class="list-group-item mt-1">
+            <a asp-action="AdminDashboard">Dashboard</a>
+            </li>
+            <li class="list-group-item">
+            <a asp-action="ProviderLocation">Provider Location</a>
+            </li>
+            <li class="list-group-item">
+            <a asp-action="MyProfile">My Profile</a>
+            </li>
+            <li class="list-group-item">
+            <a asp-action="Providers">Providers</a>
+            </li>
+            <li class="list-group-item">
+            <a asp-action="Partners">Partners</a>
+            </li>
+            <li class="list-group-item">
+            <a asp-action="Access">Access</a>
+            </li>
+            <li class="list-group-item">
+            <a asp-action="Records">Records</a>
+            </li>
             </ul> *@
             <ul class="nav flex-column mt-2">
                 <li class="nav-item">
@@ -83,13 +83,13 @@
 
 <ul class="nav nav-underline tabs bg-white shadow ps-4 pe-4 d-lg-flex d-none">
     <li class="nav-item">
-        <a class="nav-link active fs-5" asp-action="AdminDashboard">Dashboard</a>
+        <a id="dashboard" class="nav-link active fs-5" asp-action="AdminDashboard">Dashboard</a>
     </li>
     <li class="nav-item">
         <a class="nav-link  fs-5" asp-action="ProviderLocation">Provider Location</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link fs-5" asp-action="MyProfile">My Profile</a>
+        <a id="my-profile" class="nav-link fs-5" asp-action="MyProfile" asp-controller="Admin">My Profile</a>
     </li>
     <li class="nav-item">
         <a class="nav-link fs-5" asp-action="Providers">Providers</a>

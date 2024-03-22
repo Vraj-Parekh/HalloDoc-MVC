@@ -109,7 +109,6 @@ namespace Repositories.Repository.Implementation
             return data;
         }
 
-
         public Object GetCount()
         {
             RequestCount? count = new RequestCount
@@ -165,6 +164,7 @@ namespace Repositories.Repository.Implementation
 
             return request;
         }
+
         public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, out int totalCount)
         {
             Dictionary<int, int[]> statusMap = new()

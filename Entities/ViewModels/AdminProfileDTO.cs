@@ -16,7 +16,7 @@ namespace Entities.ViewModels
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Status is required")]
-        public string Status { get; set; }
+        public int Status { get; set; }
 
         [Required(ErrorMessage = "Role is required")]
         public string Role { get; set; }
@@ -49,8 +49,8 @@ namespace Entities.ViewModels
         [Required(ErrorMessage = "City is required")]
         public string City { get; set; }
 
-        [Required(ErrorMessage = "State is required")]
-        public string State { get; set; }
+        //[Required(ErrorMessage = "State is required")]
+        public string? State { get; set; }
 
         [Required(ErrorMessage = "Zip is required")]
         [RegularExpression(@"^\d{6}$", ErrorMessage = "ZIP code must be 6 digits")]
