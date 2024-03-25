@@ -8,9 +8,9 @@
 }
 
 
-<div class="container-fluid m-2">
+<div class="container-fluid">
 
-    <div class="row justify-content-center mt-3">
+    <div class="row justify-content-center mt-2">
         <div class="col-xl-2 col-sm-4 col-6 p-2">
             <div class="rounded-5 ps-3 p-2 d-flex flex-column" role="button" id="NewState" onclick="activateTab('NewState')">
                 <span><i class="bi bi-compass"></i> NEW</span>
@@ -55,61 +55,85 @@
         </div>
     </div>
 
-    <div class="row mt-3">
+    <div class="row mt-2">
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="fw-bolder fs-6">
-                Patients <span style="color:#00008b" id="spanText"></span>
+            <h5 class="fw-bolder fs-5">
+                Patients <span class="fs-6" style="color:#00008b" id="spanText"></span>
             </h5>
             <div>
-                <button type="button" class="btn btn-info p-2 text-white fw-light">
+                <button type="button" class="btn btn-info p-2 text-white fw-medium">
                     <i class="fa-regular fa-paper-plane pe-1"></i><span class="d-lg-inline-block d-none"> Send Link</span>
                 </button>
-                <button type="button" class="btn btn-info p-2 text-white fw-light">
+                <button type="button" class="btn btn-info p-2 text-white fw-medium">
                     <i class="fa-solid fa-notes-medical pe-1"></i><span class="d-lg-inline-block d-none"> Create Request</span>
                 </button>
-                <button type="button" id="exportFiltered" class="btn btn-info p-2 text-white fw-light">
+                <button type="button" id="exportFiltered" class="btn btn-info p-2 text-white fw-medium">
                     <i class="fa-solid fa-share pe-1"></i><span class="d-lg-inline-block d-none">Export</span>
                 </button>
-                <button type="button" id="exportAll" class="btn btn-info p-2 text-white fw-light">
+                <button type="button" id="exportAll" class="btn btn-info p-2 text-white fw-medium">
                     <i class="fa-solid fa-share pe-1"></i><span class="d-lg-inline-block d-none">Export All</span>
                 </button>
-                <button type="button" class="btn btn-info p-2 text-white fw-light">
+                <button type="button" class="btn btn-info p-2 text-white fw-medium">
                     <i class="fa-solid fa-headset pe-1"></i><span class="d-lg-inline-block d-none">Request DTY Support</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="row bg-white rounded-1 pt-3 pb-3 mt-3">
-        <div class="col-md-2 col-sm-12">
-            <i class="bi bi-search text-muted position-absolute" style="padding-top: 5px; padding-left:9px;"></i>
-            <input type="search" class="form-control" style="padding-left:35px;" id="search" placeholder="Search Patients">
-        </div>
+    <div class="bg-white mt-2 mb-2 rounded" style="box-shadow:-1px 0rem 2rem 0px rgba(0, 0, 0, 0.175)">
+        <div class="row ps-3 pe-3">
+            <div class="col-lg-2">
+                <div>
+                    <input class="form-control p-2 mt-3 px-4 mb-3 w-100" type="text" placeholder="Search Patients" id="search" />
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <select class="p-2 mt-3 px-4 form-select mb-3 w-100 " id="regionsearch">
+                    <option>All Region</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+            <div class="col-xl-2 d-xl-block d-lg-none"></div>
+            <div class="col-xl-6 col-lg-8">
+                <div class=" d-flex justify-content-around align-items-center p-2 mt-3 px-4 mb-3">
+                    <div class="me-auto d-none d-md-block" role="button" id="AllFilter" onclick="activateFilter('AllFilter')">
+                        All
+                    </div>
 
-        <div class="col-md-2 col-sm-12">
+                    <div class="d-md-flex d-block text-center me-auto align-items-center" role="button" id="PatientFilter" onclick="activateFilter('PatientFilter')">
+                        <div class="bi bi-circle-fill m-1 green-color"></div>
+                        Patient
+                    </div>
 
-            <i class="text-muted position-absolute"></i>
-            <select class="form-select" id="floatingSelectGrid">
+                    <div class="d-md-flex d-block text-center me-auto align-items-center" role="button" id="FamilyFilter" onclick="activateFilter('FamilyFilter')">
+                        <div class="bi bi-circle-fill m-1 orange-color"></div>
+                        Family/Friend
+                    </div>
 
-                <option selected>All Regions</option>
-                <option value="1">Ahmedabad</option>
-                <option value="2">Gandhinagar</option>
-                <option value="3">Surat</option>
-            </select>
-        </div>
+                    <div class="d-md-flex d-block text-center me-auto align-items-center" role="button" id="BusinessFilter" onclick="activateFilter('BusinessFilter')">
+                        <div class="bi bi-circle-fill m-1 pink-color"></div>
+                        Business
+                    </div>
 
-        <div class="col-md-8 col-sm-12">
-            <div class="text-end text-sm-start d-md-flex justify-content-md-end">
-                <button class="btn btn-white" id="AllFilter" onclick="activateFilter('AllFilter')">All</button>
-                <button class="btn btn-white me-2" type="button" id="PatientFilter" onclick="activateFilter('PatientFilter')"><i class="bi bi-circle-fill me-1 green-color"></i>Patient</button>
-                <button class="btn btn-white me-2" type="button" id="FamilyFilter" onclick="activateFilter('FamilyFilter')"><i class="bi bi-circle-fill me-1 orange-color"></i>Family</button>
-                <button class="btn btn-white me-2" type="button" id="BusinessFilter" onclick="activateFilter('BusinessFilter')"><i class="bi bi-circle-fill me-1 pink-color"></i>Business</button>
-                <button class="btn btn-white me-2" type="button" id="ConciergeFilter" onclick="activateFilter('ConciergeFilter')"><i class="bi bi-circle-fill me-1 blue-color"></i>Concierge</button>
-                <button class="btn btn-white me-2" type="button" id="VipFilter" onclick="activateFilter('VipFilter')"><i class="bi bi-circle-fill me-1 purple-color"></i>VIP</button>
+                    <div class="d-md-flex d-block text-center me-auto align-items-center" role="button" id="ConciergeFilter" onclick="activateFilter('ConciergeFilter')">
+                        <div class="bi bi-circle-fill m-1 blue-color"></div>
+                        Concierge
+                    </div>
+
+                    <div class="d-md-flex d-block text-center me-auto align-items-center" role="button" id="VipFilter" onclick="activateFilter('VipFilter')">
+                        <div class="bi bi-circle-fill m-1 purple-color"></div>
+                        VIP
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
-
+    
     <div id="tableRecords" class="tableData mb-5"></div>
 
 </div>

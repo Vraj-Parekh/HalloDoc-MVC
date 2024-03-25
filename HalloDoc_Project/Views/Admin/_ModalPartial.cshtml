@@ -1,4 +1,4 @@
-﻿@model SendAgreement 
+﻿@model SendAgreement
 
 <!-- Modal For Assign Case For Patient-->
 <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
@@ -38,8 +38,8 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-floating">
-                                <textarea class="form-control" placeholder="desc" id="floatingTextarea2" name="notes" style="height: 100px"></textarea>
-                                <label for="floatingTextarea2">Description</label>
+                                <textarea class="form-control" placeholder="desc" id="description" name="notes" style="height: 100px"></textarea>
+                                <label for="description">Description</label>
                             </div>
                         </div>
                     </div>
@@ -56,20 +56,44 @@
 <!-- For assign case-->
 <script>
     $(document).ready(function () {
+        var regionsFetched = false;
+
         $('#assignModal').on('show.bs.modal', function (e) {
-            $('.regionDropDown').empty();
-            // Trigger the AJAX call for fetching regions
+            if (!regionsFetched) {
+                // Trigger the AJAX call for fetching regions
+                $.ajax({
+                    url: './FetchRegions',
+                    method: 'GET',
+                    success: function (response) {
+                        response.forEach(function (res) {
+                            console.log("calls region");
+                            $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
+                        });
+                        regionsFetched = true;
+                    }
+                });
+            }
+
+            // Add the "Select Physician" option every time the modal is shown
+            $('.physicianDropDown').empty();
+            $('.physicianDropDown').append("<option value='' selected>Select Physician</option>");
+        });
+
+        $('.regionDropDown').on('change', function () {
+            var regionId = $(this).val();
             $.ajax({
-                url: './FetchRegions',
+                url: './FetchPhysicianByRegion/' + regionId,
                 method: 'GET',
                 success: function (response) {
+                    $('.physicianDropDown').empty();
+                    $('.physicianDropDown').append("<option value='' selected>Select Physician</option>");
                     response.forEach(function (res) {
-                        console.log("calls region");
-                        $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
+                        console.log("calls phy");
+                        $('.physicianDropDown').append("<option value='" + res.physicianid + "'>" + res.firstname + "</option>");
                     });
                 }
             });
-        });
+        })
     });
 
     function SetAssignId(id) {
@@ -80,24 +104,47 @@
         $(".assignCaseForm").attr("action", "/Admin/AssignCase/" + id);
     }
 
-    function fetchPhysicianByRegion(regionId) {
-        $.ajax({
-            url: './FetchPhysicianByRegion/' + regionId,
-            method: 'GET',
-            success: function (response) {
-                $('.physicianDropDown').empty();
-                response.forEach(function (res) {
-                    console.log("calls phy");
-                    $('.physicianDropDown').append("<option value='" + res.physicianid + "'>" + res.firstname + "</option>");
-                });
-            }
-        });
-    }
 
-    $('.regionDropDown').on('change', function () {
-        var selectedRegionId = $(this).val();
-        fetchPhysicianByRegion(selectedRegionId);
-    })
+    $(document).ready(function () {
+        // Function to check if all fields are filled
+        function checkFields() {
+            var region = $('.regionDropDown').val();
+            var physician = $('.physicianDropDown').val();
+            var notes = $('#description').val();
+
+            // Check if all fields are filled
+            if (region !== 'Narrow Search by Region' && physician !== 'Select Physician' && physician !== '' && notes.trim() !== '') {
+                $('#assignCaseSubmit').prop('disabled', false); // Enable the button
+            } else {
+                $('#assignCaseSubmit').prop('disabled', true); // Disable the button
+            }
+        }
+
+        $('.regionDropDown').on('change', function () {
+            checkFields(); 
+        });
+
+        $('.physicianDropDown').on('change', function () {
+            checkFields(); 
+        });
+
+        $('#description').on('input', function () {
+            checkFields();
+        });
+
+        // Function to reset form and disable button when modal is hidden
+        $('#assignModal').on('hidden.bs.modal', function () {
+            $('.regionDropDown').val('Narrow Search by Region'); // Reset region dropdown
+            $('.physicianDropDown').val('Select Physician'); // Reset physician dropdown
+            $('#description').val(''); // Reset notes textarea
+            $('#assignCaseSubmit').prop('disabled', true); // Disable the button
+        });
+
+        // Initial check on modal show
+        $('#assignModal').on('show.bs.modal', function (e) {
+            checkFields();
+        });
+    });
 
 </script>
 
@@ -121,8 +168,8 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-floating">
-                                <textarea class="form-control" name="blockReason" placeholder="comment for block request" id="floatingTextarea2" style="height: 100px"></textarea>
-                                <label for="floatingTextarea2">Reason for Block Request</label>
+                                <textarea class="form-control" name="blockReason" placeholder="comment for block request" id="reason" style="height: 100px"></textarea>
+                                <label for="reason">Reason for Block Request</label>
                             </div>
                         </div>
                     </div>
@@ -147,6 +194,35 @@
         myModal.show();
         $("#blockForm").attr("action", "/Admin/BlockCase/" + id);
     }
+
+    $(document).ready(function () {
+        // Function to check if all fields are filled
+        function checkFields() {
+            var reason = $('#reason').val();
+
+            // Check if all fields are filled
+            if (reason.trim() !== '') {
+                $('#confirmbtn').prop('disabled', false); // Enable the button
+            } else {
+                $('#confirmbtn').prop('disabled', true); // Disable the button
+            }
+        }
+
+        $('#reason').on('input', function () {
+            checkFields();
+        });
+
+        // Function to reset form and disable button when modal is hidden
+        $('#blockModal').on('hidden.bs.modal', function () {
+            $('#reason').val('');
+            $('#confirmbtn').prop('disabled', true);
+        });
+
+        // Initial check on modal show
+        $('#blockModal').on('show.bs.modal', function (e) {
+            checkFields();
+        });
+    });
 </script>
 
 <!-- Modal For Cancel Case For Patient-->
@@ -168,7 +244,7 @@
                     <div class="row mb-3">
                         <div class="col">
                             <div class="form-floating">
-                                <select class="form-select pt-0 pb-0" id="floatingSelect" aria-label="Floating label select example" name="reason">
+                                <select class="form-select pt-0 pb-0 reason" aria-label="Floating label select example" name="reason">
                                     <option selected>Reasons For Cancellation</option>
                                     <option value="No Response to call or text, left message">No Response to call or text, left message</option>
                                     <option value="Cost issue">Cost issue</option>
@@ -177,15 +253,14 @@
                                     <option value="Not appropriate for service">Not appropriate for service</option>
                                     <option value="Refferal to Clinic or Hospital">Refferal to Clinic or Hospital</option>
                                 </select>
-                                @* <label for="floatingSelect">Reasons For Cancellation</label> *@
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
                             <div class="form-floating">
-                                <textarea class="form-control" name="notes" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
-                                <label for="floatingTextarea2">Provide Additional Notes</label>
+                                <textarea class="form-control note" name="notes" placeholder="Leave a comment here" id="notes" style="height: 100px"></textarea>
+                                <label for="notes">Provide Additional Notes</label>
                             </div>
                         </div>
                     </div>
@@ -200,6 +275,7 @@
 </div>
 
 <!-- For cancel case-->
+@* validation not working *@
 <script>
     function SetCancelInfo(id, name) {
         console.log("start");
@@ -210,6 +286,40 @@
         myModal.show();
         $("#cancelForm").attr("action", "/Admin/CancelCase/" + id);
     }
+
+    $(document).ready(function () {
+        // Function to check if all fields are filled
+        function checkFields() {
+            var reason = $('.reason').val();
+            var note = $('.note').val();
+            console.log(reason)
+            console.log(note)
+
+            // Check if all fields are filled
+            if (reason !== 'Reasons For Cancellation' && note.trim() !== '') {
+                $('#confirmbtn').prop('disabled', false); // Enable the button
+            } else {
+                $('#confirmbtn').prop('disabled', true); // Disable the button
+            }
+        }
+
+        $('.reason, .note').on('change input', function () {
+            checkFields();
+        });
+
+        // Function to reset form and disable button when modal is hidden
+        $('#cancelModal').on('hidden.bs.modal', function () {
+            $('.reason').val('Reasons For Cancellation');
+            $('.note').val('');
+            $('#confirmbtn').prop('disabled', true); 
+        });
+
+        // Initial check on modal show
+        $('#cancelModal').on('show.bs.modal', function (e) {
+            console.log("initial")
+            checkFields();
+        });
+    });
 </script>
 
 <!-- Modal For Transfer Case-->
@@ -348,12 +458,12 @@
                     </div>
                     <p> To Send Agreement please make sure you are updating the correct contact information below for the responsible party. </p>
                     <div class="form-floating mb-3">
-                        <input type="text" id="phoneNumber" class="input-outline w-100 h-100 fs-6 form-control shadow-none" name="phoneNumber" >
+                        <input type="text" id="phoneNumber" class="input-outline w-100 h-100 fs-6 form-control shadow-none" name="phoneNumber">
                         <label class="inputs-label inputs-label fs-6">Phone Number</label>
                         @* <span asp-validation-for="PhoneNumber" class="text-danger"></span> *@
                     </div>
                     <div class="form-floating mb-3">
-                        <input id="email" class="input-outline w-100 h-100 fs-6 form-control shadow-none" type="email" name="email"/>
+                        <input id="email" class="input-outline w-100 h-100 fs-6 form-control shadow-none" type="email" name="email" />
                         <label class="inputs-label inputs-label-textarea fs-6" id="notedata">Email</label>
                         @* <span asp-validation-for="Email" class="text-danger"></span> *@
                     </div>
@@ -369,30 +479,26 @@
 
 <!-- For Send agreement-->
 <script>
-    function SetAgreementInfo(requestId, requestTypeId,phone,email) {
+    function SetAgreementInfo(requestId, requestTypeId, phone, email) {
         console.log("start");
         console.log(requestId);
         console.log(requestTypeId);
-        if (requestTypeId == 1) 
-        {
+        if (requestTypeId == 1) {
             $("#displayName").text('Business');
             $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 pink-color');
-        } else if (requestTypeId == 2) 
-        {
+        } else if (requestTypeId == 2) {
             $("#displayName").text('Patient');
             $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 green-color');
-        } else if (requestTypeId == 3) 
-        {
+        } else if (requestTypeId == 3) {
             $("#displayName").text('Family');
             $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 orange-color');
-        } else if (requestTypeId == 4)
-        {
+        } else if (requestTypeId == 4) {
             $("#displayName").text('Concierge');
             $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 blue-color');
         }
 
-        document.getElementById('phoneNumber').value=phone;
-        document.getElementById('email').value=email;
+        document.getElementById('phoneNumber').value = phone;
+        document.getElementById('email').value = email;
 
         const myModal = new bootstrap.Modal("#sendAgreementModal", {});
         myModal.show();

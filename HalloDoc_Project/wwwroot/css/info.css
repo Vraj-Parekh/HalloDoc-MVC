@@ -1,5 +1,6 @@
 ﻿body {
-    background-color: rgba(65, 65, 65, 0.089);
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .iti {

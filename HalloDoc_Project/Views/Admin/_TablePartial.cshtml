@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 <link asp-append-version="true" rel="stylesheet" href="/css/admin_dashboard.css" />
 
-<div class="table-responsive d-lg-block d-none">
+<div class="table-responsive d-lg-block d-none rounded">
     <table id="myTable" class="table">
         <thead>
-            <tr class="bg-light fw-bold mx-1">
+            <tr class="bg-light thead-fs">
                 <th>Name</th>
 
                 @if (status != 6)
@@ -55,7 +55,7 @@
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="tbody-fs">
 
             @foreach (var items in Model)
             {
@@ -72,7 +72,7 @@
                         BgColor = "friendtype";
                         break;
                     case 4:
-                        BgColor = "concarigetype";
+                        BgColor = "conciergetype";
                         break;
                     case 5:
                         BgColor = "businesstype";
@@ -107,7 +107,7 @@
                     }
                     @if (status <= 3)
                     {
-                        <td>Patient @items.FirstName, @items.LastName</td>
+                        <td class="text-break">Patient @items.FirstName, @items.LastName</td>
                     }
                     @if (status >= 2)
                     {
@@ -238,7 +238,7 @@
 
                             @if (status == 1)
                             {
-                                <li><a class="dropdown-item blockCase" role="button" onclick="SetBlockInfo(@items.RequestId,'@items.FirstName')"><i class="fa-solid fa-ban pe-2"></i>Block Patient</a></li>
+                                <li><a class="dropdown-item blockCase" role="button" onclick="SetBlockInfo(@items.RequestId,'@items.FirstName')"><i class="fa-solid fa-ban pe-2"></i>Block Case</a></li>
                             }
 
                             @if (status == 2)
@@ -338,15 +338,15 @@
                         <div>
                             @switch (item.RequestTypeId)
                             {
-                                case 1:
+                                case 2:
                                     <span>Patient</span>
                                     <i class="bi bi-circle-fill green-color"></i>
                                     break;
-                                case 2:
+                                case 3:
                                     <span>Family/Friend</span>
                                     <i class="bi bi-circle-fill orange-color"></i>
                                     break;
-                                case 3:
+                                case 1:
                                     <span>Business</span>
                                     <i class="bi bi-circle-fill pink-color"></i>
                                     break;
@@ -454,7 +454,7 @@
                     @if (status == 1)
                     {
                         <div class="col-6 mt-1 mb-1">
-                            <a class="btn w-100 bg-danger text-white rounded-pill p-2" onclick="SetBlockInfo(@item.RequestId,'@item.FirstName')">Block Patient</a>
+                            <a class="btn w-100 bg-danger text-white rounded-pill p-2" onclick="SetBlockInfo(@item.RequestId,'@item.FirstName')">Block Case</a>
                         </div>
                     }
                     @if (status == 2)
@@ -506,6 +506,37 @@
 
                 </div>
             </div>
+        }
+    </div>
+
+    @*Pagination code*@
+    <div class="pagination d-flex justify-content-center align-items-center">
+
+        @if (ViewBag.TotalPages != 0)
+        {
+            <ul class="mt-2 mb-2 ps-0">
+                <!-- Previous button -->
+                <li class="page-item">
+                    <a class="page-link" id="prevBtn" role="button" onclick="previousPage()">&laquo; Previous</a>
+                </li>
+
+                <!-- Page links -->
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.PageIndex ? "active" : "")">
+                        <a class="page-link" role="button" onclick="changePage(@i)">@i</a>
+                    </li>
+                }
+
+                <!-- Next button -->
+                <li class="page-item">
+                    <a class="page-link" role="button" onclick="nextPage(@ViewBag.TotalPages)">Next &raquo;</a>
+                </li>
+            </ul>
+        }
+        else
+        {
+            <h3>No data found</h3>
         }
     </div>
 </div>
