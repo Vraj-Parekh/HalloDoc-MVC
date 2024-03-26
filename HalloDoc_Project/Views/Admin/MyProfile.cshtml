@@ -45,22 +45,20 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select professionDropdown valid" id="status" disabled>
+                        <select class="form-select" id="status" disabled>
                             <option>Active</option>
                         </select>
                         <label for="status" class="form-label">Status</label>
                     </div>
-                    <span class="text-danger field-validation-valid" data-valmsg-for="Profession" data-valmsg-replace="true"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select professionDropdown valid" id="role" disabled>
+                        <select class="form-select" id="role" disabled>
                             <option>Master Admin</option>
                         </select>
                         <label for="role" class="form-label">Role</label>
                     </div>
-                    <span class="text-danger field-validation-valid" data-valmsg-for="Profession" data-valmsg-replace="true"></span>
                 </div>
             </div>
 
@@ -77,7 +75,7 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="FirstName"
-                               class="form-control"
+                               class="form-control dis-admin-field"
                                id="firstname"
                                placeholder="firstname"
                                disabled />
@@ -90,7 +88,7 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="LastName"
-                               class="form-control"
+                               class="form-control dis-admin-field"
                                id="lastname"
                                placeholder="lastname"
                                disabled />
@@ -105,7 +103,7 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Email"
-                               class="form-control"
+                               class="form-control dis-admin-field"
                                id="email"
                                placeholder="email"
                                disabled />
@@ -118,7 +116,7 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="ConfirmEmail"
-                               class="form-control"
+                               class="form-control dis-admin-field"
                                id="confirmEmail"
                                placeholder="confirm email"
                                disabled />
@@ -133,23 +131,28 @@
                     <div class="form-floating">
                         <input type="tel"
                                asp-for="PhoneNumber"
-                               class="form-control dis-field"
+                               class="form-control dis-admin-field"
                                id="phone"
                                placeholder=""
                                style="height: 58px"
                                disabled />
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
-
-
                 </div>
 
-
+                <div class="col-md-6 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Default checkbox
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div class="row justify-content-end">
                 <div class="col-auto">
-                    <button type="button" class="btn btn-info text-white btn-edit"> Edit </button>
+                    <button type="button" class="btn btn-info text-white btn-edit-admin"> Edit </button>
                     <button type="button" class="btn btn-info text-white btn-save" id="saveBtn">Save</button>
                 </div>
             </div>
@@ -161,10 +164,10 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Address1"
-                               class="form-control "
+                               class="form-control  dis-billing-field"
                                id="address1"
                                placeholder="address"
-                               readonly />
+                               disabled />
                         <label for="address1">Address 1</label>
                     </div>
                     <span asp-validation-for="Address1" class="text-danger"></span>
@@ -174,10 +177,10 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Address2"
-                               class="form-control "
+                               class="form-control  dis-billing-field"
                                id="address2"
                                placeholder="address"
-                               readonly />
+                               disabled />
                         <label for="address2">Address 2</label>
                     </div>
                     <span asp-validation-for="Address2" class="text-danger"></span>
@@ -189,10 +192,10 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="City"
-                               class="form-control"
+                               class="form-control dis-billing-field"
                                id="city"
                                placeholder="city"
-                               readonly />
+                               disabled />
                         <label for="city">City</label>
                     </div>
                     <span asp-validation-for="City" class="text-danger"></span>
@@ -200,15 +203,11 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <input type="text"
-                               asp-for="State"
-                               class="form-control "
-                               id="state"
-                               placeholder="state"
-                               readonly />
-                        <label for="state">State</label>
+                        <select class="form-select dis-billing-field regionDropDown" id="state" disabled>
+                            @* <option ></option> *@
+                        </select>
+                        <label for="state" class="form-label">State</label>
                     </div>
-                    <span asp-validation-for="State" class="text-danger"></span>
                 </div>
             </div>
 
@@ -217,10 +216,10 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Zip"
-                               class="form-control"
+                               class="form-control dis-billing-field"
                                id="zip"
                                placeholder="zip"
-                               readonly />
+                               disabled />
                         <label for="address1">Zip</label>
                     </div>
                     <span asp-validation-for="Zip" class="text-danger"></span>
@@ -230,7 +229,7 @@
                     <div class="form-floating">
                         <input type="tel"
                                asp-for="AltPhoneNumber"
-                               class="form-control dis-field"
+                               class="form-control dis-billing-field"
                                id="phone1"
                                placeholder=""
                                style="height: 58px"
@@ -242,8 +241,8 @@
 
             <div class="row justify-content-end">
                 <div class="col-auto">
-                    <button type="button" class="btn btn-info text-white btn-edit2"> Edit </button>
-                    <button type="button" class="btn btn-info text-white btn-save2" id="saveBtn">Save</button>
+                    <button type="button" class="btn btn-info text-white btn-edit-billing"> Edit </button>
+                    <button type="button" class="btn btn-info text-white btn-save-billing" id="saveBtn">Save</button>
                 </div>
             </div>
         </form>
@@ -251,3 +250,4 @@
 </div>
 
 <partial name="_ActiveTabPartial" model=active />
+<script src="~/js/MyprofileAdmin.js" asp-append-version="true"></script>

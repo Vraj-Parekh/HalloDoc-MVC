@@ -387,5 +387,31 @@ namespace HalloDoc_Project.Controllers
             }
             return RedirectToAction("MyProfile");
         }
+        public IActionResult UpdateAdminInfo(AdminProfileDTO model)
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            Admin? admin = adminService.GetAdmin(email);
+            if (admin is not null)
+            {
+                adminService.UpdateAdminInfo(admin, model);
+            }
+            return RedirectToAction("MyProfile");
+        }
+
+        public IActionResult UpdateBillingInfo(AdminProfileDTO model)
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            Admin? admin = adminService.GetAdmin(email);
+            if (admin is not null)
+            {
+                adminService.UpdateBillingInfo(admin, model);
+            }
+            return RedirectToAction("MyProfile");
+        }
+
+        public IActionResult Provider()
+        {
+            return View();
+        }
     }
 }

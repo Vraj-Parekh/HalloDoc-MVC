@@ -36,9 +36,10 @@ namespace Entities.ViewModels
         public string ConfirmEmail { get; set; }
 
         [Required(ErrorMessage = "Phone Number is required")]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone Number must be 10 digits")]
+        [RegularExpression(@"^\+[0-9]{10,15}$", ErrorMessage = "Phone Number must start with '+' and be between 10 to 15 digits")]
         public string PhoneNumber { get; set; }
 
+        [RegularExpression(@"^\+[0-9]{10,15}$", ErrorMessage = "Phone Number must start with '+' and be between 10 to 15 digits")]
         public string? AltPhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Address 1 is required")]
@@ -50,7 +51,7 @@ namespace Entities.ViewModels
         public string City { get; set; }
 
         //[Required(ErrorMessage = "State is required")]
-        public string? State { get; set; }
+        public int State { get; set; }
 
         [Required(ErrorMessage = "Zip is required")]
         [RegularExpression(@"^\d{6}$", ErrorMessage = "ZIP code must be 6 digits")]

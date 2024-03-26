@@ -62,5 +62,29 @@ namespace Repositories.Repository.Implementation
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task UpdateAdminInfo(Admin admin, AdminProfileDTO model)
+        {
+            admin.Firstname = model.FirstName;
+            admin.Lastname = model.LastName;
+            admin.Email = model.Email;
+            admin.Mobile = model.PhoneNumber;
+
+            _context.Admins.Update(admin);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateBillingInfo(Admin admin, AdminProfileDTO model)
+        {
+            admin.Address1 = model.Address1;
+            admin.Address2 = model.Address2;
+            admin.City = model.City;
+            admin.Zip = model.Zip;
+            admin.Altphone = model.AltPhoneNumber;
+            admin.Regionid = model.State;
+
+            _context.Admins.Update(admin);
+            await _context.SaveChangesAsync();
+        }
     }
 }
