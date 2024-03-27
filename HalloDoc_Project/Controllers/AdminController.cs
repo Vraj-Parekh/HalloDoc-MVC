@@ -11,6 +11,8 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Utility;
 using System.Security.Claims;
+using NPOI.OpenXmlFormats.Vml;
+using Repositories.Repository.Implementation;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -34,10 +36,12 @@ namespace HalloDoc_Project.Controllers
         private readonly IEncounterFormService encounterFormService;
         private readonly IEmailSender emailSender;
         private readonly IAdminService adminService;
+        private readonly ISmsSender smsSender;
+        private readonly IMenuService menuService;
 
         public IRegionService RegionService { get; }
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService,ISmsSender smsSender,IMenuService menuService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -54,6 +58,8 @@ namespace HalloDoc_Project.Controllers
             this.encounterFormService = encounterFormService;
             this.emailSender = emailSender;
             this.adminService = adminService;
+            this.smsSender = smsSender;
+            this.menuService = menuService;
         }
         public IActionResult Index()
         {
@@ -230,7 +236,7 @@ namespace HalloDoc_Project.Controllers
         [HttpGet("{regionId}")]
         public List<Physician> FetchPhysicianByRegion(int regionId)
         {
-            List<Physician>? physician = physicianService.GetPhysician(regionId);
+            List<Physician>? physician = physicianService.GetPhysicianByRegionId(regionId);
             return physician;
         }
 
@@ -410,6 +416,50 @@ namespace HalloDoc_Project.Controllers
         }
 
         public IActionResult Provider()
+        {
+            List<ProviderMenuDTO>? model = physicianService.GetProviderMenu();
+            return View(model);
+        }
+
+        public void SendMessage(int mode , string message,int physicianId)
+        {
+            string email = physicianService.GetPhysicianEmail(physicianId);
+            string phoneNumber = physicianService.GetPhysicianPhone(physicianId);
+
+            //message-1
+            if (mode == 1)
+            {
+                smsSender.SendSms(phoneNumber, message);
+            }
+            //email-2
+            else if(mode == 2)
+            {
+                emailSender.SendEmailAsync(email, "For communication", message);
+            }
+            //both-0
+            else
+            {
+                smsSender.SendSms(phoneNumber, message);
+                emailSender.SendEmailAsync(email, "For communication", message);
+            }
+        }
+
+        public IActionResult CreateRole()
+        {
+            return View();
+        }
+
+        public List<Menu> FetchMenus(int accountType)
+        {
+            List<Menu>? menus = menuService.GetMenus(accountType);
+            return menus;
+        }
+        public IActionResult AccountAccess()
+        {
+            return View();
+        }
+        
+        public IActionResult UserAccess()
         {
             return View();
         }

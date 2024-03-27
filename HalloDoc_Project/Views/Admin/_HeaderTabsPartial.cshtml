@@ -95,7 +95,15 @@
         <a class="nav-link  fs-5" asp-action="Partners">Partners</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link fs-5" asp-action="Access">Access</a>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle bg-white text-black border-0 fs-5 nav-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="access">
+                Access
+            </button>
+            <ul class="dropdown-menu shadow">
+                <li><a class="dropdown-item" asp-action="AccountAccess">Account Access</a></li>
+                <li><a class="dropdown-item" asp-action="UserAccess">User Access</a></li>
+            </ul>
+        </div>
     </li>
     <li class="nav-item">
         <a class="nav-link  fs-5" asp-action="Records">Records</a>

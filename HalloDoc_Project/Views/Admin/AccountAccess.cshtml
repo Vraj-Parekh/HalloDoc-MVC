@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData["Title"] = "AccountAccess";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#access";
+}
+
+<div class="container">
+    <div class="d-flex align-items-center mt-4 mb-4">
+        <h4>Account Access</h4>
+    </div>
+
+    <div class="bg-white rounded shadow p-2">
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <a class="btn btn-outline-info text-info rounded-2 bg-white me-2" asp-action="CreateRole" asp-controller="Admin"> Create Access </a>
+            </div>
+        </div>
+
+        @* <div class="d-lg-block d-none ps-0 pe-0">
+            <table class="table">
+                <thead class="table-light">
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Account Type
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @item.ProviderName
+                            </td>
+
+                            <td>
+                                @item.ProviderName
+                            </td>
+                            <td>
+                                @if (string.IsNullOrEmpty(item.AccountType))
+                                {
+                                    <span>Unavailable</span>
+                                }
+                                else
+                                {
+                                    item.Role.ToString();
+                                }
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-outline-info" onclick="SendMessageModal(@item.PhysicianId)">Contact</button>
+                                <button class="btn btn-outline-info">Edit</button>
+                                <a id="changenotify-@item.PhysicianId" onclick="ChangeNotficationState(@item.PhysicianId)" class="btn btn-outline-info px-4" style="display:none;">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div> *@
+    </div>
+</div>
+
+<partial name="_ActiveTabPartial" model=active />
+

@@ -17,6 +17,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddTransient<ISmsSender, SmsSender>();
 builder.Services.AddTransient<IRequestServices, RequestServices>();
 builder.Services.AddTransient<IRequestStatusLogServices, RequestStatusLogServices>();
 builder.Services.AddTransient<IRequestClientServices, RequestClientServices>();
@@ -31,6 +32,7 @@ builder.Services.AddTransient<IOrderDetailsService, OrderDetailsService>();
 builder.Services.AddTransient<IAspNetUserService, AspNetUserService>();
 builder.Services.AddTransient<IEncounterFormService, EncounterFormService>();
 builder.Services.AddTransient<IAdminService, AdminService>();
+builder.Services.AddTransient<IMenuService, MenuService>();
 
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

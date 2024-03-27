@@ -8,6 +8,11 @@ namespace Entities.ViewModels
 {
     public class ProviderMenuDTO
     {
-        public bool Notification{ get; set; }
+        public bool? Notification{ get; set; }
+        public string? ProviderName { get; set; }
+        public string? Role {  get; set; }
+        public string? OnCallStatus { get; set; }
+        public int?  Status { get; set; }
+        public int? PhysicianId { get; set; }
     }
 }

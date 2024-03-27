@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "CreateRole";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#access";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Create Role</h4>
+
+        <a class="btn btn-outline-info bg-white text-info" asp-action=""> &lt; Back </a>
+    </div>
+
+    <div class="bg-white rounded shadow p-3">
+        <h5>Details</h5>
+        <div class="row justify-content-between align-items-center pt-3 pb-3">
+            <div class="col-lg-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="roleName" placeholder="Role Name" name="roleName">
+                    <label for="firstname">Role Name</label>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-floating">
+                    <select class="form-select" id="accountType">
+                        <option value="1">All</option>
+                        <option value="2">Admin</option>
+                        <option value="3">Physician</option>
+                        <option value="4">Patient</option>
+                    </select>
+                    <label for="accountType" class="form-label">Account Type</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-check">
+            <div id="checkboxContainer"></div>
+        </div>
+    </div>
+</div>
+
+<partial name="_ActiveTabPartial" model=active />
+<script src="~/js/CreateRole.js" asp-append-version="true"></script>

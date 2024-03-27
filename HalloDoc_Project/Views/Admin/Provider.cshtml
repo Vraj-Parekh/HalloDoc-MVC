@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<ProviderMenuDTO>
+@{
     ViewData["Title"] = "Provider";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     string active = "#providers";
@@ -11,8 +12,8 @@
     </div>
 
     <div class="bg-white rounded shadow p-2">
-        <div class="row justify-content-between align-items-center">
-            <div class="col-md-4">
+        <div class="row justify-content-between align-items-center pt-3 pb-3">
+            <div class="col-md-3">
                 <select class="form-select" id="regionsearch">
                     <option>All</option>
                     <option>1</option>
@@ -26,74 +27,125 @@
                 <button class="btn btn-info text-white rounded-2 border-0 me-2"> Create Provider Account </button>
             </div>
         </div>
-    </div>
-
-
-    <div class="d-lg-block d-none ps-0 pe-0">
-        <table class="table">
-            <thead>
-                <tr class="table-secondary bg-body-tertiary">
-                    <th class="ps-3 text-center me-4" style="width:150px;">
-                        Stop Notification
-                    </th>
-                    <th>
-                        Provider Name <i class="bi bi-arrow-up"></i>
-                    </th>
-                    <th>
-                        @* @Html.DisplayNameFor(model => model.Role) *@
-                    </th>
-                    <th>
-                        On Call Status
-                    </th>
-                    <th>
-                        @* @Html.DisplayNameFor(model => model.Status) *@
-                    </th>
-
-                    <th class="text-center">
-                        Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+        <div class="d-lg-block d-none ps-0 pe-0">
+            <table class="table">
+                <thead class="table-light">
                     <tr>
-                        <td class="ps-3 text-center me-4" style="width:150px;">
-                            @* <input class="form-check-input change" type="checkbox" asp-for="@item.Notification" value="changenotify-@item.physicianid"> *@
-                        </td>
+                        <th class="ps-3 text-center me-4" style="width:150px;">
+                            Stop Notification
+                        </th>
+                        <th>
+                            Provider Name <i class="bi bi-arrow-up"></i>
+                        </th>
+                        <th>
+                            Role
+                        </th>
+                        <th>
+                            On Call Status
+                        </th>
+                        <th>
+                            Status
+                        </th>
 
-                        <td>
-                            @item.Name
-                        </td>
-                        <td>
-                            @if (string.IsNullOrEmpty(item.Role))
-                            {
-                                <span>Role Unavailable</span>
-                            }
-                            else
-                            {
-                                item.Role.ToString();
-                            }
-                        </td>
-                        <td>
-                            @item.OnCallStatus
-                        </td>
-                        <td>
-                            @item.Status
-                        </td>
-                        <td class="text-center">
-                            <button class="btn btn-outline-info" onclick="SendMessagePop(@item.PhysicianId)">Contact</button>
-                            <button class="btn btn-outline-info">Edit</button>
-                            <a id="changenotify-@item.physicianid" onclick="ChangeNotficationState(@item.PhysicianId)" class="btn btn-outline-info px-4" style="display:none;">Save</a>
-
-                        </td>
+                        <th class="text-center">
+                            Actions
+                        </th>
                     </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-3 text-center me-4" style="width:150px;">
+                                <input class="form-check-input change" type="checkbox" >
+                            </td>
 
-                }
-            </tbody>
-        </table>
+                            <td>
+                                @item.ProviderName
+                            </td>
+                            <td>
+                                @if (string.IsNullOrEmpty(item.Role))
+                                {
+                                    <span>Role Unavailable</span>
+                                }
+                                else
+                                {
+                                    item.Role.ToString();
+                                }
+                            </td>
+                            <td>
+                                @item.OnCallStatus
+                            </td>
+                            <td>
+                                @item.Status
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-outline-info" onclick="SendMessageModal(@item.PhysicianId)">Contact</button>
+                                <button class="btn btn-outline-info">Edit</button>
+                                <a id="changenotify-@item.PhysicianId" onclick="ChangeNotficationState(@item.PhysicianId)" class="btn btn-outline-info px-4" style="display:none;">Save</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<partial name="_ActiveTabPartial" model=active />
+<div class="modal fade"
+     id="message"
+     tabindex="-1"
+     aria-labelledby="message"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info" data-bs-theme="dark">
+                <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Contact Your Provider</h1>
+                <button type="button" class="btn-close opacity-100" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column justify-content-center">
+                    <div class="text-muted mb-2">
+                        Choose communication to send message
+                    </div>
 
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" value="1" name="notification" id="sms">
+                        <label class="form-check-label" for="sms">
+                            SMS
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="notification" value="2" id="email" checked>
+                        <label class="form-check-label" for="email">
+                            Email
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="notification" value="0" id="both">
+                        <label class="form-check-label" for="both">
+                            Both
+                        </label>
+                    </div>
+                    <br />
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control"
+                                  placeholder="Leave a comment here"
+                                  id="msg"
+                                  style="height: 100px"></textarea>
+                        <label for="msg" style="word-wrap: break-word">Message</label>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-info text-white" id="SendNotification" data-bs-dismiss="modal">Send</button>
+                <button type="button" class="btn btn-outline-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<partial name="_ActiveTabPartial" model=active />
+<script src="~/js/Provider.js" asp-append-version="true"></script>
