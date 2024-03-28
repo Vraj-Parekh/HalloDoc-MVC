@@ -1,4 +1,4 @@
-﻿
+﻿@model List<CreateRoleDTO>
 @{
     ViewData["Title"] = "AccountAccess";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        @* <div class="d-lg-block d-none ps-0 pe-0">
+        <div class="d-lg-block d-none ps-0 pe-0">
             <table class="table">
                 <thead class="table-light">
                     <tr>
@@ -37,32 +37,21 @@
                     {
                         <tr>
                             <td>
-                                @item.ProviderName
+                                @item.RoleName
                             </td>
 
                             <td>
-                                @item.ProviderName
-                            </td>
-                            <td>
-                                @if (string.IsNullOrEmpty(item.AccountType))
-                                {
-                                    <span>Unavailable</span>
-                                }
-                                else
-                                {
-                                    item.Role.ToString();
-                                }
+                                @item.AccountType
                             </td>
                             <td class="text-center">
-                                <button class="btn btn-outline-info" onclick="SendMessageModal(@item.PhysicianId)">Contact</button>
-                                <button class="btn btn-outline-info">Edit</button>
-                                <a id="changenotify-@item.PhysicianId" onclick="ChangeNotficationState(@item.PhysicianId)" class="btn btn-outline-info px-4" style="display:none;">Delete</a>
+                                <button class="btn btn-outline-info" onclick="SendMessageModal(@item.RoleId)">Edit</button>
+                                <button class="btn btn-outline-info" onclick="SendMessageModal(@item.RoleId)">Delete</button>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
-        </div> *@
+        </div>
     </div>
 </div>
 

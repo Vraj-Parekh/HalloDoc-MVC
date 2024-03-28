@@ -8,6 +8,8 @@ namespace Entities.ViewModels
 {
     public class AccountAccessDTO
     {
-
+        public string RoleName { get; set; }
+        public int AccountType { get; set; }
+        public int RoleId { get; set; }
     }
 }

@@ -178,12 +178,10 @@ namespace Repositories.Repository.Implementation
             };
 
             totalCount = _context.Requests
-                  .Count(a => statusMap[status]
-                  .Contains(a.Status) && (requesttypeid == 5 || a.Requesttypeid == requesttypeid));
+                  .Count(a => statusMap[status].Contains(a.Status));
 
             List<Request>? request = _context.Requests
-                .Where(a => statusMap[status]
-                .Contains(a.Status) && (requesttypeid == 5 || a.Requesttypeid == requesttypeid))
+                .Where(a => statusMap[status].Contains(a.Status) && (requesttypeid == 5 || a.Requesttypeid == requesttypeid))
                 .Include(a => a.Requestclients)
                 .Skip(pageIndex > 0 ? (pageIndex - 1) * pageSize : 0)
                 .Take(pageSize)

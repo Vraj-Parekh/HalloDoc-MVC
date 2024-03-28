@@ -1,4 +1,5 @@
-﻿@{
+﻿@model CreateRoleDTO
+@{
     ViewData["Title"] = "CreateRole";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     string active = "#access";
@@ -8,19 +9,20 @@
     <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
         <h4>Create Role</h4>
 
-        <a class="btn btn-outline-info bg-white text-info" asp-action=""> &lt; Back </a>
+        <a class="btn btn-outline-info bg-white text-info" asp-action="AccountAccess"> &lt; Back </a>
     </div>
 
     <div class="bg-white rounded shadow p-3">
         <h5>Details</h5>
-        <div class="row justify-content-between align-items-center pt-3 pb-3">
-            <div class="col-lg-6">
+        <div class="row justify-content-between">
+            <div class="col-lg-6 mt-2">
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="roleName" placeholder="Role Name" name="roleName">
+                    <input type="text" class="form-control" id="roleName" placeholder="Role Name" required pattern="[a-zA-Z0-9\s]+" title="Please enter a valid role name (letters, numbers, and spaces only)">
                     <label for="firstname">Role Name</label>
+                    <span class="text-danger" id="roleNameError"></span>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6 mt-2">
                 <div class="form-floating">
                     <select class="form-select" id="accountType">
                         <option value="1">All</option>
@@ -33,8 +35,13 @@
             </div>
         </div>
 
-        <div class="form-check">
-            <div id="checkboxContainer"></div>
+        <span class="row row-cols-lg-5 row-cols-sm-3 row-cols-2 mt-2" id="checkboxContainer"></span>
+
+        <div class="row justify-content-end mt-4">
+            <div class="col-auto">
+                <button type="button" id="submit-btn" class="btn btn-info text-white"> Save </button>
+                <button type="button" class="btn btn-outline-info text-info bg-white"> Cancel </button>
+            </div>
         </div>
     </div>
 </div>

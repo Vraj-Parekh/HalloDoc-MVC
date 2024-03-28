@@ -1,6 +1,6 @@
 ﻿using Entities.Models;
 
-namespace Repositories.Repository.Implementation
+namespace Repositories.Repository.Interface
 {
     public interface IMenuService
     {

@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Repositories.Utility;
 using System.Security.Claims;
 using NPOI.OpenXmlFormats.Vml;
-using Repositories.Repository.Implementation;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -38,10 +37,12 @@ namespace HalloDoc_Project.Controllers
         private readonly IAdminService adminService;
         private readonly ISmsSender smsSender;
         private readonly IMenuService menuService;
+        private readonly IRoleService roleService;
+        private readonly IRoleMenuService roleMenuService;
 
         public IRegionService RegionService { get; }
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService,ISmsSender smsSender,IMenuService menuService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService,ISmsSender smsSender,IMenuService menuService,IRoleService roleService,IRoleMenuService roleMenuService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -60,6 +61,8 @@ namespace HalloDoc_Project.Controllers
             this.adminService = adminService;
             this.smsSender = smsSender;
             this.menuService = menuService;
+            this.roleService = roleService;
+            this.roleMenuService = roleMenuService;
         }
         public IActionResult Index()
         {
@@ -449,14 +452,23 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateRole(CreateRoleDTO model)
+        {
+            await roleService.AddRole(model);
+            return RedirectToAction("AccountAccess");
+        }
+
         public List<Menu> FetchMenus(int accountType)
         {
             List<Menu>? menus = menuService.GetMenus(accountType);
             return menus;
         }
+
         public IActionResult AccountAccess()
         {
-            return View();
+            List<CreateRoleDTO>? data = roleService.GetRoles();
+            return View(data);
         }
         
         public IActionResult UserAccess()
