@@ -1,7 +1,10 @@
-﻿namespace Repositories.Repository.Interface
+﻿using Entities.ViewModels;
+
+namespace Repositories.Repository.Interface
 {
     public interface IRoleMenuService
     {
-        Task AddRoleMenus(int roleId, List<int> menuIds);
+        Task AddRoleMenus(int roleId, List<MenuDTO> menus);
+        Task DeleteRoleMenus(int roleId);
     }
 }

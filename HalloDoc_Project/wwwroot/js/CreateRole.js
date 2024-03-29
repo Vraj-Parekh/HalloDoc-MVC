@@ -19,7 +19,7 @@ function fetchMenus(selectedType) {
                     .text(menu.name);
 
                 var checkboxSpan = $('<span>');
-                checkboxSpan.addClass('col').css('white-space', 'nowrap');
+                //checkboxSpan.addClass('col').css('white-space', 'nowrap');
                 checkboxSpan.append(checkbox);
                 checkboxSpan.append(label);
 
@@ -72,6 +72,7 @@ $(document).ready(function () {
             data: model,
             success: function (response) {
                 console.log("success");
+                window.location.href = '/Admin/AccountAccess';
             },
             error: function (xhr, status, error) {
                 console.error("error");

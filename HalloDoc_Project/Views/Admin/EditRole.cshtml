@@ -1,0 +1,65 @@
+﻿@using Entities.Enum;
+@model CreateRoleDTO
+
+@{
+    ViewData["Title"] = "EditRole";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#access";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Edit Role</h4>
+
+        <a class="btn btn-outline-info bg-white text-info" asp-action="AccountAccess"> &lt; Back </a>
+    </div>
+
+    <div class="bg-white rounded shadow p-3">
+        <h5>Details</h5>
+        <form asp-action="EditRole" method="post">
+            <div class="row justify-content-between">
+                <div class="col-lg-6 mt-2">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="roleName" placeholder="Role Name" asp-for="RoleName" required>
+                        <label for="firstname">Role Name</label>
+                        <span class="text-danger" id="roleNameError"></span>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-2">
+                    <div class="form-floating">
+                        <select class="form-select" id="accountType" asp-for="AccountType">
+                            <option value="1">All</option>
+                            <option value="2">Admin</option>
+                            <option value="3">Physician</option>
+                            <option value="4">Patient</option>
+                        </select>
+                        <label for="accountType" class="form-label">Account Type</label>
+                    </div>
+                </div>
+            </div>
+
+            <span class="row row-cols-lg-5 row-cols-sm-3 row-cols-2 mt-2" id="checkboxContainer">
+                @for (int i = 0; i < Model.Menus.Count; i++)
+                {
+                    var menu = Model.Menus[i];
+
+                    <span class="col">
+                        <input class="me-1 menuCheckbox" type="checkbox" asp-for="@Model.Menus[i].IsPresent">
+                        <label class="form-check-label" asp-for="@Model.Menus[i].IsPresent">@Model.Menus[i].Name</label>
+                    </span>
+                }
+
+            </span>
+
+            <div class="row justify-content-end mt-4">
+                <div class="col-auto">
+                    <button type="submit" id="submit-btn" class="btn btn-info text-white"> Save </button>
+                    <button type="button" class="btn btn-outline-info text-info bg-white"> Cancel </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<partial name="_ActiveTabPartial" model=active />
+<script src="~/js/EditRole.js" asp-append-version="true"></script>

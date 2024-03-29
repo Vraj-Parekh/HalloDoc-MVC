@@ -453,12 +453,31 @@ namespace HalloDoc_Project.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRole(CreateRoleDTO model)
+        public async Task CreateRole(CreateRoleDTO model)
         {
             await roleService.AddRole(model);
-            return RedirectToAction("AccountAccess");
         }
 
+        [HttpGet("{roleId}")]
+        public IActionResult EditRole(int roleId)
+        {
+            CreateRoleDTO? role = roleService.GetRole(roleId);
+            return View(role);
+        }
+
+        [HttpPost("{roleId}")]
+        public IActionResult EditRole(int roleId, CreateRoleDTO model)
+        {
+
+            return View();
+        }
+
+        [HttpPost("{roleId}")]
+        public IActionResult DeleteRole(int roleId)
+        {
+            roleService.DeleteRole(roleId);
+            return RedirectToAction("AccountAccess");
+        }
         public List<Menu> FetchMenus(int accountType)
         {
             List<Menu>? menus = menuService.GetMenus(accountType);
@@ -467,7 +486,7 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult AccountAccess()
         {
-            List<CreateRoleDTO>? data = roleService.GetRoles();
+            List<AccountAccessDTO>? data = roleService.GetAllRoles();
             return View(data);
         }
         
