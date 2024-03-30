@@ -42,7 +42,7 @@ namespace HalloDoc_Project.Controllers
 
         public IRegionService RegionService { get; }
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService,ISmsSender smsSender,IMenuService menuService,IRoleService roleService,IRoleMenuService roleMenuService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -390,7 +390,7 @@ namespace HalloDoc_Project.Controllers
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             Admin? admin = adminService.GetAdmin(email);
-            if(admin is not null && admin.Aspnetuser is not null)
+            if (admin is not null && admin.Aspnetuser is not null)
             {
                 adminService.ChangePassword(admin, model);
             }
@@ -424,7 +424,7 @@ namespace HalloDoc_Project.Controllers
             return View(model);
         }
 
-        public void SendMessage(int mode , string message,int physicianId)
+        public void SendMessage(int mode, string message, int physicianId)
         {
             string email = physicianService.GetPhysicianEmail(physicianId);
             string phoneNumber = physicianService.GetPhysicianPhone(physicianId);
@@ -435,7 +435,7 @@ namespace HalloDoc_Project.Controllers
                 smsSender.SendSms(phoneNumber, message);
             }
             //email-2
-            else if(mode == 2)
+            else if (mode == 2)
             {
                 emailSender.SendEmailAsync(email, "For communication", message);
             }
@@ -453,9 +453,18 @@ namespace HalloDoc_Project.Controllers
         }
 
         [HttpPost]
-        public async Task CreateRole(CreateRoleDTO model)
+        public async Task<IActionResult> CreateRole(CreateRoleDTO model)
         {
-            await roleService.AddRole(model);
+            if (!roleService.IsRolePresent(model.RoleName))
+            {
+                await roleService.AddRole(model);
+                return RedirectToAction("AccountAccess");
+            }
+            else
+            {
+                ModelState.AddModelError("RoleName", "Role name already exists.");
+                return View(model);
+            }
         }
 
         [HttpGet("{roleId}")]
@@ -466,16 +475,16 @@ namespace HalloDoc_Project.Controllers
         }
 
         [HttpPost("{roleId}")]
-        public IActionResult EditRole(int roleId, CreateRoleDTO model)
+        public async Task<IActionResult> EditRole(int roleId, CreateRoleDTO model)
         {
-
-            return View();
+            await roleService.EditRole(roleId, model);
+            return RedirectToAction("AccountAccess");
         }
 
         [HttpPost("{roleId}")]
-        public IActionResult DeleteRole(int roleId)
+        public async Task<IActionResult> DeleteRole(int roleId)
         {
-            roleService.DeleteRole(roleId);
+            await roleService.DeleteRole(roleId);
             return RedirectToAction("AccountAccess");
         }
         public List<Menu> FetchMenus(int accountType)
@@ -489,7 +498,7 @@ namespace HalloDoc_Project.Controllers
             List<AccountAccessDTO>? data = roleService.GetAllRoles();
             return View(data);
         }
-        
+
         public IActionResult UserAccess()
         {
             return View();

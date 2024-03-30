@@ -6,7 +6,9 @@ namespace Repositories.Repository.Interface
     {
         Task AddRole(CreateRoleDTO model);
         Task DeleteRole(int roleId);
+        Task EditRole(int roleId, CreateRoleDTO model);
         List<AccountAccessDTO> GetAllRoles();
         CreateRoleDTO GetRole(int roleId);
+        bool IsRolePresent(string roleName);
     }
 }

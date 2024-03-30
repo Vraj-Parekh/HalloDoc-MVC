@@ -44,7 +44,6 @@ namespace HalloDoc_Project.Controllers
         public IActionResult PatientLogin(string returnUrl = null)
         {
             TempData["ReturnUrl"] = returnUrl;
-
             return View();
         }
 
@@ -52,9 +51,8 @@ namespace HalloDoc_Project.Controllers
         [AllowAnonymous]
         public IActionResult PatientLogin(LoginDTO data)
         {
-
             Aspnetuser? user = _context.Aspnetusers.Where(u => u.Email == data.Email).Include(a => a.Roles).FirstOrDefault();
-    
+
             if (user != null && user.Passwordhash == data.Password)
             {
                 string? token = JwtService.GenerateJwtToken(user);//asp net user services
@@ -69,7 +67,7 @@ namespace HalloDoc_Project.Controllers
                 };
                 Response.Cookies.Append("Token", token, cookieOptions);
 
-                if (TempData.ContainsKey("ReturnUrl"))
+                if (TempData["ReturnUrl"] != null)
                 {
                     string returnUrl = TempData["ReturnUrl"]?.ToString();
                     TempData.Keep("ReturnUrl"); // Retain TempData for one more request

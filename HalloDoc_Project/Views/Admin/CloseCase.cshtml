@@ -2,8 +2,9 @@
 @{
     ViewData["Title"] = "CloseCase";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var requestId = ViewBag.requestId;
 }
-@section style{
+@section style {
     <link rel="stylesheet" href="~/css/view_case.css" asp-append-version="true" />
 }
 
@@ -58,7 +59,7 @@
 
         <h4 class="mb-4">Patient Information</h4>
 
-        <form asp-action="CaseClose" asp-controller="Admin" asp-route-requestId="@ViewBag.requestId" method="post" class="login-form-control">
+        <form asp-action="CaseClose" asp-controller="Admin" asp-route-requestId="@requestId" method="post" class="login-form-control">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
@@ -117,22 +118,23 @@
                         <a class="btn btn-outline-info icon dis-field"><i class="bi bi-telephone-fill"></i> </a>
                     </div>
                 </div>
+            </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <div class="form-floating">
-                            <input type="email"
-                                   asp-for="Email"
-                                   class="form-control dis-field"
-                                   id="email"
-                                   placeholder="name@example.com"
-                                   disabled />
-                            <label for="floatingInput">Email</label>
-                        </div>
-                        <span asp-validation-for="Email" class="text-danger"></span>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="email"
+                               asp-for="Email"
+                               class="form-control dis-field"
+                               id="email"
+                               placeholder="email"
+                               disabled />
+                        <label for="email">Email</label>
                     </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
             </div>
+
 
             <div class="row justify-content-end">
                 <div class="col-auto">
@@ -147,9 +149,10 @@
 
 
 @section Scripts {
+    @* <script src="/js/CloseCase.js" asp-append-version="true"></script> *@
     <script>
         $(document).ready(function () {
-            
+
             $('#saveBtn').click(function () {
                 var email = $('#email').val();
                 var phoneNumber = $('#phone').val();
@@ -160,7 +163,7 @@
 
 
                 $.ajax({
-                    url: '/Admin/UpdateRequestClientMobEmail/' + @ViewBag.requestId,
+                    url: '/Admin/UpdateRequestClientMobEmail/' + @requestId,
                     type: 'POST',
                     data: data,
                     success: function (response) {
@@ -178,6 +181,18 @@
 
             $('#closeCaseBtn').click(function () {
                 $('form').submit();
+            });
+
+            // Disable all input fields initially
+            $('.dis-field').prop('disabled', true);
+            $('.btn-save').hide();
+
+            // Handle click event for the Edit button
+            $('.btn-edit').click(function () {
+                // Enable all input fields
+                $('.dis-field').prop('disabled', false);
+
+                $('.btn-save').show();
             });
         });
     </script>

@@ -25,6 +25,10 @@ namespace Repositories.Repository.Implementation
             this.menuService = menuService;
         }
 
+        public bool IsRolePresent(string roleName)
+        {
+            return _context.Roles.Any(r=>r.Name == roleName && !r.Isdeleted);
+        }
         public async Task AddRole(CreateRoleDTO model)
         {
             Role? role = new Role()
@@ -60,7 +64,7 @@ namespace Repositories.Repository.Implementation
                 }
                 return roleList;
             }
-            return null;
+            return new List<AccountAccessDTO>();
         }
 
         public CreateRoleDTO GetRole(int roleId)
@@ -95,6 +99,7 @@ namespace Repositories.Repository.Implementation
             {
                 role.Isdeleted = true;
                 _context.Roles.Update(role);
+                await roleMenuService.DeleteRoleMenus(roleId);
                 await _context.SaveChangesAsync();
             }
         }
@@ -102,7 +107,7 @@ namespace Repositories.Repository.Implementation
         public async Task EditRole(int roleId, CreateRoleDTO model)
         {
             Role? role = _context.Roles.Where(a => a.Roleid == roleId).FirstOrDefault();
-
+            
             if (role is not null)
             {
                 role.Name = model.RoleName;
@@ -112,7 +117,16 @@ namespace Repositories.Repository.Implementation
 
                 await roleMenuService.DeleteRoleMenus(roleId);
 
-                
+                List<MenuDTO>? menus = new List<MenuDTO>();
+
+                foreach (MenuDTO item in model.Menus)
+                {
+                    if (item.IsPresent)
+                    {
+                        menus.Add(item);
+                    }
+                }
+                await roleMenuService.AddRoleMenus(roleId, menus);
             }
         }
     }

@@ -53,16 +53,23 @@ $(document).ready(function () {
             $('#roleNameError').text('');
         }
 
-        var checkedIds = [];
+        var checkedMenus = [];
         $('.menuCheckbox:checked').each(function () {
             var checkboxId = $(this).attr('id');
-            checkedIds.push(checkboxId);
+            var menuName = $(this).next('label').text();
+            var menuObject = {
+                MenuId: checkboxId,
+                Name: menuName,
+                IsPresent: true
+            };
+
+            checkedMenus.push(menuObject);
         });
-        console.log(checkedIds);
+        console.log(checkedMenus);
 
         let model = {};
         model.RoleName = $('#roleName').val();
-        model.Menus = checkedIds;
+        model.Menus = checkedMenus;
         model.AccountType = $('#accountType').val();
         console.log(model);
 
@@ -72,7 +79,6 @@ $(document).ready(function () {
             data: model,
             success: function (response) {
                 console.log("success");
-                window.location.href = '/Admin/AccountAccess';
             },
             error: function (xhr, status, error) {
                 console.error("error");

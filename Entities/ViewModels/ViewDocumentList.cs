@@ -13,7 +13,7 @@ namespace Entities.ViewModels
         public DateTime? DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Phone Number is required")]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone Number must be 10 digits")]
+        //[RegularExpression(@"^\d{10}$", ErrorMessage = "Phone Number must be 10 digits")]
         //[RegularExpression(@"^\+(?:[0-9] ?){6,14}[0-9]$", ErrorMessage = "Invalid mobile number format")]
         public string? PhoneNumber { get; set; }
 
