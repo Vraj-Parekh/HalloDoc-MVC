@@ -1,0 +1,174 @@
+﻿@{
+    ViewData["Title"] = "CreateRequest";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Submit Information</h4>
+
+        <a class="btn btn-outline-info bg-white text-info" asp-action="AdminDashboard"> &lt; Back </a>
+    </div>
+
+    <div class="bg-white rounded shadow p-3">
+        <form asp-action="CreateRequest" method="post">
+            <h4 class="mb-4">Patient Information</h4>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                        asp-for="FirstName"
+                               class="form-control"
+                               id="firstname"
+                               placeholder="firstname" />
+                        <label for="firstname">First Name</label>
+                    </div>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                        asp-for="LastName"
+                               class="form-control"
+                               id="lastname"
+                               placeholder="lastname" />
+                        <label for="firstname">Last Name</label>
+                    </div>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="tel"
+                        asp-for="PhoneNumber"
+                               class="form-control"
+                               id="phone"
+                               placeholder=""
+                               style="height: 58px" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                        asp-for="Email"
+                               class="form-control"
+                               id="email"
+                               placeholder="email" />
+                        <label for="firstname">Email</label>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="date"
+                        asp-for="DateOfBirth"
+                               class="form-control"
+                               id="dob" />
+                        <label for="floatingPassword">Date of Birth</label>
+                    </div>
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+            </div>
+
+            <h4 class="mb-4">Patient Location</h4>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                        asp-for="Street"
+                               class="form-control"
+                               id="street"
+                               placeholder="street" />
+                        <label for="street">Street</label>
+                    </div>
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                        asp-for="City"
+                               class="form-control"
+                               id="city"
+                               placeholder="city" />
+                        <label for="city">City</label>
+                    </div>
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                        asp-for="State"
+                               class="form-control"
+                               id="state"
+                               placeholder="state" />
+                        <label for="state">State</label>
+                    </div>
+                    <span asp-validation-for="State" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                        asp-for="Zip"
+                               class="form-control"
+                               id="zip"
+                               placeholder="zip" />
+                        <label for="address1">Zip</label>
+                    </div>
+                    <span asp-validation-for="Zip" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="RoomOrSuite"
+                               type="text"
+                               class="form-control"
+                               id="room"
+                               placeholder="room" />
+                        <label for="room">Room # / Suite (Optional)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3">
+                    <div class="form-floating">
+                        <textarea asp-for="AdminNotes"
+                                  class="form-control"
+                                  placeholder="adminNotes"
+                                  id="adminNotes"
+                                  style="height: 100px"></textarea>
+                        <label for="adminNotes">Admin Notes(Optional)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-info me-3 text-light">
+                        Submit
+                    </button>
+                    <button class="btn btn-outline-info text-info bg-white" asp-action="AdminDashboard">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

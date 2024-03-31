@@ -17,9 +17,9 @@
         <div class="row justify-content-between">
             <div class="col-lg-6 mt-2">
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="roleName" placeholder="Role Name" required pattern="[a-zA-Z0-9\s]+" title="Please enter a valid role name (letters, numbers, and spaces only)">
+                    <input type="text" class="form-control" id="roleName" placeholder="Role Name" required asp-for="RoleName">
                     <label for="firstname">Role Name</label>
-                    <span class="text-danger" id="roleNameError"></span>
+                    <span class="text-danger" id="roleNameError" asp-validation-for="RoleName"></span>
                 </div>
             </div>
             <div class="col-lg-6 mt-2">

@@ -165,7 +165,7 @@ namespace Repositories.Repository.Implementation
             return request;
         }
 
-        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, out int totalCount)
+        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize,string searchQuery, int regionId,out int totalCount)
         {
             Dictionary<int, int[]> statusMap = new()
             {
@@ -177,12 +177,27 @@ namespace Repositories.Repository.Implementation
                 {6, new int[1]{ 19} }//unpaid
             };
 
-            totalCount = _context.Requests
-                  .Count(a => statusMap[status].Contains(a.Status));
-
-            List<Request>? request = _context.Requests
+            IQueryable<Request>? query = _context.Requests
                 .Where(a => statusMap[status].Contains(a.Status) && (requesttypeid == 5 || a.Requesttypeid == requesttypeid))
-                .Include(a => a.Requestclients)
+                .Include(a => a.Requestclients);
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                searchQuery = searchQuery.Trim().ToLower();
+                query = query.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchQuery)
+                                                                || rc.Lastname.ToLower().Contains(searchQuery))
+                                       || a.Firstname.ToLower().Contains(searchQuery)
+                                       || a.Lastname.ToLower().Contains(searchQuery));
+            }
+
+            if(regionId > 0)
+            {
+                query = query.Where(a => a.Requestclients.Any(rc => rc.Regionid == regionId));
+            }
+
+            totalCount = query.Count();
+
+            List<Request>? request = query
                 .Skip(pageIndex > 0 ? (pageIndex - 1) * pageSize : 0)
                 .Take(pageSize)
                 .ToList();
@@ -196,7 +211,7 @@ namespace Repositories.Repository.Implementation
                 {
                     RequestId = req.Requestid,
                     FirstName = requestClient.Firstname,
-                    LastName = requestClient.Lastname,
+                    LastName = requestClient.Lastname??"",
                     Dob = GenerateDateOfBirth(requestClient.Intyear, requestClient.Strmonth, requestClient.Intdate),
                     Requestor = (RequestTypeId)req.Requesttypeid + ", " + req.Firstname,
                     RequestedDate = req.Createddate,
@@ -208,6 +223,7 @@ namespace Repositories.Repository.Implementation
                     PhysicianName = _context.Physicians.Where(a => a.Physicianid == req.Physicianid).Select(phy => phy.Firstname).FirstOrDefault(),
                     Notes = _context.Requeststatuslogs.Where(a => a.Requestid == req.Requestid).OrderBy(a => a.Createddate).LastOrDefault()?.Notes,
                     RequestTypeId = req.Requesttypeid,
+                    Region = requestClient.Region?.Name,
                     Status = status,
                 };
                 admin.Add(AdminDashboard);

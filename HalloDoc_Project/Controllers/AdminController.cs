@@ -153,10 +153,10 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
-        public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize)
+        public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize,string searchQuery,int regionId)
         {
             int totalCount;
-            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, pageSize, out totalCount);
+            List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, pageSize, searchQuery, regionId, out totalCount);
 
             int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
@@ -374,6 +374,11 @@ namespace HalloDoc_Project.Controllers
             byte[]? file = ExcelHelper.CreateFile(requests);
             return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "all_patient_list.xlsx");
         }
+
+        public IActionResult CreateRequest()
+        {
+            return View();
+        }
         public IActionResult MyProfile()
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -463,7 +468,7 @@ namespace HalloDoc_Project.Controllers
             else
             {
                 ModelState.AddModelError("RoleName", "Role name already exists.");
-                return View(model);
+                return View();
             }
         }
 

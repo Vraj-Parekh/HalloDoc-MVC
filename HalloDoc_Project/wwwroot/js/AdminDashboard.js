@@ -18,6 +18,9 @@ function activateTab(tabId) {
     var spanEle = document.getElementById('spanText');
     spanEle.textContent = "(" + tabId.substring(0, tabId.indexOf("State")) + ")";
 
+    $('#search').val('');
+    $('.regionSearch').val(0);
+
     switch (tabId) {
         case "NewState":
             status = 1;
@@ -102,14 +105,41 @@ activateFilter('AllFilter');
 $(document).ready(function () {
     $('#NewState').trigger('click');
     $('#All').trigger('click');
+    $('#search').on('input', function () {
+        getData(); 
+    });
+
+    $.ajax({
+        url: './FetchRegions',
+        method: 'GET',
+        success: function (response) {
+            response.forEach(function (res) {
+                $('.regionSearch').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
+            });
+        },
+        error: function (response) {
+            console.log('error');
+        }
+    });
+
+    $('.regionSearch').on('change', function () {
+        getData();
+    });
 });
 
 
 function getData() {
+
+    query = $('#search').val().trim();
+    console.log(query);
+
+    regionId = $('.regionSearch').val();
+    console.log(regionId);
+
     $.ajax({
         url: '/Admin/Table',
         type: 'get',
-        data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, pageSize: pageSize },
+        data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, pageSize: pageSize, searchQuery: query, regionId: regionId },
         success: function (result) {
             if (result.includes('table')) {
                 $(".tableData").html(result);

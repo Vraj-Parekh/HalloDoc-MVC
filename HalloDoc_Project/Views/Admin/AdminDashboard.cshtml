@@ -64,9 +64,9 @@
                 <button type="button" class="btn btn-info p-2 text-white fw-medium">
                     <i class="fa-regular fa-paper-plane pe-1"></i><span class="d-lg-inline-block d-none"> Send Link</span>
                 </button>
-                <button type="button" class="btn btn-info p-2 text-white fw-medium">
+                <a type="button" class="btn btn-info p-2 text-white fw-medium" asp-action="CreateRequest">
                     <i class="fa-solid fa-notes-medical pe-1"></i><span class="d-lg-inline-block d-none"> Create Request</span>
-                </button>
+                </a>
                 <button type="button" id="exportFiltered" class="btn btn-info p-2 text-white fw-medium">
                     <i class="fa-solid fa-share pe-1"></i><span class="d-lg-inline-block d-none">Export</span>
                 </button>
@@ -88,13 +88,8 @@
                 </div>
             </div>
             <div class="col-lg-2">
-                <select class="p-2 mt-3 px-4 form-select mb-3 w-100 " id="regionsearch">
-                    <option>All Region</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
+                <select class="p-2 mt-3 px-4 form-select mb-3 w-100 regionSearch">
+                    <option selected value="0">All Region</option>
                 </select>
             </div>
             <div class="col-xl-2 d-xl-block d-lg-none"></div>

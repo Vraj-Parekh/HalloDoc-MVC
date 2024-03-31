@@ -85,11 +85,11 @@
                 <tr class="@BgColor text-white mx-1 border-bottom-white">
                     <td>
                         @items.FirstName @items.LastName, @items.RequestId
-                        <a class="btn bi bi-envelope border-1 border-white text-white"></a>
+                        <a class="btn bi bi-envelope border-1 border-white text-white float-end"></a>
                     </td>
                     @if (status != 6)
                     {
-                        <td>@items.Dob.ToString("MMM,dd yyyy")</td>
+                        <td class="text-center">@items.Dob.ToString("MMM,dd yyyy")</td>
                     }
                     @if (status == 5)
                     {
@@ -107,7 +107,7 @@
                     }
                     @if (status <= 3)
                     {
-                        <td class="text-break">Patient @items.FirstName, @items.LastName</td>
+                        <td class="text-break">@items.Requestor</td>
                     }
                     @if (status >= 2)
                     {
