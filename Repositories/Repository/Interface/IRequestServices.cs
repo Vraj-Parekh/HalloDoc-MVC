@@ -6,6 +6,7 @@ namespace Repositories.Repository.Interface
     public interface IRequestServices
     {
         void AddCloseCaseData( int requestId);
+        Task AddRequest(CreateRequestDTO model);
         Task<bool> AgreeWithAgreementAsync(int requestId);
         void AssignCase(int assignReqId, string phyRegion, string phyId, string assignNote);
         void ClearCase(int requestId);
@@ -18,6 +19,7 @@ namespace Repositories.Repository.Interface
         List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, string searchQuery, int regionId, out int totalCount);
         Request? GetRequest(int requestId);
         ViewCaseDTO GetViewCase(int requestId);
+        bool IsPatientPresent(string email);
         bool IsRequestPending(int requestId, string email);
         Task<bool> RejectAgreementAsync(int requestId, string message);
     }

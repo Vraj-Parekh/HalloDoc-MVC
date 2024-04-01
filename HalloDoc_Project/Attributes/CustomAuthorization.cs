@@ -5,17 +5,18 @@ using System.Security.Claims;
 using Repositories.Repository.Implementation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Primitives;
+using System.Linq;
 
 namespace HalloDoc_Project.Attributes
 {
     public class CustomAuthorization : Attribute, IAuthorizationFilter
     {
-        private readonly string _role;
+        private readonly List<string> _role;
         
 
         public CustomAuthorization(string role = "")
         {
-            this._role = role;
+            _role = role.Split(',').Select(a => a.Trim()).ToList();
         }
         public void OnAuthorization(AuthorizationFilterContext context)
        {
@@ -30,7 +31,7 @@ namespace HalloDoc_Project.Attributes
 
             if (token == null || !JwtService.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
             {
-                if(_role == "Admin")
+                if(_role.Contains("Admin"))
                 {
                     context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));
                 }
@@ -46,17 +47,11 @@ namespace HalloDoc_Project.Attributes
             List<string>? roleClaim = jwtSecurityToken.Claims.Where(claims => claims.Type == ClaimTypes.Role).Select(a => a.Value).ToList();//extract roleClaim from token
 
             //Not Logged In
-            if (roleClaim is null || !roleClaim.Contains(_role))
+            if (roleClaim is null || !roleClaim.Intersect(_role).Any())
             {
                 context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Home", action = "AccessDenied" }));
                 return;
             }
-
-            ////only partuclar role have access to page like admin patient to their accessible pages
-            //if (!roleClaim.Contains(_role))
-            //{
-            //    return;
-            //}
 
             IEnumerable<Claim>? claims = jwtSecurityToken.Claims;
 

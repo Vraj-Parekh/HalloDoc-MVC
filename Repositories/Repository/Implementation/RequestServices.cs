@@ -24,11 +24,49 @@ namespace Repositories.Repository.Implementation
             this.requestClientServices = requestClientServices;
         }
 
+        private string GetConfirmationNumber(string city, string lastname, string firstname, string count)
+        {
+            string regionAbr = city.Substring(0, 2);
+            string date = DateTime.Now.ToString("dd");
+            string month = DateTime.Now.ToString("MM");
+            string last = lastname.Substring(0, 2);
+            string first = firstname.Substring(0, 2);
+            string requestCount = count;
+
+            return regionAbr + date + month + last + first + requestCount;
+        }
+
         public Request? GetRequest(int requestId)
         {
             return _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
         }
 
+        public bool IsPatientPresent(string email)
+        {
+            return _context.Users.Any(x => x.Email == email);
+        }
+
+        public async Task AddRequest(CreateRequestDTO model)
+        {
+            string count = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date).Count().ToString("0000");
+            Request? request = new Request()
+            {
+                Requesttypeid = (int)RequestTypeId.Patient,
+                
+                Firstname = model.FirstName,
+                Lastname = model.LastName,
+                Phonenumber = model.PhoneNumber,
+                Email = model.Email,
+                Status = (int)RequestStatus.Unassigned,
+                Confirmationnumber = GetConfirmationNumber(model.City,model.LastName,model.FirstName,count),
+                Createddate = DateTime.Now,
+                Isdeleted = false,
+                Isurgentemailsent = false,
+            };
+
+            await _context.Requests.AddAsync(request);
+            await _context.SaveChangesAsync();
+        }
         public bool IsRequestPending(int requestId, string email)
         {
             return _context.Requests.FirstOrDefault(a => a.Requestid == requestId)?.Status == (int)RequestStatus.Pending;

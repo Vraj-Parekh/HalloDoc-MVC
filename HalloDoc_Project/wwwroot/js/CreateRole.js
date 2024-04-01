@@ -19,7 +19,6 @@ function fetchMenus(selectedType) {
                     .text(menu.name);
 
                 var checkboxSpan = $('<span>');
-                //checkboxSpan.addClass('col').css('white-space', 'nowrap');
                 checkboxSpan.append(checkbox);
                 checkboxSpan.append(label);
 
@@ -79,9 +78,21 @@ $(document).ready(function () {
             data: model,
             success: function (response) {
                 console.log("success");
+                window.location.href = '/Admin/AccountAccess';
             },
             error: function (xhr, status, error) {
-                console.error("error");
+                console.log(xhr.status);
+                if (xhr.status == 400) {
+                    // HTTP status code 400 indicates a bad request
+                    var errorResponse = JSON.parse(xhr.responseText);
+                    // Display the error message in the UI
+                    $('#roleNameError').text(errorResponse.message);
+                    console.log(errorResponse.message);
+                } else {
+                    // Handle other types of errors
+                    // Display a generic error message or take appropriate action
+                    $('#roleNameError').text('An unexpected error occurred.');
+                }
             }
         });
     })

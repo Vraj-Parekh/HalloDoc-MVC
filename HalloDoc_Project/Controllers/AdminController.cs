@@ -379,6 +379,17 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRequest(CreateRequestDTO model)
+        {
+            if (!requestServices.IsPatientPresent(model.Email))
+            {
+
+            }
+            await requestServices.AddRequest(model);
+            return View();
+        }
         public IActionResult MyProfile()
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -395,7 +406,7 @@ namespace HalloDoc_Project.Controllers
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             Admin? admin = adminService.GetAdmin(email);
-            if (admin is not null && admin.Aspnetuser is not null)
+            if (model.Password is not null && admin is not null && admin.Aspnetuser is not null)
             {
                 adminService.ChangePassword(admin, model);
             }
@@ -463,12 +474,11 @@ namespace HalloDoc_Project.Controllers
             if (!roleService.IsRolePresent(model.RoleName))
             {
                 await roleService.AddRole(model);
-                return RedirectToAction("AccountAccess");
+                return Ok();
             }
             else
             {
-                ModelState.AddModelError("RoleName", "Role name already exists.");
-                return View();
+                return BadRequest(new { message = "Role Name Exist" });
             }
         }
 
@@ -505,6 +515,11 @@ namespace HalloDoc_Project.Controllers
         }
 
         public IActionResult UserAccess()
+        {
+            return View();
+        }
+
+        public IActionResult CreateAdminAccount()
         {
             return View();
         }

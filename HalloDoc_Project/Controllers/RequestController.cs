@@ -79,7 +79,7 @@ namespace HalloDoc_Project.Controllers
                     City = data.City,
                     State = data.State,
                     Zipcode = data.ZipCode,
-                    Request = request
+                    Request = request,
                 };
 
                 //to get uploaded files in the 'uploads' folder
@@ -139,7 +139,7 @@ namespace HalloDoc_Project.Controllers
                     
                     _context.Users.Add(user);
                     _context.Aspnetusers.Add(aspNetUser);
-
+                    //request.User = user;
                 }
                 try
                 {
@@ -342,8 +342,5 @@ namespace HalloDoc_Project.Controllers
                       + Guid.NewGuid().ToString().Substring(0, 6)
                       + Path.GetExtension(fileName);
         }
-
-
-
     }
 }

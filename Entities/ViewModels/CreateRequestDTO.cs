@@ -10,7 +10,7 @@ namespace Entities.ViewModels
     public class CreateRequestDTO
     {
         [Required(ErrorMessage = "First Name is required.")]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
 
         [Required(ErrorMessage = "Last Name is required.")]
         public string LastName { get; set; }
@@ -36,6 +36,7 @@ namespace Entities.ViewModels
         public string State { get; set; }
 
         [Required(ErrorMessage = "Zip is required.")]
+        [RegularExpression(@"^\d{6}$", ErrorMessage = "Zip code must be exactly 6 digits.")]
         public string Zip { get; set; }
 
         public string RoomOrSuite { get; set; }

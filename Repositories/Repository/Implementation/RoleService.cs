@@ -110,8 +110,6 @@ namespace Repositories.Repository.Implementation
             
             if (role is not null)
             {
-                role.Name = model.RoleName;
-                role.Accounttype = (short)model.AccountType;
                 role.Modifieddate = DateTime.Now;
                 role.Modifiedby = "Admin";
 

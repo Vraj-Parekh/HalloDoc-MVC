@@ -1,0 +1,86 @@
+﻿@using Entities.Enum;
+@model List<UserAccessDTO>
+@{
+    ViewData["Title"] = "UserAccess";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#access";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>User Access</h4>
+    </div>
+
+    <div class="bg-white rounded shadow p-3">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-lg-3 mt-2">
+                <div class="form-floating">
+                    <select class="form-select" id="accountType">
+                        <option value="1">All</option>
+                        <option value="2">Admin</option>
+                        <option value="3">Physician</option>
+                    </select>
+                    <label for="accountType" class="form-label">Search</label>
+                </div>
+            </div>
+
+            <div class="col-auto">
+                <button class="btn btn-info text-white rounded-2 border-0 me-2" id="create-acc-btn" style="display:none;"> Create Provider Account </button>
+            </div>
+        </div>
+
+        <table class="table mt-3">
+            <thead class="table-light">
+                <tr>
+                    <th class="col">
+                        Account Type
+                        <i class="bi bi-arrow-up"></i>
+                    </th>
+                    <th class="col text-center">
+                        Account POC
+                    </th>
+                    <th class="col text-center pe-5">
+                        Phone
+                    </th>
+                    <th class="col text-center">
+                        Status
+                    </th>
+                    <th class="col text-center">
+                        Open Requests
+                    </th>
+                    <th class="col text-center">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            @*     <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+            <td>
+            @((AccountType)item.AccountType)
+            </td>
+            <td class="text-center">
+            @item.AccountName
+            </td>
+            <td class="text-center">
+            @item.Phone
+            </td>
+            <td class="text-center">
+            @item.Status
+            </td>
+            <td class="text-center">
+            @item.OpenRequests
+            </td>
+            <td class="text-end">
+            <a class="btn btn-outline-info" asp-action="EditRole">Edit</a>
+            </td>
+            </tr>
+            }
+            </tbody> *@
+        </table>
+    </div>
+</div>
+
+<partial name="_ActiveTabPartial" model=active />
+<script src="/js/UserAccess.js" asp-append-version="true"></script>
