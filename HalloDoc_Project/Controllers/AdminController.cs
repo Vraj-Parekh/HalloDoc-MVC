@@ -40,8 +40,6 @@ namespace HalloDoc_Project.Controllers
         private readonly IRoleService roleService;
         private readonly IRoleMenuService roleMenuService;
 
-        public IRegionService RegionService { get; }
-
         public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService)
         {
             this.requestClientServices = requestClientServices;
@@ -485,7 +483,7 @@ namespace HalloDoc_Project.Controllers
         [HttpGet("{roleId}")]
         public IActionResult EditRole(int roleId)
         {
-            CreateRoleDTO? role = roleService.GetRole(roleId);
+            CreateRoleDTO? role = roleService.GetRoleById(roleId);
             return View(role);
         }
 
@@ -521,7 +519,18 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult CreateAdminAccount()
         {
-            return View();
+            CreateAdminDTO model = new CreateAdminDTO();
+            model.Regions = regionService.GetRegion();
+            model.Roles = roleService.GetRoles();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult CreateAdminAccount(CreateAdminDTO model)
+        {
+
+            return View(model);
         }
     }
 }

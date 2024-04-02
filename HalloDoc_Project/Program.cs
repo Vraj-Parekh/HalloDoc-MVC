@@ -35,6 +35,7 @@ builder.Services.AddTransient<IAdminService, AdminService>();
 builder.Services.AddTransient<IMenuService, MenuService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IRoleMenuService, RoleMenuService>();
+builder.Services.AddTransient<IAspNetRoleService, AspNetRoleService>();
 
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

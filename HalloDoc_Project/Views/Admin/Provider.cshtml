@@ -14,7 +14,7 @@
     <div class="bg-white rounded shadow p-2">
         <div class="row justify-content-between align-items-center pt-3 pb-3">
             <div class="col-md-3">
-                <select class="form-select" id="regionsearch">
+                <select class="form-select">
                     <option>All</option>
                     <option>1</option>
                     <option>2</option>
@@ -24,7 +24,7 @@
                 </select>
             </div>
             <div class="col-auto">
-                <button class="btn btn-info text-white rounded-2 border-0 me-2"> Create Provider Account </button>
+                <a class="btn btn-info text-white rounded-2 border-0 me-2" asp-action="CreateProviderAccount" asp-controller="Provider"> Create Provider Account </a>
             </div>
         </div>
         <div class="d-lg-block d-none ps-0 pe-0">

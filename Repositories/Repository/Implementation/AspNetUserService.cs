@@ -46,5 +46,27 @@ namespace Repositories.Repository.Implementation
             _context.Aspnetusers.Update(aspNetUserData);
             _context.SaveChanges();
         }
+
+        public async Task<Aspnetuser> AddAspNetUser(string email, string username, string phone, string password)
+        {
+            Aspnetuser? user = _context.Aspnetusers.Where(a=>a.Email == email).FirstOrDefault();
+            if (user is not null)
+            {
+                return user;
+            }
+
+            Aspnetuser aspnetuser = new Aspnetuser()
+            {
+                Aspnetuserid = Guid.NewGuid().ToString(),
+                Email = email,
+                Passwordhash = password,
+                Username = username,
+                Phonenumber = phone,
+                Createddate = DateTime.Now,
+            };
+            _context.Aspnetusers.Add(aspnetuser);
+            await _context.SaveChangesAsync();
+            return aspnetuser;
+        }
     }
 }

@@ -25,9 +25,13 @@ namespace Repositories.Repository.Implementation
             this.menuService = menuService;
         }
 
+        public List<Role> GetRoles()
+        {
+             return _context.Roles.Where(r => !r.Isdeleted).ToList();
+        }
         public bool IsRolePresent(string roleName)
         {
-            return _context.Roles.Any(r=>r.Name == roleName && !r.Isdeleted);
+            return _context.Roles.Any(r => r.Name == roleName && !r.Isdeleted);
         }
         public async Task AddRole(CreateRoleDTO model)
         {
@@ -67,7 +71,7 @@ namespace Repositories.Repository.Implementation
             return new List<AccountAccessDTO>();
         }
 
-        public CreateRoleDTO GetRole(int roleId)
+        public CreateRoleDTO GetRoleById(int roleId)
         {
             Role? role = _context.Roles.Where(a => a.Roleid == roleId).Include(a => a.Rolemenus).FirstOrDefault();
 
@@ -107,7 +111,7 @@ namespace Repositories.Repository.Implementation
         public async Task EditRole(int roleId, CreateRoleDTO model)
         {
             Role? role = _context.Roles.Where(a => a.Roleid == roleId).FirstOrDefault();
-            
+
             if (role is not null)
             {
                 role.Modifieddate = DateTime.Now;

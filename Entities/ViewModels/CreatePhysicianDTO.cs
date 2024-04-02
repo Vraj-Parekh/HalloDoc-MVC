@@ -1,14 +1,10 @@
 ﻿using Entities.Models;
-using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Entities.ViewModels
 {
-    public class CreateAdminDTO
+    public class CreatePhysicianDTO
     {
         [Required(ErrorMessage = "Username is required")]
         public string UserName { get; set; }
@@ -29,10 +25,6 @@ namespace Entities.ViewModels
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
-
-        [Required(ErrorMessage = "Confirm Email is required")]
-        [Compare("Email", ErrorMessage = "The email and confirmation email do not match")]
-        public string ConfirmEmail { get; set; }
 
         [Required(ErrorMessage = "Phone Number is required")]
         [RegularExpression(@"^\+?\d+$", ErrorMessage = "Please enter a valid phone number")]
@@ -56,5 +48,25 @@ namespace Entities.ViewModels
 
         [RegularExpression(@"^\+?\d+$", ErrorMessage = "Please enter a valid phone number")]
         public string? AltPhoneNumber { get; set; }
+
+        public string MedicalLicense { get; set; }
+
+        public string NPINumber { get; set; }
+
+        public string BusinessName { get; set; }
+
+        public string BusinessWebsite { get; set; }
+
+        public IFormFile Photo { get; set; }
+
+        public string? AdminNotes { get; set; }
+
+        public bool AgreementDoc {  get; set; }
+
+        public bool BackgroundDoc {  get; set; }
+
+        public bool TrainingDoc {  get; set; }
+
+        public bool NonDisclosureDoc {  get; set; }
     }
 }

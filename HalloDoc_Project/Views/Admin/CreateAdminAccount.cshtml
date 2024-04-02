@@ -9,7 +9,7 @@
     <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
         <h4>Create Admin Account</h4>
 
-        <a class="btn btn-outline-info bg-white text-info" asp-action="UserAccess"> &lt; Back </a>
+        <a class="btn btn-outline-info bg-white text-info" asp-action="UserAccess" asp-controller="Admin"> &lt; Back </a>
     </div>
 
     <div class="bg-white rounded shadow p-3">
@@ -22,34 +22,35 @@
                         <input type="text"
                                class="form-control"
                                id="Username"
-                               placeholder=" " disabled />
+                               placeholder="username"/>
                         <label for="Username">Username (Email)</label>
                     </div>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating flex-grow-1">
-                        <input @* asp-for="Password" *@
+                        <input asp-for="Password"
                                type="password"
                                class="form-control input"
                                id="password"
                                placeholder="name@example.com" />
                         <label for="password" class="no-bg-label">Password</label>
                     </div>
-                    @* <span asp-validation-for="Password" class="text-danger"></span> *@
+                    <span asp-validation-for="Password" class="text-danger"></span>
 
                 </div>
                 <div class="col-md-4">
-                    <div class="form-floating mb-3">
-                        @*             <select class="form-select" aria-label="Default select example assignRegion" asp-for="Role" style="height:58px;">
-                        <option selected disabled>Select Role</option>
-                        @foreach (var role in Model.Roles)
-                        {
-                        <option value="@role.RoleId">@role.RoleName</option>
-                        }
-                        </select> *@
-                        <label for="Status">Role</label>
-                        @* <span asp-validation-for="Role" class="text-danger"></span> *@
+                    <div class="form-floating">
+                        <select class="form-select" id="role" asp-for="Role">
+                            <option selected value="">Select Role</option>
+                            @foreach (var item in Model.Roles)
+                            {
+                                <option value="@item.Roleid">@item.Name</option>
+                            }
+                        </select>
+                        <label for="role" class="form-label">Role</label>
                     </div>
+                    <span asp-validation-for="Role" class="text-danger"></span>
                 </div>
             </div>
 
@@ -121,13 +122,13 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                   @*  <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            state name
-                        </label>
-                    </div> *@
-                    <span id="checkboxContainer"></span>
+                    @foreach (var item in Model.Regions)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input me-2" type="checkbox" value="@item.Regionid" id="@item.Regionid">
+                            <label class="form-check-label text6" for="@item.Regionid">@item.Name</label>
+                        </div>
+                    }
                 </div>
             </div>
 
@@ -174,8 +175,12 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select regionDropDown" id="stateDropdown" asp-for="State">
-
+                        <select class="form-select" id="state" asp-for="State">
+                            <option selected value="">Select State</option>
+                            @foreach (var item in Model.Regions)
+                            {
+                                <option value="@item.Regionid">@item.Name</option>
+                            }
                         </select>
                         <label for="state" class="form-label">State</label>
                     </div>
@@ -219,5 +224,3 @@
 
 
 <partial name="_ActiveTabPartial" model=active />
-<script src="/js/StateDropdown.js" asp-asp-append-version="true"></script>
-<script src="/js/StateCheckbox.js" asp-asp-append-version="true"></script>

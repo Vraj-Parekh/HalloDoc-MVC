@@ -1,10 +1,418 @@
-﻿
+﻿@model CreatePhysicianDTO
 @{
     ViewData["Title"] = "CreateProviderAccount";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     string active = "#access";
 }
 
-<h1>CreateProviderAccount</h1>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Create Physician Account</h4>
+
+        <a class="btn btn-outline-info bg-white text-info" asp-action="UserAccess" asp-controller="Admin"> &lt; Back </a>
+    </div>
+
+    <div class="bg-white rounded shadow p-3">
+        <h5 class="mb-4">Account Information</h5>
+
+        <form asp-action="CreateProviderAccount" asp-controller="Provider" method="post">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                        <input type="text"
+                               class="form-control"
+                               id="Username"
+                               placeholder="username" />
+                        <label for="Username">Username (MD Lastname)</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating flex-grow-1">
+                        <input asp-for="Password"
+                               type="password"
+                               class="form-control input"
+                               id="password"
+                               placeholder="name@example.com" />
+                        <label for="password" class="no-bg-label">Password</label>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <select class="form-select" id="role" asp-for="Role">
+                            <option selected value="">Select Role</option>
+                            @foreach (var item in Model.Roles)
+                            {
+                                <option value="@item.Roleid">@item.Name</option>
+                            }
+                        </select>
+                        <label for="role" class="form-label">Role</label>
+                    </div>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+            </div>
+
+            <h5 class="mb-4">Administrator Information</h5>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="FirstName"
+                               class="form-control"
+                               id="firstname"
+                               placeholder="firstname" />
+                        <label for="firstname">First Name</label>
+                    </div>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="LastName"
+                               class="form-control"
+                               id="lastname"
+                               placeholder="lastname" />
+                        <label for="firstname">Last Name</label>
+                    </div>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Email"
+                               class="form-control "
+                               id="email"
+                               placeholder="email" />
+                        <label for="firstname">Email</label>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="tel"
+                               asp-for="PhoneNumber"
+                               class="form-control "
+                               id="phone"
+                               placeholder=""
+                               style="height: 58px" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="MedicalLicense"
+                               class="form-control"
+                               id="medicalLicense"
+                               placeholder="medicalLicense" />
+                        <label for="medicalLicense">Medical License #</label>
+                    </div>
+                    <span asp-validation-for="MedicalLicense" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="NPINumber"
+                               class="form-control"
+                               id="npiNumber"
+                               placeholder="npiNumber" />
+                        <label for="npiNumber">NPI Number</label>
+                    </div>
+                    <span asp-validation-for="NPINumber" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    @foreach (var item in Model.Regions)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input me-2" type="checkbox" value="@item.Regionid" id="@item.Regionid">
+                            <label class="form-check-label text6" for="@item.Regionid">@item.Name</label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <h5 class="mb-4">Mailing & Billing Information</h5>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Address1"
+                               class="form-control "
+                               id="address1"
+                               placeholder="address" />
+                        <label for="address1">Address 1</label>
+                    </div>
+                    <span asp-validation-for="Address1" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Address2"
+                               class="form-control "
+                               id="address2"
+                               placeholder="address" />
+                        <label for="address2">Address 2</label>
+                    </div>
+                    <span asp-validation-for="Address2" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="City"
+                               class="form-control"
+                               id="city"
+                               placeholder="city" />
+                        <label for="city">City</label>
+                    </div>
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="state" asp-for="State">
+                            <option selected value="">Select State</option>
+                            @foreach (var item in Model.Regions)
+                            {
+                                <option value="@item.Regionid">@item.Name</option>
+                            }
+                        </select>
+                        <label for="state" class="form-label">State</label>
+                    </div>
+                    <span asp-validation-for="State" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Zip"
+                               class="form-control"
+                               id="zip"
+                               placeholder="zip" />
+                        <label for="address1">Zip</label>
+                    </div>
+                    <span asp-validation-for="Zip" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="tel"
+                               asp-for="AltPhoneNumber"
+                               class="form-control"
+                               id="phone1"
+                               placeholder=""
+                               style="height: 58px" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="BusinessName"
+                               class="form-control"
+                               id="businessName"
+                               placeholder="businessName" />
+                        <label for="businessName">Address 1</label>
+                    </div>
+                    <span asp-validation-for="BusinessName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="BusinessWebsite"
+                               class="form-control"
+                               id="businessWebsite"
+                               placeholder="businessWebsite" />
+                        <label for="businessWebsite">Business Website</label>
+                    </div>
+                    <span asp-validation-for="BusinessWebsite" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating ms-2 w-100">
+                        <div class="row rounded border bg-light w-100">
+                            <div id="filename" class="py-3 col-8" style="border:none">Select Photo</div>
+
+                            <div class="col-4 d-flex justify-content-end pe-0">
+                                <label for="fileLoader" class="bg-info text-white text-center h-100 rounded-end py-2 px-2" style="cursor: pointer;">
+                                    <i class="bi bi-cloud-upload text-white"></i>
+                                    <label for="fileLoader" class="h-100 p-2 text-white" style="cursor: pointer;">Upload</label>
+                                </label>
+                                <input asp-for="Photo" type="file" id="fileLoader" onchange="photo_validation()">
+                            </div>
+                        </div>
+                        <span id="photo_validation" class="text-danger"></span>
+                        <img src="" id="photo_img" class="w-100 mt-4" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Adminnotes" id="Adminnotes" style="height: 100px" asp-for="AdminNotes"></textarea>
+                        <label for="Adminnotes">Admin Notes</label>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            <h5 class="mb-4">Onboarding</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input Subcheckbox me-5" id="contractorAgreement">
+                        <label class="form-check-label" for="contractorAgreement">
+                            Independent Contractor Agreement
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <input type="file" class="d-none" id="agreement" asp-for="AgreementDoc" onchange="selectcheckbox()">
+                    <label for="agreement" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
+                    <button class="btn btn-info text-light ms-2 view-btn d-none" onclick="viewDocument()">View</button>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input Subcheckbox me-5" id="bgCheck">
+                        <label class="form-check-label" for="bgCheck">
+                            Background Check
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <input type="file" class="d-none" id="backgroundCheck" asp-for="BackgroundDoc" onchange="selectcheckbox()">
+                    <label for="backgroundCheck" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
+                    <button class="btn btn-info text-light ms-2 view-btn d-none" onclick="viewDocument()">View</button>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input Subcheckbox me-5" id="compliance">
+                        <label class="form-check-label" for="compliance">
+                            HIPAA Compilance
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <input type="file" class="d-none" id="hippa" asp-for="TrainingDoc" onchange="selectcheckbox()">
+                    <label for="hippa" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
+                    <button class="btn btn-info text-light ms-2 view-btn d-none" onclick="viewDocument()">View</button>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input Subcheckbox me-5" id="nonDisclosure">
+                        <label class="form-check-label" for="nonDisclosure">
+                            Non-Disclosure Agreement
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <input type="file" class="d-none" id="nda" asp-for="NonDisclosureDoc" onchange="selectcheckbox()">
+                    <label for="nda" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
+                    <button class="btn btn-info text-light ms-2 view-btn d-none" onclick="viewDocument()">View</button>
+                </div>
+            </div>
+            <hr />
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-success text-white">Create Account</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <partial name="_ActiveTabPartial" model=active />
+<script>
+    function photo_validation() {
+        var val = $('#fileLoader').val().toLowerCase(),
+            regex = new RegExp("(.*?)\.(jpg|png)$");
+        if (val == null || val == "") {
+            return true;
+        }
+        if (!(regex.test(val))) {
+            $('#photo_validation').html('Please select only jpg or png type photo');
+            $('#photo_img').attr("src", "");
+            return false;
+        }
+        $('#photo_validation').html('');
+        var file = document.getElementById('fileLoader').files[0];
+        if (file) {
+            $('#photo_img').attr("src", URL.createObjectURL(file))
+        }
+        return true;
+    };
+
+    // function selectcheckbox() {
+    //     var checkbox = document.getElementById('nonDisclosure');
+    //     checkbox.checked = true; // Check the checkbox when a file is uploaded
+    //     var viewBtn = document.querySelector('.view-btn');
+    //     viewBtn.classList.remove('d-none'); // Show the view button
+    // }
+
+    // function viewDocument() {
+    //     // Get the URL of the uploaded document
+    //     var fileInput = document.getElementById('nda');
+    //     var fileUrl = URL.createObjectURL(fileInput.files[0]);
+
+    //     // Open the document in a new tab
+    //     window.open(fileUrl, '_blank');
+    // }
+    $(document).ready(function () {
+        $('.upload-btn').change(function () {
+            var checkboxId = $(this).data('checkbox-id');
+            var checkbox = $('#' + checkboxId);
+            checkbox.prop('checked', true); // Check the checkbox when a file is uploaded
+            var viewBtn = $(this).siblings('.view-btn');
+            viewBtn.removeClass('d-none'); // Show the view button
+        });
+
+        $('.view-btn').click(function () {
+            var inputId = $(this).siblings('.upload-btn').attr('id');
+            var fileInput = $('#' + inputId)[0];
+            var fileUrl = URL.createObjectURL(fileInput.files[0]);
+
+            // Open the document in a new tab
+            window.open(fileUrl, '_blank');
+        });
+    });
+
+
+</script>

@@ -14,10 +14,14 @@ namespace Repositories.Repository.Implementation
     public class AdminService : IAdminService
     {
         private readonly HalloDocDbContext _context;
+        private readonly IAspNetUserService aspNetUserService;
+        private readonly IAspNetRoleService aspNetRoleService;
 
-        public AdminService(HalloDocDbContext _context)
+        public AdminService(HalloDocDbContext _context,IAspNetUserService aspNetUserService,IAspNetRoleService aspNetRoleService)
         {
             this._context = _context;
+            this.aspNetUserService = aspNetUserService;
+            this.aspNetRoleService = aspNetRoleService;
         }
 
         public Admin GetAdmin(string email)
@@ -85,6 +89,18 @@ namespace Repositories.Repository.Implementation
 
             _context.Admins.Update(admin);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task CreateAdmin(CreateAdminDTO model)
+        {
+            Task<Aspnetuser>? aspNetUser = aspNetUserService.AddAspNetUser(model.Email, model.UserName, model.PhoneNumber, model.Password);
+
+            var role = aspNetRoleService.GetName("Admin");
+
+            if(role is not null)
+            {
+                //add into aspnet user roles table
+            }
         }
     }
 }
