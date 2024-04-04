@@ -21,13 +21,13 @@
 
             <ul class="nav flex-column mt-2">
                 <li class="nav-item">
-                    <a class="nav-link active fs-5" asp-action="AdminDashboard">Dashboard</a>
+                    <a class="nav-link active fs-5" asp-action="AdminDashboard" asp-controller="Admin">Dashboard</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link  fs-5" asp-action="ProviderLocation">Provider Location</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fs-5" asp-action="MyProfile">My Profile</a>
+                    <a class="nav-link fs-5" asp-action="MyProfile" asp-controller="Admin">My Profile</a>
                 </li>
                 <li class="nav-item">
                     @* <a class="nav-link fs-5" asp-action="Providers">Providers</a> *@
@@ -46,7 +46,7 @@
                     <a class="nav-link  fs-5" asp-action="Partners">Partners</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fs-5" asp-action="Access">Access</a>
+                    <a class="nav-link fs-5" asp-action="Access" asp-controller="Admin">Access</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link  fs-5" asp-action="Records">Records</a>
@@ -71,7 +71,7 @@
 
 <ul class="nav nav-underline tabs bg-white shadow d-lg-flex d-none">
     <li class="nav-item">
-        <a id="dashboard" class="nav-link active fs-5" asp-action="AdminDashboard">Dashboard</a>
+        <a id="dashboard" class="nav-link active fs-5" asp-action="AdminDashboard" asp-controller="Admin">Dashboard</a>
     </li>
     <li class="nav-item">
         <a class="nav-link  fs-5" asp-action="ProviderLocation">Provider Location</a>
@@ -85,7 +85,7 @@
                 Providers
             </button>
             <ul class="dropdown-menu shadow">
-                <li><a class="dropdown-item" asp-action="Provider">Provider</a></li>
+                <li><a class="dropdown-item" asp-action="Provider" asp-controller="Admin">Provider</a></li>
                 <li><a class="dropdown-item" asp-action="Scheduling">Scheduling</a></li>
                 <li><a class="dropdown-item" asp-action="Invoicing">Invoicing</a></li>
             </ul>
@@ -100,8 +100,8 @@
                 Access
             </button>
             <ul class="dropdown-menu shadow">
-                <li><a class="dropdown-item" asp-action="AccountAccess">Account Access</a></li>
-                <li><a class="dropdown-item" asp-action="UserAccess">User Access</a></li>
+                <li><a class="dropdown-item" asp-action="AccountAccess" asp-controller="Admin">Account Access</a></li>
+                <li><a class="dropdown-item" asp-action="UserAccess" asp-controller="Admin">User Access</a></li>
             </ul>
         </div>
     </li>

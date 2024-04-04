@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Entities.DataContext;
 using Repositories.Repository.Interface;
 using Entities.Models;
+using Entities.ViewModels;
 
 namespace Repositories.Repository.Implementation
 {
@@ -23,6 +24,18 @@ namespace Repositories.Repository.Implementation
             List<Region>? regions = _context.Regions.ToList();
 
             return regions;
+        }
+
+        public List<RegionList> GetRegionList()
+        {
+            List<RegionList>? regionList = GetRegion().Select(a=> new RegionList()
+            {
+                RegionId = a.Regionid,
+                IsPresent = false,
+                RegionName = a.Name
+            }).ToList();
+
+            return regionList;
         }
     }
 }

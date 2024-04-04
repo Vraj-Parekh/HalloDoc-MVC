@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Entities.Models;
 
 namespace Entities.ViewModels
 {
@@ -50,8 +51,9 @@ namespace Entities.ViewModels
         [Required(ErrorMessage = "City is required")]
         public string City { get; set; }
 
-        //[Required(ErrorMessage = "State is required")]
+        [Required(ErrorMessage = "State is required")]
         public int State { get; set; }
+        public List<RegionList> Regions { get; set; }
 
         [Required(ErrorMessage = "Zip is required")]
         [RegularExpression(@"^\d{6}$", ErrorMessage = "ZIP code must be 6 digits")]

@@ -16,12 +16,16 @@ namespace Repositories.Repository.Implementation
         private readonly HalloDocDbContext _context;
         private readonly IAspNetUserService aspNetUserService;
         private readonly IAspNetRoleService aspNetRoleService;
+        private readonly IAspNetUserRolesService aspNetUserRolesService;
+        private readonly IAdminRegionService adminRegionService;
 
-        public AdminService(HalloDocDbContext _context,IAspNetUserService aspNetUserService,IAspNetRoleService aspNetRoleService)
+        public AdminService(HalloDocDbContext _context,IAspNetUserService aspNetUserService,IAspNetRoleService aspNetRoleService,IAspNetUserRolesService aspNetUserRolesService,IAdminRegionService adminRegionService)
         {
             this._context = _context;
             this.aspNetUserService = aspNetUserService;
             this.aspNetRoleService = aspNetRoleService;
+            this.aspNetUserRolesService = aspNetUserRolesService;
+            this.adminRegionService = adminRegionService;
         }
 
         public Admin GetAdmin(string email)
@@ -93,14 +97,41 @@ namespace Repositories.Repository.Implementation
 
         public async Task CreateAdmin(CreateAdminDTO model)
         {
-            Task<Aspnetuser>? aspNetUser = aspNetUserService.AddAspNetUser(model.Email, model.UserName, model.PhoneNumber, model.Password);
+            Aspnetuser? aspNetUser = await aspNetUserService.AddAspNetUser(model.Email, model.Email, model.PhoneNumber, model.Password);
 
-            var role = aspNetRoleService.GetName("Admin");
+            Aspnetrole? role = aspNetRoleService.GetName("Admin");
 
-            if(role is not null)
+            if(role is not null && aspNetUser is not null)
             {
                 //add into aspnet user roles table
+                await aspNetUserRolesService.AddAspNetUserRole(aspNetUser, role);
             }
+
+            //add admin 
+            Admin admin = new Admin()
+            {
+                Address1 = model.Address1,
+                Address2 = model.Address2,
+                Altphone = model.AltPhoneNumber,
+                City = model.City,
+                Createdby = "Admin",
+                Createddate = DateTime.Now,
+                Email = model.Email,
+                Firstname = model.FirstName,
+                Isdeleted = false,
+                Lastname = model.LastName,
+                Mobile = model.PhoneNumber,
+                Roleid = model.Role,
+                Aspnetuserid = aspNetUser.Aspnetuserid,
+                Regionid = model.State,
+                Zip = model.Zip,
+                Status = (short)RequestStatus.Pending,
+            };
+
+            _context.Admins.Add(admin);
+            await _context.SaveChangesAsync();
+
+            await adminRegionService.AddOrRemoveRegion(admin, model.Regions);
         }
     }
 }

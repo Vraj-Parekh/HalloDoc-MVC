@@ -6,14 +6,13 @@ namespace Entities.ViewModels
 {
     public class CreatePhysicianDTO
     {
-        [Required(ErrorMessage = "Username is required")]
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Role is required")]
-        public string Role { get; set; }
+        public int Role { get; set; }
         public List<Role> Roles { get; set; }
 
         [Required(ErrorMessage = "First Name is required")]
@@ -39,8 +38,8 @@ namespace Entities.ViewModels
         public string City { get; set; }
 
         [Required(ErrorMessage = "State is required")]
-        public string State { get; set; }
-        public List<Region> Regions { get; set; }
+        public int State { get; set; }
+        public List<RegionList> Regions { get; set; }
 
         [Required(ErrorMessage = "Zip is required")]
         [RegularExpression(@"^\d{6}$", ErrorMessage = "ZIP code must be 6 digits")]
@@ -57,16 +56,17 @@ namespace Entities.ViewModels
 
         public string BusinessWebsite { get; set; }
 
+        [Required(ErrorMessage = "Photo is required")]
         public IFormFile Photo { get; set; }
 
         public string? AdminNotes { get; set; }
 
-        public bool AgreementDoc {  get; set; }
+        public bool IsAgreementDoc {  get; set; }
 
-        public bool BackgroundDoc {  get; set; }
+        public bool IsBackgroundDoc {  get; set; }
 
-        public bool TrainingDoc {  get; set; }
+        public bool IsTrainingDoc {  get; set; }
 
-        public bool NonDisclosureDoc {  get; set; }
+        public bool IsNonDisclosureDoc {  get; set; }
     }
 }

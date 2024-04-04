@@ -10,14 +10,15 @@ namespace Entities.ViewModels
 {
     public class CreateAdminDTO
     {
-        [Required(ErrorMessage = "Username is required")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Role is required")]
-        public string Role { get; set; }
+        public int Role { get; set; }
         public List<Role> Roles { get; set; }
 
         [Required(ErrorMessage = "First Name is required")]
@@ -47,8 +48,8 @@ namespace Entities.ViewModels
         public string City { get; set; }
 
         [Required(ErrorMessage = "State is required")]
-        public string State { get; set; }
-        public List<Region> Regions { get; set; }
+        public int State { get; set; }
+        public List<RegionList> Regions { get; set; }
 
         [Required(ErrorMessage = "Zip is required")]
         [RegularExpression(@"^\d{6}$", ErrorMessage = "ZIP code must be 6 digits")]
@@ -56,5 +57,12 @@ namespace Entities.ViewModels
 
         [RegularExpression(@"^\+?\d+$", ErrorMessage = "Please enter a valid phone number")]
         public string? AltPhoneNumber { get; set; }
+    }
+
+    public class RegionList
+    {
+        public  int RegionId { get; set; }
+        public string RegionName { get; set; }
+        public bool IsPresent { get; set; }
     }
 }

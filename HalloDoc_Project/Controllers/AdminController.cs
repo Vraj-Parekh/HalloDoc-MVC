@@ -151,7 +151,7 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
-        public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize,string searchQuery,int regionId)
+        public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize, string searchQuery, int regionId)
         {
             int totalCount;
             List<AdminDashboardDTO> data = requestServices.GetPatientdata(requestTypeId, status, pageIndex, pageSize, searchQuery, regionId, out totalCount);
@@ -395,6 +395,7 @@ namespace HalloDoc_Project.Controllers
             if (admin is not null && admin.Aspnetuser is not null)
             {
                 AdminProfileDTO? model = adminService.GetAdminInfo(admin);
+                model.Regions = regionService.GetRegionList();
                 return View(model);
             }
             return View();
@@ -435,6 +436,7 @@ namespace HalloDoc_Project.Controllers
         public IActionResult Provider()
         {
             List<ProviderMenuDTO>? model = physicianService.GetProviderMenu();
+            model.First().Regions = regionService.GetRegionList();
             return View(model);
         }
 
@@ -520,17 +522,18 @@ namespace HalloDoc_Project.Controllers
         public IActionResult CreateAdminAccount()
         {
             CreateAdminDTO model = new CreateAdminDTO();
-            model.Regions = regionService.GetRegion();
+            model.Regions = regionService.GetRegionList();
             model.Roles = roleService.GetRoles();
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult CreateAdminAccount(CreateAdminDTO model)
+        public async Task<IActionResult> CreateAdminAccount(CreateAdminDTO model)
         {
+            await adminService.CreateAdmin(model);
 
-            return View(model);
+            return RedirectToAction("UserAccess", "Admin");
         }
     }
 }

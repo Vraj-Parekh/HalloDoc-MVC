@@ -34,25 +34,38 @@
         var firstname = $('#firstname').val();
         var lastname = $('#lastname').val();
         var  email= $('#email').val();
-        var phonenumber= $('#phone').val();
+        var phonenumber = $('#phone').val();
+
+        var checkedMenus = [];
+        $('.menuCheckbox:checked').each(function () {
+            var checkboxId = $(this).attr('id');
+            var regionId = $(this).attr('id');
+            var menuObject = {
+                RegionId: checkboxId,
+                IsPresent: true
+            };
+
+            checkedMenus.push(menuObject);
+        });
 
         var data = {
             FirstName: firstname,
             LastName: lastname,
             Email: email,
             PhoneNumber: phonenumber,
+            Regions: checkedMenus
         };
-
+        console.log(data);
         $.ajax({
-            url: '/Admin/UpdateAdminInfo',
-            method: 'POST',
+            url: '/admin/updateadmininfo',
+            method: 'post',
             data: data,
             success: function (response) {
                 console.log('admin updated successfully');
                 window.location.reload();
             },
             error: function (xhr, status, error) {
-                console.log('Error');
+                console.log('error');
             }
         });
     });

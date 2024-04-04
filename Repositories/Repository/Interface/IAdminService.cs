@@ -6,6 +6,7 @@ namespace Repositories.Repository.Interface
     public interface IAdminService
     {
         Task ChangePassword(Admin admin, AdminProfileDTO model);
+        Task CreateAdmin(CreateAdminDTO model);
         Admin GetAdmin(string email);
         AdminProfileDTO GetAdminInfo(Admin admin);
         Task UpdateAdminInfo(Admin admin, AdminProfileDTO model);

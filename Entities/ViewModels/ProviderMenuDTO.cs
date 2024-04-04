@@ -12,7 +12,9 @@ namespace Entities.ViewModels
         public string? ProviderName { get; set; }
         public string? Role {  get; set; }
         public string? OnCallStatus { get; set; }
-        public int?  Status { get; set; }
+        public int? Status { get; set; }
         public int? PhysicianId { get; set; }
+        public int State { get; set; }
+        public List<RegionList> Regions { get; set; }
     }
 }

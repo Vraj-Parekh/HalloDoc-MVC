@@ -15,14 +15,14 @@
     <div class="bg-white rounded shadow p-3">
         <h5 class="mb-4">Account Information</h5>
 
-        <form asp-action="CreateProviderAccount" asp-controller="Provider" method="post">
+        <form asp-action="CreateProviderAccount" asp-controller="Provider" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-floating mb-3">
                         <input type="text"
                                class="form-control"
                                id="Username"
-                               placeholder="username" />
+                               placeholder="username" disabled/>
                         <label for="Username">Username (MD Lastname)</label>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                                type="password"
                                class="form-control input"
                                id="password"
-                               placeholder="name@example.com" />
+                               placeholder="" />
                         <label for="password" class="no-bg-label">Password</label>
                     </div>
                     <span asp-validation-for="Password" class="text-danger"></span>
@@ -135,11 +135,12 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    @foreach (var item in Model.Regions)
+                    @for (int i = 0; i < Model.Regions.Count; i++)
                     {
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input me-2" type="checkbox" value="@item.Regionid" id="@item.Regionid">
-                            <label class="form-check-label text6" for="@item.Regionid">@item.Name</label>
+                            <input class="form-check-input me-2" type="checkbox" asp-for="@Model.Regions[i].IsPresent">
+                            <label class="form-check-label text6" asp-for="@Model.Regions[i].IsPresent">@Model.Regions[i].RegionName</label>
+                            <input hidden asp-for="@Model.Regions[i].RegionId" />
                         </div>
                     }
                 </div>
@@ -192,7 +193,7 @@
                             <option selected value="">Select State</option>
                             @foreach (var item in Model.Regions)
                             {
-                                <option value="@item.Regionid">@item.Name</option>
+                                <option value="@item.RegionId">@item.RegionName</option>
                             }
                         </select>
                         <label for="state" class="form-label">State</label>
@@ -226,6 +227,8 @@
                 </div>
             </div>
 
+             <h5 class="mb-4">Provider Profile</h5>
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
@@ -234,7 +237,7 @@
                                class="form-control"
                                id="businessName"
                                placeholder="businessName" />
-                        <label for="businessName">Address 1</label>
+                        <label for="businessName">Business Name</label>
                     </div>
                     <span asp-validation-for="BusinessName" class="text-danger"></span>
                 </div>
@@ -266,7 +269,7 @@
                                 <input asp-for="Photo" type="file" id="fileLoader" onchange="photo_validation()">
                             </div>
                         </div>
-                        <span id="photo_validation" class="text-danger"></span>
+                        <span id="photo_validation" class="text-danger" asp-validation-for="Photo"></span>
                         <img src="" id="photo_img" class="w-100 mt-4" />
                     </div>
                 </div>
@@ -295,9 +298,9 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <input type="file" class="d-none" id="agreement" asp-for="AgreementDoc" onchange="selectcheckbox()">
+                    <input type="file" class="d-none" id="agreement" asp-for="IsAgreementDoc" onchange="selectcheckbox('contractorAgreement','btn1')">
                     <label for="agreement" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
-                    <button class="btn btn-info text-light ms-2 view-btn d-none" onclick="viewDocument()">View</button>
+                    <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn1" onclick="viewDocument('agreement')">View</button>
                 </div>
             </div>
 
@@ -311,9 +314,9 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <input type="file" class="d-none" id="backgroundCheck" asp-for="BackgroundDoc" onchange="selectcheckbox()">
+                    <input type="file" class="d-none" id="backgroundCheck" asp-for="IsBackgroundDoc" onchange="selectcheckbox('bgCheck','btn2')">
                     <label for="backgroundCheck" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
-                    <button class="btn btn-info text-light ms-2 view-btn d-none" onclick="viewDocument()">View</button>
+                    <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn2" onclick="viewDocument('backgroundCheck')">View</button>
                 </div>
             </div>
 
@@ -327,9 +330,9 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <input type="file" class="d-none" id="hippa" asp-for="TrainingDoc" onchange="selectcheckbox()">
+                    <input type="file" class="d-none" id="hippa" asp-for="IsTrainingDoc" onchange="selectcheckbox('compliance','btn3')">
                     <label for="hippa" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
-                    <button class="btn btn-info text-light ms-2 view-btn d-none" onclick="viewDocument()">View</button>
+                    <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn3" onclick="viewDocument('hippa')">View</button>
                 </div>
             </div>
 
@@ -343,9 +346,9 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <input type="file" class="d-none" id="nda" asp-for="NonDisclosureDoc" onchange="selectcheckbox()">
+                    <input type="file" class="d-none" id="nda" asp-for="IsNonDisclosureDoc" onchange="selectcheckbox('nonDisclosure','btn4')">
                     <label for="nda" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
-                    <button class="btn btn-info text-light ms-2 view-btn d-none" onclick="viewDocument()">View</button>
+                    <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn4" onclick="viewDocument('nda')">View</button>
                 </div>
             </div>
             <hr />
@@ -360,59 +363,4 @@
 
 
 <partial name="_ActiveTabPartial" model=active />
-<script>
-    function photo_validation() {
-        var val = $('#fileLoader').val().toLowerCase(),
-            regex = new RegExp("(.*?)\.(jpg|png)$");
-        if (val == null || val == "") {
-            return true;
-        }
-        if (!(regex.test(val))) {
-            $('#photo_validation').html('Please select only jpg or png type photo');
-            $('#photo_img').attr("src", "");
-            return false;
-        }
-        $('#photo_validation').html('');
-        var file = document.getElementById('fileLoader').files[0];
-        if (file) {
-            $('#photo_img').attr("src", URL.createObjectURL(file))
-        }
-        return true;
-    };
-
-    // function selectcheckbox() {
-    //     var checkbox = document.getElementById('nonDisclosure');
-    //     checkbox.checked = true; // Check the checkbox when a file is uploaded
-    //     var viewBtn = document.querySelector('.view-btn');
-    //     viewBtn.classList.remove('d-none'); // Show the view button
-    // }
-
-    // function viewDocument() {
-    //     // Get the URL of the uploaded document
-    //     var fileInput = document.getElementById('nda');
-    //     var fileUrl = URL.createObjectURL(fileInput.files[0]);
-
-    //     // Open the document in a new tab
-    //     window.open(fileUrl, '_blank');
-    // }
-    $(document).ready(function () {
-        $('.upload-btn').change(function () {
-            var checkboxId = $(this).data('checkbox-id');
-            var checkbox = $('#' + checkboxId);
-            checkbox.prop('checked', true); // Check the checkbox when a file is uploaded
-            var viewBtn = $(this).siblings('.view-btn');
-            viewBtn.removeClass('d-none'); // Show the view button
-        });
-
-        $('.view-btn').click(function () {
-            var inputId = $(this).siblings('.upload-btn').attr('id');
-            var fileInput = $('#' + inputId)[0];
-            var fileUrl = URL.createObjectURL(fileInput.files[0]);
-
-            // Open the document in a new tab
-            window.open(fileUrl, '_blank');
-        });
-    });
-
-
-</script>
+<script src="/js/CreateProvider.js" asp-append-version="true"></script>

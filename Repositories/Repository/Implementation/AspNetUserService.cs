@@ -64,7 +64,7 @@ namespace Repositories.Repository.Implementation
                 Phonenumber = phone,
                 Createddate = DateTime.Now,
             };
-            _context.Aspnetusers.Add(aspnetuser);
+            _context.Add(aspnetuser);
             await _context.SaveChangesAsync();
             return aspnetuser;
         }

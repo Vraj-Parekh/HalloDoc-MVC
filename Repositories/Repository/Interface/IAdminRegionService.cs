@@ -3,9 +3,8 @@ using Entities.ViewModels;
 
 namespace Repositories.Repository.Interface
 {
-    public interface IRegionService
+    public interface IAdminRegionService
     {
-        List<Region> GetRegion();
-        List<RegionList> GetRegionList();
+        Task AddOrRemoveRegion(Admin admin, List<RegionList> model);
     }
 }

@@ -141,12 +141,16 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Default checkbox
-                        </label>
-                    </div>
+                    @for (int i = 0; i < Model.Regions.Count; i++)
+                    {
+                        int regionId = Model.Regions[i].RegionId;
+                        string regionStr = $"region-{regionId}";
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input me-2 menuCheckbox" type="checkbox" asp-for="@Model.Regions[i].IsPresent">
+                            <label class="form-check-label text6" asp-for="@Model.Regions[i].IsPresent">@Model.Regions[i].RegionName</label>
+                            <input hidden asp-for="@regionStr" />
+                        </div>
+                    }
                 </div>
             </div>
 

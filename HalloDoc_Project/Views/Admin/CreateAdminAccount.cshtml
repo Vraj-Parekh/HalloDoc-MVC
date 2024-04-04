@@ -15,17 +15,18 @@
     <div class="bg-white rounded shadow p-3">
         <h5 class="mb-4">Account Information</h5>
 
-        <form asp-action="CreateAdminAccount" method="post">
+        <form asp-action="CreateAdminAccount" asp-controller="Admin" method="post">
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-floating mb-3">
                         <input type="text"
+                               @* asp-for="UserName" *@
                                class="form-control"
                                id="Username"
-                               placeholder="username"/>
+                               placeholder="username" disabled/>
                         <label for="Username">Username (Email)</label>
                     </div>
-                    <span asp-validation-for="UserName" class="text-danger"></span>
+                    @* <span asp-validation-for="UserName" class="text-danger"></span> *@
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating flex-grow-1">
@@ -33,7 +34,7 @@
                                type="password"
                                class="form-control input"
                                id="password"
-                               placeholder="name@example.com" />
+                               placeholder="" />
                         <label for="password" class="no-bg-label">Password</label>
                     </div>
                     <span asp-validation-for="Password" class="text-danger"></span>
@@ -122,11 +123,12 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    @foreach (var item in Model.Regions)
+                    @for (int i = 0; i < Model.Regions.Count; i++)
                     {
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input me-2" type="checkbox" value="@item.Regionid" id="@item.Regionid">
-                            <label class="form-check-label text6" for="@item.Regionid">@item.Name</label>
+                            <input class="form-check-input me-2" type="checkbox" asp-for="@Model.Regions[i].IsPresent">
+                            <label class="form-check-label text6" asp-for="@Model.Regions[i].IsPresent">@Model.Regions[i].RegionName</label>
+                            <input hidden asp-for="@Model.Regions[i].RegionId" />
                         </div>
                     }
                 </div>
@@ -179,7 +181,7 @@
                             <option selected value="">Select State</option>
                             @foreach (var item in Model.Regions)
                             {
-                                <option value="@item.Regionid">@item.Name</option>
+                                <option value="@item.RegionId">@item.RegionName</option>
                             }
                         </select>
                         <label for="state" class="form-label">State</label>

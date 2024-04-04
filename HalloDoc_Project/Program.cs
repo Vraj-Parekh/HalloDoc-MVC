@@ -36,6 +36,10 @@ builder.Services.AddTransient<IMenuService, MenuService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IRoleMenuService, RoleMenuService>();
 builder.Services.AddTransient<IAspNetRoleService, AspNetRoleService>();
+builder.Services.AddTransient<IAspNetUserRolesService, AspNetUserRolesService>();
+builder.Services.AddTransient<IAdminRegionService, AdminRegionService>();
+builder.Services.AddTransient<IPhysicianNotificationService, PhysicianNotificationService>();
+builder.Services.AddTransient<IPhysicianRegionService, PhysicianRegionService>();
 
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

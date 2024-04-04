@@ -1,4 +1,5 @@
-﻿@model List<ProviderMenuDTO>
+﻿@using Entities.Enum;
+@model List<ProviderMenuDTO>
 @{
     ViewData["Title"] = "Provider";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -14,14 +15,16 @@
     <div class="bg-white rounded shadow p-2">
         <div class="row justify-content-between align-items-center pt-3 pb-3">
             <div class="col-md-3">
-                <select class="form-select">
-                    <option>All</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                </select>
+                <div class="form-floating">
+                    <select class="form-select" id="state" asp-for="First().State">
+                        <option selected value="">All</option>
+                        @foreach (var item in Model.First().Regions)
+                        {
+                            <option value="@item.RegionId">@item.RegionName</option>
+                        }
+                    </select>
+                    <label for="state" class="form-label">Search</label>
+                </div>
             </div>
             <div class="col-auto">
                 <a class="btn btn-info text-white rounded-2 border-0 me-2" asp-action="CreateProviderAccount" asp-controller="Provider"> Create Provider Account </a>
@@ -57,7 +60,7 @@
                     {
                         <tr>
                             <td class="ps-3 text-center me-4" style="width:150px;">
-                                <input class="form-check-input change" type="checkbox" >
+                                <input class="form-check-input change" type="checkbox">
                             </td>
 
                             <td>
@@ -66,7 +69,7 @@
                             <td>
                                 @if (string.IsNullOrEmpty(item.Role))
                                 {
-                                    <span>Role Unavailable</span>
+                                    <span>Unavailable</span>
                                 }
                                 else
                                 {
@@ -77,7 +80,14 @@
                                 @item.OnCallStatus
                             </td>
                             <td>
-                                @item.Status
+                                @if (item.Status == null)
+                                {
+                                    <span>Unavailable</span>
+                                }
+                                else
+                                {
+                                    @((RequestStatus)item.Status)
+                                }
                             </td>
                             <td class="text-center">
                                 <button class="btn btn-outline-info" onclick="SendMessageModal(@item.PhysicianId)">Contact</button>
