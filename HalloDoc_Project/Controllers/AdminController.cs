@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Repositories.Utility;
 using System.Security.Claims;
 using NPOI.OpenXmlFormats.Vml;
+using System.Globalization;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -39,8 +40,9 @@ namespace HalloDoc_Project.Controllers
         private readonly IMenuService menuService;
         private readonly IRoleService roleService;
         private readonly IRoleMenuService roleMenuService;
+        private readonly IAdminRegionService adminRegionService;
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService,IAdminRegionService adminRegionService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -61,6 +63,7 @@ namespace HalloDoc_Project.Controllers
             this.menuService = menuService;
             this.roleService = roleService;
             this.roleMenuService = roleMenuService;
+            this.adminRegionService = adminRegionService;
         }
         public IActionResult Index()
         {
@@ -358,11 +361,48 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
-
+        private DateTime GenerateDateOfBirth(int? year, string? month, int? date)
+        {
+            DateTime finalDate = new DateTime(year ?? 1900, DateTime.ParseExact(month ?? "January", "MMMM", CultureInfo.CurrentCulture).Month, date ?? 01);
+            return finalDate;
+        }
         public async Task<FileResult> ExportFiltered(int requestTypeId, int status, int pageIndex, int pageSize)
         {
             List<Request>? requests = await requestServices.GetFilteredRequests(requestTypeId, status, pageIndex, pageSize);
-            byte[]? file = ExcelHelper.CreateFile(requests);
+            //byte[]? file = ExcelHelper.CreateFile(requests);
+            List<RequestedExport> filterdData = new List<RequestedExport>();
+
+            foreach (var requ in requests)
+            {
+                RequestedExport ml = new RequestedExport();
+                Requestclient rc = requ.Requestclients.FirstOrDefault();
+                ml.Name = rc.Firstname + " " + rc.Lastname;
+                //ml.DateOfBirth = DateTime.Parse(rc.Intdate.ToString() + rc.Strmonth + rc.Intyear.ToString());
+                ml.DateOfBirth = GenerateDateOfBirth(rc.Intyear, rc.Strmonth, rc.Intdate);
+                ml.Requestor = requ.Firstname + " " + requ.Lastname;
+                ml.RequestedDate = requ.Createddate;
+                ml.address = rc.Address;
+                if (requ.Requesttypeid == 1)
+                {
+                    ml.RequestType = "Business";
+                }
+                else if (requ.Requesttypeid == 2)
+                {
+                    ml.RequestType = "Patient";
+                }
+                else if (requ.Requesttypeid == 3)
+                {
+                    ml.RequestType = "Family";
+                }
+                else if (requ.Requesttypeid == 4)
+
+                {
+                    ml.RequestType = "Concierge";
+                }
+
+                filterdData.Add(ml);
+            }
+            var file = ExcelHelper.CreateFile(filterdData);
             return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_list.xlsx");
         }
 
@@ -396,39 +436,41 @@ namespace HalloDoc_Project.Controllers
             {
                 AdminProfileDTO? model = adminService.GetAdminInfo(admin);
                 model.Regions = regionService.GetRegionList();
+                model.Roles = roleService.GetRoles();
+
                 return View(model);
             }
             return View();
         }
 
-        public IActionResult ResetPassword(AdminProfileDTO model)
+        public async Task<IActionResult> ResetPasswordAsync(AdminProfileDTO model)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             Admin? admin = adminService.GetAdmin(email);
             if (model.Password is not null && admin is not null && admin.Aspnetuser is not null)
             {
-                adminService.ChangePassword(admin, model);
+                await adminService.ChangePassword(admin, model);
             }
             return RedirectToAction("MyProfile");
         }
-        public IActionResult UpdateAdminInfo(AdminProfileDTO model)
+        public async Task<IActionResult> UpdateAdminInfoAsync(AdminProfileDTO model)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             Admin? admin = adminService.GetAdmin(email);
             if (admin is not null)
             {
-                adminService.UpdateAdminInfo(admin, model);
+                await adminService.UpdateAdminInfo(admin, model);
             }
             return RedirectToAction("MyProfile");
         }
 
-        public IActionResult UpdateBillingInfo(AdminProfileDTO model)
+        public async Task<IActionResult> UpdateBillingInfoAsync(AdminProfileDTO model)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             Admin? admin = adminService.GetAdmin(email);
             if (admin is not null)
             {
-                adminService.UpdateBillingInfo(admin, model);
+                await adminService.UpdateBillingInfo(admin, model);
             }
             return RedirectToAction("MyProfile");
         }
@@ -534,6 +576,21 @@ namespace HalloDoc_Project.Controllers
             await adminService.CreateAdmin(model);
 
             return RedirectToAction("UserAccess", "Admin");
+        }
+
+        public IActionResult Scheduling()
+        {
+            return View();
+        }
+
+        public IActionResult ProviderOnCall()
+        {
+            return View();
+        }
+
+        public IActionResult RequestedShift()
+        {
+            return View();
         }
     }
 }

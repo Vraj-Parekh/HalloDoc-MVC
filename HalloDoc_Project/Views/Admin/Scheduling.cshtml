@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewData["Title"] = "Scheduling";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#providers";
+}
+
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Scheduling</h4>
+
+        <a class="btn btn-outline-info bg-white text-info" asp-action="AdminDashboard" asp-controller="Admin"> &lt; Back </a>
+    </div>
+
+    <div class="row justify-content-between align-items-center pb-2">
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" id="state">
+                    <option selected value="">All Regions</option>
+                </select>
+                <label for="state" class="form-label">Search</label>
+            </div>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-info text-white me-2" asp-action="ProviderOnCall" asp-controller="Admin">Provider On Call</a>
+            <a class="btn btn-info text-white me-2" asp-controller="Admin" >Shifts For Review</a>
+            <button id="openShiftModalBtn" class="btn btn-info text-white me-2">Add New Shift</button>
+        </div>
+    </div>
+
+    <h5 class="h5 mt-2 mb-3">Date</h5>
+
+    <div class="bg-white rounded shadow p-3">
+        <h5>MD's On Call</h5>
+    </div>
+</div>
+
+
+<partial name="_ShiftModals" />
+<partial name="_ActiveTabPartial" model=active />
+<script src="/js/Scheduling.js"></script>

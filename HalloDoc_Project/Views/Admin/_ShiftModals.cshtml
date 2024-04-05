@@ -1,0 +1,204 @@
+﻿@*Add Shift*@
+<div class="modal fade"
+     id="createShiftModal"
+     tabindex="-1"
+     aria-labelledby="createShiftModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info" data-bs-theme="dark">
+                <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Create Shift</h1>
+                <button type="button" class="btn-close opacity-100" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column justify-content-center">
+
+                    <div class="form-floating mb-4">
+                        <select class="form-select " aria-label="Default select example assignRegion" id="addShiftRegion" onchange="loadPhysicianToAssign()" style="height:58px;">
+                            <option selected disabled value="0">Select Region</option>
+                        </select>
+                        <label for="floatingSelect">Works with selects</label>
+                        <span id="addShiftRegionError" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <select class="form-select" aria-label="Default select example" id="addShiftPhysician" style="height:58px;" onchange='document.getElementById("assignPhysicianError").innerHTML = ""'>
+                            <option selected disabled value="0">Select Physician</option>
+                        </select>
+                        <span id="addShiftPhysicianError" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12 form-floating mb-3">
+                        <input id="StartDate" class="form-control rounded vcs" name="Startdate" type="date">
+                        <label for="Startdate">Starting Date</label>
+                    </div>
+                    <div class="col-12 row">
+                        <div class="col-md-6 form-floating mb-3">
+                            <div class="form-floating mb-3">
+                                <input type="time"
+                                       class="form-control"
+                                       id="StartTime"
+                                       placeholder=" " />
+                                <label for="StartTime">Start</label>
+                                <span id="startTimeSrror" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-floating mb-3">
+                            <div class="form-floating mb-3">
+                                <input type="time"
+                                       class="form-control"
+                                       id="EndTime"
+                                       placeholder=" " />
+                                <label for="EndTime">End</label>
+                                <span id="StartTimeSrror" class="text-danger"></span>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div>
+                        <div class="form-check form-switch form-check-reverse float-start">
+                            <input class="form-check-input ms-2" style="margin-top:6px;" type="checkbox" role="switch" id="isRepeat" onchange="toggleCheckboxes()">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Repeat</label>
+                        </div>
+                    </div>
+                    <label class="my-2" for="Sunday">Repeat Days</label>
+
+                    <div class="col-md-12 row form-floating">
+
+                        <div class="col-md-4">
+                            <div class="form-check mx-2 d-flex align-items-center">
+                                <input onchange="menubox()" class="form-check-input Every disabled" disabled type="checkbox" name="Sunday" value="0">
+                                <label class="form-check-label" for="Sunday">Every Sunday</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 ">
+                            <div class="form-check mx-2 d-flex align-items-center">
+                                <input onchange="menubox()" class="form-check-input Every" disabled type="checkbox" name="Monday" value="1">
+                                <label class="form-check-label" for="Monday">Every Monday</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 ">
+                            <div class="form-check mx-2 d-flex align-items-center">
+                                <input onchange="menubox()" class="form-check-input Every" disabled type="checkbox" name="Tuesday" value="2">
+                                <label class="form-check-label" for="Tuesday">Every Tuesday</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check mx-2">
+                                <input onchange="menubox()" class="form-check-input Every" disabled type="checkbox" name="Wednesday" value="3">
+                                <label class="form-check-label" for="Wednesday">Every Wednesday</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check mx-2 d-flex align-items-center">
+                                <input onchange="menubox()" class="form-check-input Every" disabled type="checkbox" name="Thursday" value="4">
+                                <label class="form-check-label" for="Thursday">Every Thursday</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check mx-2 d-flex align-items-center">
+                                <input onchange="menubox()" class="form-check-input Every" disabled type="checkbox" name="Friday" value="5">
+                                <label class="form-check-label" for="Friday">Every Friday</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3 ">
+                            <div class="form-check mx-2 d-flex align-items-center">
+                                <input onchange="menubox()" class="form-check-input Every" disabled type="checkbox" name="Saturday" value="6">
+                                <label class="form-check-label" for="Saturday">Every Saturday</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12 form-floating  my-2">
+                        <select class="form-select form-select-sm mt-3 p-2" id="RepeatUpto" disabled data-allow-clear="true" tabindex="-1" data-control="select2" data-placeholder=" ">
+                            <option selected hidden>Reapet End</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-info text-white" id="ConfirmAssign">Confirm</button>
+                <button type="button" class="btn btn-outline-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@*View Shift*@
+<div class="modal fade"
+     id="view-shift"
+     tabindex="-1"
+     aria-labelledby="view-shift"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info" data-bs-theme="dark">
+                <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Asign Request</h1>
+                <button type="button" class="btn-close opacity-100" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column justify-content-center">
+                    <h6>To assign this request, search and select another physician</h6>
+
+                    <div class="form-floating mb-4">
+                        <select class="form-select " aria-label="Default select example assignRegion" id="viewShiftRegion" onchange="loadPhysicianToAssign()" style="height:58px;">
+                            <option selected disabled value="0">Select Region</option>
+                        </select>
+                        <label for="floatingSelect">Works with selects</label>
+                        <span id="viewShiftRegionError" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <select class="form-select" aria-label="Default select example" id="viewShiftPhysician" style="height:58px;" onchange='document.getElementById("assignPhysicianError").innerHTML = ""'>
+                            <option selected disabled value="0">Select Physician</option>
+                        </select>
+                        <span id="viewShiftPhysicianError" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12 form-floating mb-3">
+                        <input id="ShiftDate" class="form-control rounded vcs" name="Shiftdate" type="date">
+                        <label for="Shiftdate">Shift Date</label>
+                    </div>
+                    <div class="col-12 row">
+                        <div class="col-md-6 form-floating mb-3">
+                            <div class="form-floating mb-3">
+                                <input type="time"
+                                       class="form-control"
+                                       id="StartTime"
+                                       placeholder=" " />
+                                <label for="StartTime">Start</label>
+                                <span id="startTimeSrror" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-floating mb-3">
+                            <div class="form-floating mb-3">
+                                <input type="time"
+                                       class="form-control"
+                                       id="EndTime"
+                                       placeholder=" " />
+                                <label for="EndTime">End</label>
+                                <span id="StartTimeSrror" class="text-danger"></span>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-info text-white" id="ConfirmAssign">Confirm</button>
+                <button type="button" class="btn btn-outline-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</div>

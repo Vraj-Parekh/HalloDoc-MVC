@@ -20,7 +20,8 @@ namespace Entities.ViewModels
         public int Status { get; set; }
 
         [Required(ErrorMessage = "Role is required")]
-        public string Role { get; set; }
+        public int Role { get; set; }
+        public List<Role> Roles { get; set; }
 
         [Required(ErrorMessage = "First Name is required")]
         public string FirstName { get; set; }

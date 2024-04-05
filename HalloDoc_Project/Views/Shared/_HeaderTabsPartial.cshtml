@@ -32,13 +32,13 @@
                 <li class="nav-item">
                     @* <a class="nav-link fs-5" asp-action="Providers">Providers</a> *@
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown button
+                        <button class="btn btn-secondary dropdown-toggle bg-white text-black border-0 fs-5 nav-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="providers">
+                            Providers
                         </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <ul class="dropdown-menu shadow">
+                            <li><a class="dropdown-item" asp-action="Provider" asp-controller="Admin">Provider</a></li>
+                            <li><a class="dropdown-item" asp-action="Scheduling" asp-controller="Admin">Scheduling</a></li>
+                            <li><a class="dropdown-item" asp-action="Invoicing" asp-controller="Admin">Invoicing</a></li>
                         </ul>
                     </div>
                 </li>

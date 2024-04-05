@@ -1,6 +1,7 @@
 ﻿using Entities.DataContext;
 using Entities.Models;
 using Entities.ViewModels;
+using NuGet.Protocol.Core.Types;
 using Repositories.Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,10 @@ namespace Repositories.Repository.Implementation
             this._context = _context;
         }
 
+        public List<Adminregion> GetAdminRegions(Admin admin)
+        {
+             return _context.Adminregions.Where(a=>a.Adminid == admin.Adminid).ToList();
+        }
         public async Task AddOrRemoveRegion(Admin admin,List<RegionList> model)
         {
             foreach (RegionList item in model)

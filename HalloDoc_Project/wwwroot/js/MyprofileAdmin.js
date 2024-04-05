@@ -37,17 +37,14 @@
         var phonenumber = $('#phone').val();
 
         var checkedMenus = [];
-        $('.menuCheckbox:checked').each(function () {
-            var checkboxId = $(this).attr('id');
-            var regionId = $(this).attr('id');
-            var menuObject = {
-                RegionId: checkboxId,
-                IsPresent: true
-            };
 
-            checkedMenus.push(menuObject);
-        });
+        var checkedRegion = $(".checkedregion:checked")
+        for (var i = 0; i < checkedRegion.length; i++) {
+            console.log(checkedRegion[i].id);
+            var Menu = { RegionId: checkedRegion[i].id, IsPresent: true };
+            checkedMenus.push(Menu);
 
+        }
         var data = {
             FirstName: firstname,
             LastName: lastname,
@@ -60,6 +57,7 @@
             url: '/admin/updateadmininfo',
             method: 'post',
             data: data,
+            async:false,
             success: function (response) {
                 console.log('admin updated successfully');
                 window.location.reload();
@@ -94,6 +92,7 @@
             url: '/Admin/UpdateBillingInfo',
             method: 'POST',
             data: data,
+            async: false,
             success: function (response) {
                 console.log('billing updated successfully');
                 window.location.reload();

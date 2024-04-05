@@ -18,14 +18,16 @@ namespace Repositories.Repository.Implementation
         private readonly IAspNetRoleService aspNetRoleService;
         private readonly IAspNetUserRolesService aspNetUserRolesService;
         private readonly IAdminRegionService adminRegionService;
+        private readonly IRegionService regionService;
 
-        public AdminService(HalloDocDbContext _context,IAspNetUserService aspNetUserService,IAspNetRoleService aspNetRoleService,IAspNetUserRolesService aspNetUserRolesService,IAdminRegionService adminRegionService)
+        public AdminService(HalloDocDbContext _context,IAspNetUserService aspNetUserService,IAspNetRoleService aspNetRoleService,IAspNetUserRolesService aspNetUserRolesService,IAdminRegionService adminRegionService,IRegionService regionService)
         {
             this._context = _context;
             this.aspNetUserService = aspNetUserService;
             this.aspNetRoleService = aspNetRoleService;
             this.aspNetUserRolesService = aspNetUserRolesService;
             this.adminRegionService = adminRegionService;
+            this.regionService = regionService;
         }
 
         public Admin GetAdmin(string email)
@@ -44,7 +46,7 @@ namespace Repositories.Repository.Implementation
                 UserName = admin.Aspnetuser.Username,
                 Password = admin.Aspnetuser.Passwordhash,
                 Status = (short)(admin.Status ?? 0),
-                //Role = admin.
+                Role = admin.Roleid??0,
                 FirstName = admin.Firstname,
                 LastName = admin.Lastname,
                 Email = admin.Email,
@@ -53,10 +55,20 @@ namespace Repositories.Repository.Implementation
                 Address1 = admin.Address1,
                 Address2 = admin.Address2,
                 City = admin.City,
-                //State
+                State = (int)admin.Regionid,
                 Zip = admin.Zip,
                 AltPhoneNumber = admin.Altphone,
             };
+
+            List<Adminregion>? adminRegions = adminRegionService.GetAdminRegions(admin);
+            model.Regions = regionService.GetRegionList().Select(a => new RegionList()
+            {
+                RegionId = a.RegionId,
+                IsPresent = adminRegions.Any(b => b.Regionid == a.RegionId),
+                RegionName = a.RegionName
+            }).ToList();
+
+
             return model;
         }
 
@@ -80,6 +92,8 @@ namespace Repositories.Repository.Implementation
 
             _context.Admins.Update(admin);
             await _context.SaveChangesAsync();
+
+            await adminRegionService.AddOrRemoveRegion(admin, model.Regions);
         }
 
         public async Task UpdateBillingInfo(Admin admin, AdminProfileDTO model)
