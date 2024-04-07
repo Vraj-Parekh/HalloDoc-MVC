@@ -39,8 +39,15 @@ namespace HalloDoc_Project.Controllers
             //files photo pending
             return RedirectToAction("UserAccess","Admin");
         }
-        public IActionResult EditProviderAccount()
+
+        [HttpGet("{physicianId}")]
+        public IActionResult EditProviderAccount(int physicianId)
         {
+            Physician? physician = physicianService.GetPhysicianById(physicianId);
+            if(physician is not null)
+            {
+                //add physician region 
+            }
             return View();
         }
     }

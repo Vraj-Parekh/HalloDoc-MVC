@@ -54,7 +54,7 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select" id="role" asp-for="Role">
+                        <select class="form-select" id="role" asp-for="Role" disabled>
                             <option selected value="0">Select Role</option>
                             @foreach (var item in Model.Roles)
                             {
@@ -149,7 +149,7 @@
                     @foreach (var item in Model.Regions)
                     {
                         <div class="form-check form-check-inline me-2">
-                            <input class="form-check-input addministrator checkedregion" name="checkedregion" type="checkbox" value="" id="@item.RegionId" @(item.IsPresent ? "checked" : "")>
+                            <input class="form-check-input addministrator checkedregion" name="checkedregion" type="checkbox" value="" id="@item.RegionId" @(item.IsPresent ? "checked" : "") >
                             <label class="form-check-label" for="@item.RegionId">
                                 @item.RegionName
                             </label>
@@ -211,7 +211,7 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select" id="state" asp-for="State">
+                        <select class="form-select" id="state" asp-for="State"disabled>
                             <option selected value="0">Select State</option>
                             @foreach (var item in Model.Regions)
                             {

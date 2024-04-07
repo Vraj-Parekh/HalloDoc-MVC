@@ -8,6 +8,8 @@ using Entities.DataContext;
 using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using NPOI.SS.Formula.Functions;
 using Repositories.Repository.Interface;
 
 namespace Repositories.Repository.Implementation
@@ -31,6 +33,10 @@ namespace Repositories.Repository.Implementation
             this.physicianRegionService = physicianRegionService;
         }
 
+        public Physician GetPhysicianById(int physicianId)
+        {
+            return _context.Physicians.Where(a => a.Physicianid == physicianId).FirstOrDefault();
+        }
         public List<Physician> GetPhysicianByRegionId(int regionId)
         {
             List<Physician>? physician = _context.Physicians.Where(a => a.Regionid == regionId).ToList();
@@ -81,6 +87,37 @@ namespace Repositories.Repository.Implementation
             return mobile;
         }
 
+        public EditPhysicianDTO GetPhysicianInfo(Physician physician)
+        {
+            EditPhysicianDTO model = new EditPhysicianDTO()
+            {
+                UserName = physician.Email,
+                Password = physician.Aspnetuser.Passwordhash,
+                Status = (short)(physician.Status??0),
+                Role = physician.Roleid??0,
+                FirstName = physician.Firstname,
+                LastName = physician.Lastname,
+                Email = physician.Email,
+                PhoneNumber = physician.Mobile,
+                MedicalLicense = physician.Medicallicense,
+                NPINumber = physician.Npinumber,
+                SyncEmail = physician.Syncemailaddress,
+                Address1 = physician.Address1,
+                Address2 = physician.Address2,
+                City = physician.City,
+                State = (int)physician.Regionid,
+                Zip = physician.Zip,
+                AltPhoneNumber = physician.Altphone,
+                BusinessName = physician.Businessname,
+                BusinessWebsite = physician.Businesswebsite,
+                AdminNotes = physician.Adminnotes,
+                IsAgreementDoc = (bool)physician.Isagreementdoc,
+                IsBackgroundDoc = (bool)physician.Isbackgrounddoc,
+                IsNonDisclosureDoc = (bool)physician.Isnondisclosuredoc,
+                IsTrainingDoc = (bool)physician.Istrainingdoc,
+            };
+            return model;
+        }
         public async Task CreatePhysician(CreatePhysicianDTO model)
         {
             Aspnetuser? aspNetUser = await aspNetUserService.AddAspNetUser(model.Email, model.Email, model.PhoneNumber, model.Password);

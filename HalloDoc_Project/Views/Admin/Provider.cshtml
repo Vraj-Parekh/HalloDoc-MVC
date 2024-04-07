@@ -16,14 +16,10 @@
         <div class="row justify-content-between align-items-center pt-3 pb-3">
             <div class="col-md-3">
                 <div class="form-floating">
-                    <select class="form-select" id="state" asp-for="First().State">
-                        <option selected value="">All</option>
-                        @foreach (var item in Model.First().Regions)
-                        {
-                            <option value="@item.RegionId">@item.RegionName</option>
-                        }
+                    <select class="form-select regionDropDown" id="stateDropdown">
+                        <option selected>All</option>
                     </select>
-                    <label for="state" class="form-label">Search</label>
+                    <label for="stateDropdown" class="form-label">Search</label>
                 </div>
             </div>
             <div class="col-auto">
@@ -91,7 +87,7 @@
                             </td>
                             <td class="text-center">
                                 <button class="btn btn-outline-info" onclick="SendMessageModal(@item.PhysicianId)">Contact</button>
-                                <button class="btn btn-outline-info">Edit</button>
+                                <a asp-action="EditProviderAccount" asp-controller="Provider" asp-route-physicianId="@item.PhysicianId" class="btn btn-outline-info">Edit</a>
                                 <a id="changenotify-@item.PhysicianId" onclick="ChangeNotficationState(@item.PhysicianId)" class="btn btn-outline-info px-4" style="display:none;">Save</a>
                             </td>
                         </tr>
@@ -159,3 +155,4 @@
 
 <partial name="_ActiveTabPartial" model=active />
 <script src="~/js/Provider.js" asp-append-version="true"></script>
+<script src="~/js/StateDropdown.js" asp-append-version="true"></script>

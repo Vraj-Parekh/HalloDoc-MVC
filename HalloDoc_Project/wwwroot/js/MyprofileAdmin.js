@@ -2,6 +2,7 @@
 
     //-------------for admin info-------------
     // Disable all input fields initially
+    $('.checkedregion').prop('disabled', true);
     $('.dis-admin-field').prop('disabled', true);
     $('.btn-save').hide();
 
@@ -9,6 +10,7 @@
     $('.btn-edit-admin').click(function () {
         // Enable all input fields
         $('.dis-admin-field').prop('disabled', false);
+        $('.checkedregion').prop('disabled', false);
 
         $('.btn-save').show();
     });
