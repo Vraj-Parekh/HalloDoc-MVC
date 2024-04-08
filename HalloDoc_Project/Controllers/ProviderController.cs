@@ -42,7 +42,7 @@ namespace HalloDoc_Project.Controllers
         public async Task<IActionResult> CreateProviderAccount(CreatePhysicianDTO model)
         {
             await physicianService.CreatePhysician(model);
-            //files photo pending
+            
             return RedirectToAction("UserAccess", "Admin");
         }
 

@@ -596,12 +596,6 @@ namespace HalloDoc_Project.Controllers
             {
                 shift.Shift.Shiftdetails = null;
             }
-            //var setting = new JsonSerializerSettings
-            //{
-            //    Formatting = Newtonsoft.Json.Formatting.Indented, // Just for humans
-            //    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            //};
-            //var json = JsonConvert.SerializeObject(shiftDetails, setting);
 
             return Json(shiftDetails);
         }

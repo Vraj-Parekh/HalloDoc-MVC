@@ -59,14 +59,16 @@ namespace Entities.ViewModels
         [Required(ErrorMessage = "Photo is required")]
         public IFormFile Photo { get; set; }
 
+        public IFormFile Signature { get; set; }
+
         public string? AdminNotes { get; set; }
 
-        public bool IsAgreementDoc {  get; set; }
+        public IFormFile IsAgreementDoc {  get; set; }
 
-        public bool IsBackgroundDoc {  get; set; }
+        public IFormFile IsBackgroundDoc {  get; set; }
 
-        public bool IsTrainingDoc {  get; set; }
+        public IFormFile IsTrainingDoc {  get; set; }
 
-        public bool IsNonDisclosureDoc {  get; set; }
+        public IFormFile IsNonDisclosureDoc {  get; set; }
     }
 }

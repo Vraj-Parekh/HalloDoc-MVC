@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Entities.DataContext;
 using Entities.Models;
 using Entities.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NPOI.SS.Formula.Functions;
@@ -94,7 +95,6 @@ namespace Repositories.Repository.Implementation
             EditPhysicianDTO model = new EditPhysicianDTO()
             {
                 UserName = physician.Email,
-                Password = physician.Aspnetuser.Passwordhash,
                 Status = (short)(physician.Status??0),
                 Role = physician.Roleid??0,
                 FirstName = physician.Firstname,
@@ -113,10 +113,10 @@ namespace Repositories.Repository.Implementation
                 BusinessName = physician.Businessname,
                 BusinessWebsite = physician.Businesswebsite,
                 AdminNotes = physician.Adminnotes,
-                IsAgreementDoc = (bool)physician.Isagreementdoc,
-                IsBackgroundDoc = (bool)physician.Isbackgrounddoc,
-                IsNonDisclosureDoc = (bool)physician.Isnondisclosuredoc,
-                IsTrainingDoc = (bool)physician.Istrainingdoc,
+                IsAgreementDoc = false,
+                IsBackgroundDoc = false,
+                IsNonDisclosureDoc = false,
+                IsTrainingDoc = false,
             };
 
             List<Physicianregion>? physicianRegions = physicianRegionService.GetPhysicianRegions(physician);
@@ -154,10 +154,8 @@ namespace Repositories.Repository.Implementation
                 City = model.City,
                 Email = model.Email,
                 Firstname = model.FirstName,
-                Isagreementdoc = model.IsAgreementDoc,
                 Createddate = DateTime.Now,
-                //Createdby = "Admin",
-                Isbackgrounddoc = model.IsBackgroundDoc,
+                Createdby = aspNetUserService.GetAspNetUserId(),
                 Isdeleted = false,
                 Lastname = model.LastName,
                 Medicallicense = model.MedicalLicense,
@@ -165,14 +163,69 @@ namespace Repositories.Repository.Implementation
                 Npinumber = model.NPINumber,
                 Regionid = model.State,
                 Zip = model.Zip,
-                Isnondisclosuredoc = model.IsNonDisclosureDoc,
-                Istrainingdoc = model.IsTrainingDoc,
                 Roleid = model.Role,
                 Status = (short)RequestStatus.Pending,
+                Photo = model.Photo.FileName,
+                Signature = model.Signature.FileName,
                 Physicianid = _context.Physicians.OrderBy(u => u.Physicianid).LastOrDefault().Physicianid + 1,
             };
 
-            _context.Add(physician);
+            var file = model.Photo;
+            var uniqueFileName = Path.GetFileName(file.FileName);
+            var uploads = Path.Combine("wwwroot", "uploads");
+            var filespath = Path.Combine(uploads, uniqueFileName);
+            file.CopyTo(new FileStream(filespath, FileMode.Create));
+
+            var file1 = model.Signature;
+            var uniqueFileName1 = Path.GetFileName(file1.FileName);
+            var uploads1 = Path.Combine("wwwroot", "uploads");
+            var filespath1 = Path.Combine(uploads1, uniqueFileName1);
+            file.CopyTo(new FileStream(filespath1, FileMode.Create));
+
+            if (model.IsAgreementDoc != null && model.IsAgreementDoc.Length > 0)
+            {
+                string? newFileName = "Agreement.pdf";
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\uploads", newFileName);
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    model.IsAgreementDoc.CopyTo(stream);
+                    physician.Isagreementdoc = true;
+                }
+            }
+
+
+            if (model.IsBackgroundDoc != null && model.IsBackgroundDoc.Length > 0)
+            {
+                string? newFileName = "background.pdf";
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\uploads", newFileName);
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    model.IsBackgroundDoc.CopyTo(stream);
+                    physician.Isbackgrounddoc = true;
+                }
+            }
+            if (model.IsTrainingDoc != null && model.IsTrainingDoc.Length > 0)
+            {
+                string? newFileName = "HIPAA.pdf";
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\uploads", newFileName);
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    model.IsTrainingDoc.CopyTo(stream);
+                    physician.Istrainingdoc = true;
+                }
+            }
+            if (model.IsNonDisclosureDoc != null && model.IsNonDisclosureDoc.Length > 0)
+            {
+                string? newFileName = "NonDisclosure.pdf";
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\uploads", newFileName);
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    model.IsNonDisclosureDoc.CopyTo(stream);
+                    physician.Isnondisclosuredoc = true;
+                }
+            }
+
+            _context.Physicians.Add(physician);
             await _context.SaveChangesAsync();
 
             await physicianNotificationService.CreateNotification(physician);

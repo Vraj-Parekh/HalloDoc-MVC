@@ -34,8 +34,7 @@ namespace Entities.ViewModels
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Confirm Email is required")]
-        [Compare("Email", ErrorMessage = "The email and confirmation email do not match")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
         public string SyncEmail { get; set; }
 
         [Required(ErrorMessage = "Phone Number is required")]
@@ -69,16 +68,14 @@ namespace Entities.ViewModels
         public string BusinessWebsite { get; set; }
 
         [Required(ErrorMessage = "Photo is required")]
-        public IFormFile Photo { get; set; }
+        public IFormFile? Photo { get; set; }
+        public IFormFile? Signature { get; set; }
 
         public string? AdminNotes { get; set; }
 
-        public bool IsAgreementDoc { get; set; }
-
-        public bool IsBackgroundDoc { get; set; }
-
-        public bool IsTrainingDoc { get; set; }
-
-        public bool IsNonDisclosureDoc { get; set; }
+        public bool? IsAgreementDoc { get; set; }
+        public bool? IsBackgroundDoc { get; set; }
+        public bool? IsTrainingDoc { get; set; }
+        public bool? IsNonDisclosureDoc { get; set; }
     }
 }
