@@ -54,14 +54,14 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                       @*  <select class="form-select" id="role" asp-for="Role">
+                        <select class="form-select" id="role" asp-for="Role">
                             <option selected value="0">Select Role</option>
                             @foreach (var item in Model.Roles)
                             {
                                 <option value="@item.Roleid">@item.Name</option>
                             }
                         </select>
-                        <label for="role" class="form-label">Role</label> *@
+                        <label for="role" class="form-label">Role</label>
                     </div>
                     <span asp-validation-for="Role" class="text-danger"></span>
                 </div>
@@ -172,7 +172,7 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                   @*  @foreach (var item in Model.Regions)
+                    @foreach (var item in Model.Regions)
                     {
                         <div class="form-check form-check-inline me-2">
                             <input class="form-check-input addministrator checkedregion" name="checkedregion" type="checkbox" value="" id="@item.RegionId" @(item.IsPresent ? "checked" : "")>
@@ -180,7 +180,7 @@
                                 @item.RegionName
                             </label>
                         </div>
-                    } *@
+                    }
                 </div>
             </div>
 
@@ -237,14 +237,14 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                       @*  <select class="form-select" id="state" asp-for="State">
+                        <select class="form-select" id="state" asp-for="State">
                             <option selected value="0">Select State</option>
                             @foreach (var item in Model.Regions)
                             {
                                 <option value="@item.RegionId">@item.RegionName</option>
                             }
                         </select>
-                        <label for="state" class="form-label">State</label> *@
+                        <label for="state" class="form-label">State</label>
                     </div>
                     <span asp-validation-for="State" class="text-danger"></span>
                 </div>

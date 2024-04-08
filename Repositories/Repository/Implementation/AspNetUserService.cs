@@ -1,12 +1,14 @@
 ﻿using Entities.DataContext;
 using Entities.Models;
 using Entities.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repository.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,10 +17,12 @@ namespace Repositories.Repository.Implementation
     public class AspNetUserService :IAspNetUserService
     {
         private readonly HalloDocDbContext _context;
+        private readonly IHttpContextAccessor httpContext;
 
-        public AspNetUserService(HalloDocDbContext _context)
+        public AspNetUserService(HalloDocDbContext _context,IHttpContextAccessor httpContext)
         {
             this._context = _context;
+            this.httpContext = httpContext;
         }
 
         public string AuthenticateUser(LoginDTO data)
@@ -68,5 +72,7 @@ namespace Repositories.Repository.Implementation
             await _context.SaveChangesAsync();
             return aspnetuser;
         }
+
+        public string GetAspNetUserId() => httpContext.HttpContext?.User.FindFirst("userId")?.Value!;
     }
 }

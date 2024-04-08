@@ -13,6 +13,9 @@ using Repositories.Utility;
 using System.Security.Claims;
 using NPOI.OpenXmlFormats.Vml;
 using System.Globalization;
+using Repositories.Repository.Implementation;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Utilities;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -41,8 +44,9 @@ namespace HalloDoc_Project.Controllers
         private readonly IRoleService roleService;
         private readonly IRoleMenuService roleMenuService;
         private readonly IAdminRegionService adminRegionService;
+        private readonly IShiftDetailService shiftDetailService;
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService,IAdminRegionService adminRegionService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService,IAdminRegionService adminRegionService,IShiftDetailService shiftDetailService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -64,6 +68,7 @@ namespace HalloDoc_Project.Controllers
             this.roleService = roleService;
             this.roleMenuService = roleMenuService;
             this.adminRegionService = adminRegionService;
+            this.shiftDetailService = shiftDetailService;
         }
         public IActionResult Index()
         {
@@ -578,6 +583,28 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("UserAccess", "Admin");
         }
 
+        public IActionResult FetchPhysician(int regionId=0)
+        {
+            List<Physician>? physician = physicianService.GetPhysicianByRegionId(regionId);
+            return Json(physician);
+        }
+
+        public async Task<IActionResult> FetchShiftDetails()
+        {
+            var shiftDetails = await shiftDetailService.GetShiftDetails();
+            foreach(var shift in shiftDetails)
+            {
+                shift.Shift.Shiftdetails = null;
+            }
+            //var setting = new JsonSerializerSettings
+            //{
+            //    Formatting = Newtonsoft.Json.Formatting.Indented, // Just for humans
+            //    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            //};
+            //var json = JsonConvert.SerializeObject(shiftDetails, setting);
+
+            return Json(shiftDetails);
+        }
         public IActionResult Scheduling()
         {
             return View();

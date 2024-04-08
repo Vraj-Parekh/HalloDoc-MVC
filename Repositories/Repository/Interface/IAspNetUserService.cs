@@ -8,6 +8,7 @@ namespace Repositories.Repository.Interface
         Task<Aspnetuser> AddAspNetUser(string email, string username, string phone, string password);
         string AuthenticateUser(LoginDTO data);
         void ChnagePassword(LoginDTO data);
+        string GetAspNetUserId();
         bool isUserPresent(LoginDTO data);
     }
 }

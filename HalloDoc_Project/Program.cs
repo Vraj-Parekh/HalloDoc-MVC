@@ -40,6 +40,9 @@ builder.Services.AddTransient<IAspNetUserRolesService, AspNetUserRolesService>()
 builder.Services.AddTransient<IAdminRegionService, AdminRegionService>();
 builder.Services.AddTransient<IPhysicianNotificationService, PhysicianNotificationService>();
 builder.Services.AddTransient<IPhysicianRegionService, PhysicianRegionService>();
+builder.Services.AddTransient<IShiftService, ShiftService>();
+builder.Services.AddTransient<IShiftDetailService, ShiftDetailService>();
+builder.Services.AddTransient<IShiftDetailRegionService, ShiftDetailRegionService>();
 
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

@@ -22,8 +22,9 @@ namespace Repositories.Repository.Implementation
         private readonly IAspNetUserRolesService aspNetUserRolesService;
         private readonly IPhysicianNotificationService physicianNotificationService;
         private readonly IPhysicianRegionService physicianRegionService;
+        private readonly IRegionService regionService;
 
-        public PhysicianService(HalloDocDbContext _context, IAspNetUserService aspNetUserService, IAspNetRoleService aspNetRoleService, IAspNetUserRolesService aspNetUserRolesService,IPhysicianNotificationService physicianNotificationService,IPhysicianRegionService physicianRegionService)
+        public PhysicianService(HalloDocDbContext _context, IAspNetUserService aspNetUserService, IAspNetRoleService aspNetRoleService, IAspNetUserRolesService aspNetUserRolesService,IPhysicianNotificationService physicianNotificationService,IPhysicianRegionService physicianRegionService,IRegionService regionService)
         {
             this._context = _context;
             this.aspNetUserService = aspNetUserService;
@@ -31,6 +32,7 @@ namespace Repositories.Repository.Implementation
             this.aspNetUserRolesService = aspNetUserRolesService;
             this.physicianNotificationService = physicianNotificationService;
             this.physicianRegionService = physicianRegionService;
+            this.regionService = regionService;
         }
 
         public Physician GetPhysicianById(int physicianId)
@@ -39,7 +41,7 @@ namespace Repositories.Repository.Implementation
         }
         public List<Physician> GetPhysicianByRegionId(int regionId)
         {
-            List<Physician>? physician = _context.Physicians.Where(a => a.Regionid == regionId).ToList();
+            List<Physician>? physician = _context.Physicians.Where(a => a.Regionid == regionId || regionId == 0).ToList();
 
             return physician;
         }
@@ -116,6 +118,15 @@ namespace Repositories.Repository.Implementation
                 IsNonDisclosureDoc = (bool)physician.Isnondisclosuredoc,
                 IsTrainingDoc = (bool)physician.Istrainingdoc,
             };
+
+            List<Physicianregion>? physicianRegions = physicianRegionService.GetPhysicianRegions(physician);
+            model.Regions = regionService.GetRegionList().Select(a => new RegionList()
+            {
+                RegionId = a.RegionId,
+                IsPresent = physicianRegions.Any(b => b.Regionid == a.RegionId),
+                RegionName = a.RegionName
+            }).ToList();
+
             return model;
         }
         public async Task CreatePhysician(CreatePhysicianDTO model)

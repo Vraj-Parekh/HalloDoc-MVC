@@ -19,6 +19,11 @@ namespace Repositories.Repository.Implementation
             this._context = _context;
         }
 
+        public List<Physicianregion> GetPhysicianRegions(Physician physician)
+        {
+            return _context.Physicianregions.Where(a => a.Physicianid == physician.Physicianid).ToList();
+        }
+
         public async Task AddOrRemovePhysicianRegion(Physician physician, List<RegionList> regions)
         {
             foreach (RegionList item in regions)
