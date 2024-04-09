@@ -43,6 +43,8 @@ builder.Services.AddTransient<IPhysicianRegionService, PhysicianRegionService>()
 builder.Services.AddTransient<IShiftService, ShiftService>();
 builder.Services.AddTransient<IShiftDetailService, ShiftDetailService>();
 builder.Services.AddTransient<IShiftDetailRegionService, ShiftDetailRegionService>();
+builder.Services.AddTransient<IEmailLogService, EmailLogService>();
+builder.Services.AddTransient<ISmsLogService, SmsLogService>();
 
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

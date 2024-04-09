@@ -223,6 +223,13 @@ public partial class HalloDocDbContext : DbContext
         {
             entity.HasKey(e => e.Physicianid).HasName("physician_pkey");
 
+            entity.Property(e => e.Isagreementdoc).HasDefaultValueSql("false");
+            entity.Property(e => e.Isbackgrounddoc).HasDefaultValueSql("false");
+            entity.Property(e => e.Islicensedoc).HasDefaultValueSql("false");
+            entity.Property(e => e.Isnondisclosuredoc).HasDefaultValueSql("false");
+            entity.Property(e => e.Istokengenerate).HasDefaultValueSql("false");
+            entity.Property(e => e.Istrainingdoc).HasDefaultValueSql("false");
+
             entity.HasOne(d => d.Aspnetuser).WithMany(p => p.PhysicianAspnetusers).HasConstraintName("fk_aspnetusers_aspnetuserid");
 
             entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.PhysicianCreatedbyNavigations).HasConstraintName("fk_aspnetusers_createdby");

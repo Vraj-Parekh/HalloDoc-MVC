@@ -45,8 +45,10 @@ namespace HalloDoc_Project.Controllers
         private readonly IRoleMenuService roleMenuService;
         private readonly IAdminRegionService adminRegionService;
         private readonly IShiftDetailService shiftDetailService;
+        private readonly IShiftService shiftService;
+        private readonly IShiftDetailRegionService shiftDetailRegionService;
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService,IAdminRegionService adminRegionService,IShiftDetailService shiftDetailService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService,IAdminRegionService adminRegionService,IShiftDetailService shiftDetailService, IShiftService shiftService, IShiftDetailRegionService shiftDetailRegionService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -69,6 +71,8 @@ namespace HalloDoc_Project.Controllers
             this.roleMenuService = roleMenuService;
             this.adminRegionService = adminRegionService;
             this.shiftDetailService = shiftDetailService;
+            this.shiftService = shiftService;
+            this.shiftDetailRegionService = shiftDetailRegionService;
         }
         public IActionResult Index()
         {
@@ -589,16 +593,55 @@ namespace HalloDoc_Project.Controllers
             return Json(physician);
         }
 
-        public async Task<IActionResult> FetchShiftDetails()
+        private async Task<List<Shiftdetail>> GetAndPrepareShiftDetails()
         {
             var shiftDetails = await shiftDetailService.GetShiftDetails();
-            foreach(var shift in shiftDetails)
+            foreach (var shift in shiftDetails)
             {
                 shift.Shift.Shiftdetails = null;
+                shift.Shift.Physician.Shifts = null;
             }
+            return shiftDetails;
+        }
 
+        public async Task<IActionResult> FetchShiftDetails()
+        {
+            var shiftDetails = await GetAndPrepareShiftDetails();
             return Json(shiftDetails);
         }
+
+        public async Task<IActionResult> ReturnShift(int shiftDetailId)
+        {
+            await shiftDetailService.ChangeShiftStatus(shiftDetailId);
+            return await FetchShiftDetails();
+        }
+
+        public async Task<IActionResult> DeleteShift(int shiftDetailId)
+        {
+            await shiftDetailService.DeleteShift(shiftDetailId);
+            return await FetchShiftDetails();
+        }
+
+        public async Task<IActionResult> SaveShift(ScheduleDTO model)
+        {
+            await shiftDetailService.EditShift(model);
+            return await FetchShiftDetails();
+        }
+
+        public async Task<IActionResult> CreateShift(CreateShiftDTO model)
+        {
+            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
+            if (physician is not null)
+            {
+                Shift? shift = await shiftService.AddShift(physician, model);
+                Shiftdetail? shiftDetail = await shiftDetailService.AddShiftDetails(shift, model);
+                await shiftDetailRegionService.AddShiftDetailRegion(shiftDetail, model);
+                return await FetchShiftDetails();
+                //ajax going into error 
+            }
+            return BadRequest("Physician not found");
+        }
+
         public IActionResult Scheduling()
         {
             return View();

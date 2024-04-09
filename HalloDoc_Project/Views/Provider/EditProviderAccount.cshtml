@@ -54,7 +54,7 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select" id="role" asp-for="Role">
+                        <select class="form-select" id="role" asp-for="Role" disabled>
                             <option selected value="0">Select Role</option>
                             @foreach (var item in Model.Roles)
                             {
@@ -237,7 +237,7 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select" id="state" asp-for="State">
+                        <select class="form-select dis-billing-field" id="state" asp-for="State">
                             <option selected value="0">Select State</option>
                             @foreach (var item in Model.Regions)
                             {

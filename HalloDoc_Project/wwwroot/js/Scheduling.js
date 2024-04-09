@@ -96,16 +96,22 @@ $(document).ready(function () {
             console.log(createShiftDTO);
 
             $.ajax({
-                url: '/Provider/CreateShift',
+                url: '/Admin/CreateShift',
                 type: 'POST',
                 data: createShiftDTO,
                 async: false,
                 success: function (response) {
+                    $('#createShiftModal').modal('show');
                     console.log(response);
-                    toastr.success("Notification sent successfully");
+                    toastr.success("Shift created successfully");
+                    calendar.removeAllEvents(); // Remove existing events
+                    calendar.addEventSource(events); // Add updated events
+                    calendar.refetchEvents(); // Refetch events from the event sources
+                    e.stopImmediatePropagation();
                 },
                 error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
+                    $('#createShiftModal').modal('show');
+                    //console.error(xhr.responseText);
                     toastr.error("Error Loading Reasons");
                 }
             });
@@ -143,28 +149,34 @@ $(document).ready(function () {
                         const events = response.map(event => ({
                             id: event.shiftid,
                             resourceId: event.shift.physicianid,
-                            title: "hello",
-                            start: event.shiftdate.substring(0, 11)+ event.starttime,
-                            end: event.shiftdate.substring(0, 11) +event.endtime,
-                            eventBackgroundColor: event.status == 0 ? '#e39de8' : '#32d97d',
-                            color: event.status == 0 ? '#e39de8' : '#32d97d',
+                            title: `${formatTime(event.starttime)} - ${formatTime(event.endtime)} / ${event.shift.physician.firstname}`,
+                            start: event.shiftdate.substring(0, 11) + event.starttime,
+                            end: event.shiftdate.substring(0, 11) + event.endtime, 
+                            eventBackgroundColor: event.status == 2 ? '#32d97d' : '#e39de8',
+                            color: event.status == 2 ? '#32d97d' : '#e39de8',
                             ShiftDetailId: event.shiftdetailid,
                             region: event.regionid,
-                            regionName: "name",
+                            regionName: event.shift.physician.city,
                             status: event.status
                         }));
 
-                        console.log("adsfal;ksjdf;lsakj"+events);
+                        //console.log("adsfal;ksjdf;lsakj" + events);
 
                         var ResjsonString = JSON.stringify(events);
-                        
-                        initializeCalendar(resources, events);//resources-->physicians, events-->shiftdetails
 
+                        initializeCalendar(resources, events);//resources-->physicians, events-->shiftdetails
+                    
                     },
                     error: function (xhr) {
                         console.log(xhr.status);
                     }
                 })
+                function formatTime(time) {
+                    const [hours, minutes] = time.split(':').map(Number);
+                    const suffix = hours >= 12 ? 'PM' : 'AM';
+                    const adjustedHours = hours % 12 || 12;
+                    return `${adjustedHours}:${minutes < 10 ? '0' : ''}${minutes} ${suffix}`;
+                }
             },
             error: function (xhr) {
                 console.log(xhr.status);
@@ -240,7 +252,7 @@ $(document).ready(function () {
                     // Call AJAX to return
                     $.ajax({
                         type: 'POST',
-                        url: '/AdminSite/ReturnShift',
+                        url: '/Admin/ReturnShift',
                         data: { shiftDetailId: shiftDetailId },
                         async: false,
                         success: function (response) {
@@ -248,28 +260,33 @@ $(document).ready(function () {
                             $('#eventModal').modal('hide');
                             console.log(response);
                             const events = response.map(event => ({
-                                id: event.shiftId,
-                                resourceId: event.resourceId,
-                                title: event.title,
-                                start: event.start,
-                                end: event.end,
-                                eventBackgroundColor: event.status == 0 ? '#e39de8' : '#32d97d',
-                                color: event.status == 0 ? '#e39de8' : '#32d97d',
-                                ShiftDetailId: event.shiftDetailId,
-                                region: event.regionId,
-                                regionName: event.regionName,
+                                id: event.shiftid,
+                                resourceId: event.shift.physicianid,
+                                title: `${formatTime(event.starttime)} - ${formatTime(event.endtime)} / ${event.shift.physician.firstname}`,
+                                start: event.shiftdate.substring(0, 11) + event.starttime,
+                                end: event.shiftdate.substring(0, 11) + event.endtime,
+                                eventBackgroundColor: event.status == 2 ? '#32d97d' : '#e39de8',
+                                color: event.status == 2 ? '#32d97d' : '#e39de8',
+                                ShiftDetailId: event.shiftdetailid,
+                                region: event.regionid,
+                                regionName: event.shift.physician.city,
                                 status: event.status
                             }));
                             calendar.removeAllEvents(); // Remove existing events
                             calendar.addEventSource(events); // Add updated events
                             calendar.refetchEvents(); // Refetch events from the event sources
-
                             e.stopImmediatePropagation();
                         },
                         error: function (xhr, status, error) {
                             toastr.error("Something Went Wrong");
                         }
                     });
+                    function formatTime(time) {
+                        const [hours, minutes] = time.split(':').map(Number);
+                        const suffix = hours >= 12 ? 'PM' : 'AM';
+                        const adjustedHours = hours % 12 || 12;
+                        return `${adjustedHours}:${minutes < 10 ? '0' : ''}${minutes} ${suffix}`;
+                    }
                 });
 
                 $('#eventModal').on('click', '#deletebtn', function () {
@@ -277,23 +294,23 @@ $(document).ready(function () {
                     var shiftDetailId = $('#shiftDetailId').val();
                     $.ajax({
                         type: 'POST',
-                        url: '/AdminSite/DeleteEvent',
+                        url: '/Admin/DeleteShift',
                         data: { shiftDetailId: shiftDetailId },
                         async: false,
                         success: function (response) {
                             $('#eventModal').modal('hide');
 
                             const events = response.map(event => ({
-                                id: event.shiftId,
-                                resourceId: event.resourceId,
-                                title: event.title,
-                                start: event.start,
-                                end: event.end,
-                                eventBackgroundColor: event.status == 0 ? '#e39de8' : '#32d97d',
-                                color: event.status == 0 ? '#e39de8' : '#32d97d',
-                                ShiftDetailId: event.shiftDetailId,
-                                region: event.regionId,
-                                regionName: event.regionName,
+                                id: event.shiftid,
+                                resourceId: event.shift.physicianid,
+                                title: `${formatTime(event.starttime)} - ${formatTime(event.endtime)} / ${event.shift.physician.firstname}`,
+                                start: event.shiftdate.substring(0, 11) + event.starttime,
+                                end: event.shiftdate.substring(0, 11) + event.endtime,
+                                eventBackgroundColor: event.status == 2 ? '#32d97d' : '#e39de8',
+                                color: event.status == 2 ? '#32d97d' : '#e39de8',
+                                ShiftDetailId: event.shiftdetailid,
+                                region: event.regionid,
+                                regionName: event.shift.physician.city,
                                 status: event.status
                             }));
                             calendar.removeAllEvents(); // Remove existing events
@@ -304,6 +321,12 @@ $(document).ready(function () {
 
                         }
                     });
+                    function formatTime(time) {
+                        const [hours, minutes] = time.split(':').map(Number);
+                        const suffix = hours >= 12 ? 'PM' : 'AM';
+                        const adjustedHours = hours % 12 || 12;
+                        return `${adjustedHours}:${minutes < 10 ? '0' : ''}${minutes} ${suffix}`;
+                    }
                 });
 
                 $('#eventModal').on('click', '#savebtn', function () {
@@ -318,25 +341,25 @@ $(document).ready(function () {
                         url: '/Admin/SaveShift',
                         type: 'POST',
                         data: {
-                            shiftDetailId: shiftDetailId,
-                            startDate: startDate,
-                            startTime: startTime,
-                            endTime: endTime
+                            ShiftDetailId: shiftDetailId,
+                            Startdate: startDate,
+                            Starttime: startTime,
+                            Endtime: endTime
                         },
                         success: function (response) {
                             $('#eventModal').modal('hide');
 
                             const events = response.map(event => ({
-                                id: event.shiftId,
-                                resourceId: event.resourceId,
-                                title: event.title,
-                                start: event.start,
-                                end: event.end,
-                                eventBackgroundColor: event.status == 0 ? '#e39de8' : '#32d97d',
-                                color: event.status == 0 ? '#e39de8' : '#32d97d',
-                                ShiftDetailId: event.shiftDetailId,
-                                region: event.regionId,
-                                regionName: event.regionName,
+                                id: event.shiftid,
+                                resourceId: event.shift.physicianid,
+                                title: `${formatTime(event.starttime)} - ${formatTime(event.endtime)} / ${event.shift.physician.firstname}`,
+                                start: event.shiftdate.substring(0, 11) + event.starttime,
+                                end: event.shiftdate.substring(0, 11) + event.endtime,
+                                eventBackgroundColor: event.status == 2 ? '#32d97d' : '#e39de8',
+                                color: event.status == 2 ? '#32d97d' : '#e39de8',
+                                ShiftDetailId: event.shiftdetailid,
+                                region: event.regionid,
+                                regionName: event.shift.physician.city,
                                 status: event.status
                             }));
                             calendar.removeAllEvents(); // Remove existing events
@@ -351,6 +374,12 @@ $(document).ready(function () {
                             // Handle error
                         }
                     });
+                    function formatTime(time) {
+                        const [hours, minutes] = time.split(':').map(Number);
+                        const suffix = hours >= 12 ? 'PM' : 'AM';
+                        const adjustedHours = hours % 12 || 12;
+                        return `${adjustedHours}:${minutes < 10 ? '0' : ''}${minutes} ${suffix}`;
+                    }
                 });
                 // Get the ShiftDetailId from the event's extendedProps
                 var shiftDetailId = info.event.extendedProps.ShiftDetailId;
@@ -367,11 +396,13 @@ $(document).ready(function () {
                                                 <select class="form-control" aria-label="Default select example" id="selectregion" disabled>
                                                         <option value="">${regionName}</option>
                                                 </select>
+                                                 <label class="form-label" for="selectregion">Region</label>
                                             </div>
                                                     <div class="form-floating mb-3 mt-3">
-                                                                    <select class="form-select pt-1 physicianDropdown" asp-for="Physicianid" id="physicianSelect" aria-label="Default select example" disabled>
-                                                                    <option value="" selected disabled>${event.title}</option>
+                                                                    <select class="form-select physicianDropdown" asp-for="Physicianid" id="physicianSelect" aria-label="Default select example" disabled>
+                                                                    <option value="" selected disabled>${event.title.substring(event.title.lastIndexOf('/') + 1).trim()}</option>
                                                                 </select>
+                                                    <label class="form-label" for="physicianSelect">Physician</label>
                                                             </div>
                                                                     <div class="col-md-12 form-floating mb-3">
                                                     <input id="StartDateView" class="form-control rounded vcs" name="Startdate" type="date" placeholder="Suchtext" autocomplete="off" value="${formatDate(event.start)}" disabled>
@@ -421,6 +452,12 @@ $(document).ready(function () {
 
         });
         console.log(calendar.events);
+        calendar.on('datesSet', function (info) {
+            var date = info.view.currentStart;
+            var formattedDate = formatDate(date);
+            $("#date-title").val(formattedDate);
+        });
+
         $("#next-button").click(function () {
             calendar.next();
         });

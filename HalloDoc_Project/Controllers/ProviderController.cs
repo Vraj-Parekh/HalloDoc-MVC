@@ -60,18 +60,5 @@ namespace HalloDoc_Project.Controllers
             }
             return View();
         }
-
-        public async Task<IActionResult> CreateShift(CreateShiftDTO model)
-        {
-            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
-            if (physician is not null)
-            {
-                Shift? shift = await shiftService.AddShift(physician, model);
-                Shiftdetail? shiftDetail = await shiftDetailService.AddShiftDetails(shift, model);
-                await shiftDetailRegionService.AddShiftDetailRegion(shiftDetail, model);
-                return RedirectToAction("Scheduling", "Admin");
-            }
-            return BadRequest("Physician not found");
-        }
     }
 }

@@ -25,7 +25,7 @@ namespace Repositories.Repository.Implementation
         private readonly IPhysicianRegionService physicianRegionService;
         private readonly IRegionService regionService;
 
-        public PhysicianService(HalloDocDbContext _context, IAspNetUserService aspNetUserService, IAspNetRoleService aspNetRoleService, IAspNetUserRolesService aspNetUserRolesService,IPhysicianNotificationService physicianNotificationService,IPhysicianRegionService physicianRegionService,IRegionService regionService)
+        public PhysicianService(HalloDocDbContext _context, IAspNetUserService aspNetUserService, IAspNetRoleService aspNetRoleService, IAspNetUserRolesService aspNetUserRolesService, IPhysicianNotificationService physicianNotificationService, IPhysicianRegionService physicianRegionService, IRegionService regionService)
         {
             this._context = _context;
             this.aspNetUserService = aspNetUserService;
@@ -92,32 +92,32 @@ namespace Repositories.Repository.Implementation
 
         public EditPhysicianDTO GetPhysicianInfo(Physician physician)
         {
-            EditPhysicianDTO model = new EditPhysicianDTO()
-            {
-                UserName = physician.Email,
-                Status = (short)(physician.Status??0),
-                Role = physician.Roleid??0,
-                FirstName = physician.Firstname,
-                LastName = physician.Lastname,
-                Email = physician.Email,
-                PhoneNumber = physician.Mobile,
-                MedicalLicense = physician.Medicallicense,
-                NPINumber = physician.Npinumber,
-                SyncEmail = physician.Syncemailaddress,
-                Address1 = physician.Address1,
-                Address2 = physician.Address2,
-                City = physician.City,
-                State = (int)physician.Regionid,
-                Zip = physician.Zip,
-                AltPhoneNumber = physician.Altphone,
-                BusinessName = physician.Businessname,
-                BusinessWebsite = physician.Businesswebsite,
-                AdminNotes = physician.Adminnotes,
-                IsAgreementDoc = false,
-                IsBackgroundDoc = false,
-                IsNonDisclosureDoc = false,
-                IsTrainingDoc = false,
-            };
+            EditPhysicianDTO model = new EditPhysicianDTO();
+
+            model.UserName = physician.Email;
+            model.Status = (short)(physician.Status ?? 0);
+            model.Role = physician.Roleid ?? 0;
+            model.FirstName = physician.Firstname;
+            model.LastName = physician.Lastname;
+            model.Email = physician.Email;
+            model.PhoneNumber = physician.Mobile;
+            model.MedicalLicense = physician.Medicallicense;
+            model.NPINumber = physician.Npinumber;
+            model.SyncEmail = physician.Syncemailaddress;
+            model.Address1 = physician.Address1;
+            model.Address2 = physician.Address2;
+            model.City = physician.City;
+            model.State = (int)physician.Regionid;
+            model.Zip = physician.Zip;
+            model.AltPhoneNumber = physician.Altphone;
+            model.BusinessName = physician.Businessname;
+            model.BusinessWebsite = physician.Businesswebsite;
+            model.AdminNotes = physician.Adminnotes;
+            model.IsAgreementDoc = physician.Isagreementdoc;
+            model.IsBackgroundDoc = physician.Isbackgrounddoc;
+            model.IsNonDisclosureDoc = physician.Isnondisclosuredoc;
+            model.IsTrainingDoc = physician.Istrainingdoc;
+
 
             List<Physicianregion>? physicianRegions = physicianRegionService.GetPhysicianRegions(physician);
             model.Regions = regionService.GetRegionList().Select(a => new RegionList()
@@ -144,7 +144,7 @@ namespace Repositories.Repository.Implementation
             Physician physician = new Physician()
             {
                 //Aspnetuserid = aspNetUser.Aspnetuserid,
-                Aspnetuser=aspNetUser,
+                Aspnetuser = aspNetUser,
                 Address1 = model.Address1,
                 Address2 = model.Address2,
                 Adminnotes = model.AdminNotes,

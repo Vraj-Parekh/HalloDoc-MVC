@@ -23,6 +23,7 @@ namespace Repositories.Repository.Implementation
                     new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),//unique identifier for the JWT token
                     new Claim("firstname", user.Users.FirstOrDefault()?.Firstname??""),
                     new Claim("lastname", user.Users.FirstOrDefault()?.Lastname??""),
+                    new Claim("userId", user.Users.FirstOrDefault()?.Aspnetuserid??"Admin"),
             };
 
             foreach (Aspnetrole role in user.Roles)
