@@ -101,5 +101,13 @@ namespace HalloDoc_Project.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddBusiness(EditBusinessDTO model)
+        {
+            //error : duplicate key violates
+            await healthProfessionalsService.AddBusiness(model);
+            return RedirectToAction("Partners", "Provider");
+        }
     }
 }

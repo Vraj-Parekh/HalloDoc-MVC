@@ -108,5 +108,27 @@ namespace Repositories.Repository.Implementation
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task AddBusiness(EditBusinessDTO model)
+        {
+            Healthprofessional healthProfessional = new Healthprofessional()
+            {
+                Address = model.Street,
+                City = model.City,
+                Businesscontact = model.BusinessContact,
+                Createddate = DateTime.Now,
+                Email = model.Email,
+                Faxnumber = model.FaxNumber,
+                Isdeleted = false,
+                Phonenumber = model.PhoneNumber,
+                Profession = model.Profession,
+                Regionid = model.State,
+                Vendorname = model.BusinessName,
+                Zip = model.Zip,
+            };
+
+            _context.Add(healthProfessional);
+            await _context.SaveChangesAsync();
+        }
     }
 }

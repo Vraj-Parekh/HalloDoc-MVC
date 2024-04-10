@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Entities.ViewModels;
 
 namespace Repositories.Repository.Interface
 {

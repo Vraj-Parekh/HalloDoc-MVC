@@ -16,9 +16,9 @@
         <h5 class="mb-4">Submit Information</h5>
 
         <form asp-action="AddBusiness" asp-controller="Provider" method="post">
-            <div class="row">
+            <div class="row mb-3">
                 <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="form-floating">
                         <input type="text"
                                asp-for="BusinessName"
                                class="form-control"
@@ -32,7 +32,7 @@
                 <div class="col-md-6">
                     <div class="form-floating">
                         <select class="form-select" id="profession" asp-for="Profession">
-                            <option value="0" selected>Select Profession</option>
+                            <option selected value="">Select Profession</option>
                             @foreach (var item in Model.ProfessionList)
                             {
                                 <option value="@item.Healthprofessionalid">@item.Professionname</option>
@@ -40,12 +40,13 @@
                         </select>
                         <label for="profession" class="form-label">Profession</label>
                     </div>
+                    <span asp-validation-for="Profession" class="text-danger"></span>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row mb-3">
                 <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="form-floating">
                         <input type="text"
                                asp-for="FaxNumber"
                                class="form-control"
@@ -68,8 +69,8 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
+            <div class="row mb-3">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Email"
@@ -81,7 +82,7 @@
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text"
                                asp-for="BusinessContact"
@@ -93,8 +94,8 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
+            <div class="row mb-3">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Street"
@@ -105,7 +106,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text"
                                asp-for="City"
@@ -118,11 +119,11 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
+            <div class="row mb-3">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <select class="form-select" id="state" asp-for="State">
-                            <option value="0" selected>Select State</option>
+                            <option selected value="">Select State</option>
                             @foreach (var item in Model.Regions)
                             {
                                 <option value="@item.RegionId">@item.RegionName</option>
@@ -133,7 +134,7 @@
                     <span asp-validation-for="State" class="text-danger"></span>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Zip"
