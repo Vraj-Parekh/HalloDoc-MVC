@@ -117,7 +117,8 @@ namespace Repositories.Repository.Implementation
             model.IsBackgroundDoc = physician.Isbackgrounddoc;
             model.IsNonDisclosureDoc = physician.Isnondisclosuredoc;
             model.IsTrainingDoc = physician.Istrainingdoc;
-
+            model.PhotoImg = physician.Photo;
+            model.SignImg = physician.Signature;
 
             List<Physicianregion>? physicianRegions = physicianRegionService.GetPhysicianRegions(physician);
             model.Regions = regionService.GetRegionList().Select(a => new RegionList()
@@ -180,7 +181,7 @@ namespace Repositories.Repository.Implementation
             var uniqueFileName1 = Path.GetFileName(file1.FileName);
             var uploads1 = Path.Combine("wwwroot", "uploads");
             var filespath1 = Path.Combine(uploads1, uniqueFileName1);
-            file.CopyTo(new FileStream(filespath1, FileMode.Create));
+            file1.CopyTo(new FileStream(filespath1, FileMode.Create));
 
             if (model.IsAgreementDoc != null && model.IsAgreementDoc.Length > 0)
             {

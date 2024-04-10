@@ -1,0 +1,157 @@
+﻿@model EditBusinessDTO
+@{
+    ViewData["Title"] = "EditBusiness";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#partners";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Update Business</h4>
+
+        <a class="btn btn-outline-info bg-white text-info" onclick="history.back()"> &lt; Back </a>
+    </div>
+
+    <div class="bg-white rounded shadow p-3">
+        <h5 class="mb-4">Submit Information</h5>
+
+        <form asp-action="EditBusiness" asp-controller="Provider" asp-route-vendorId="@Model.VendorId" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text"
+                               asp-for="BusinessName"
+                               class="form-control"
+                               id="businessName"
+                               placeholder="busienssName" />
+                        <label for="businessName">Business Name</label>
+                    </div>
+                    <span asp-validation-for="BusinessName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="profession" asp-for="Profession">
+                            @foreach (var item in Model.ProfessionList)
+                            {
+                                <option value="@item.Healthprofessionalid" >@item.Professionname</option>
+                            }
+                        </select>
+                        <label for="profession" class="form-label">Profession</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text"
+                               asp-for="FaxNumber"
+                               class="form-control"
+                               id="faxNumber"
+                               placeholder="faxNumber" />
+                        <label for="faxNumber">Fax Number</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="tel"
+                               asp-for="PhoneNumber"
+                               class="form-control "
+                               id="phone"
+                               placeholder=""
+                               style="height: 58px" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Email"
+                               class="form-control"
+                               id="email"
+                               placeholder="email" />
+                        <label for="firstname">Email</label>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="BusinessContact"
+                               class="form-control"
+                               id="businessContact"
+                               placeholder="businessContact" />
+                        <label for="businessContact">Business Contact</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Street"
+                               class="form-control"
+                               id="street"
+                               placeholder="street" />
+                        <label for="street">Street</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="City"
+                               class="form-control"
+                               id="city"
+                               placeholder="city" />
+                        <label for="city">City</label>
+                    </div>
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="state" asp-for="State">
+                            @foreach (var item in Model.Regions)
+                            {
+                                <option value="@item.RegionId">@item.RegionName</option>
+                            }
+                        </select>
+                        <label for="state" class="form-label">State</label>
+                    </div>
+                    <span asp-validation-for="State" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Zip"
+                               class="form-control"
+                               id="zip"
+                               placeholder="zip" />
+                        <label for="zip">Zip/Postal</label>
+                    </div>
+                    <span asp-validation-for="Zip" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-info text-white"> Save </button>
+                    <a class="btn btn-outline-info text-info bg-white" onclick="history.back()">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<partial name="_ActiveTabPartial" model=active />

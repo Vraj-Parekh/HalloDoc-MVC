@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Partners";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#partners";
+}
+
+
+<div class="mx-5">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <h4>Vendor(s)</h4>
+        </div>
+
+        <div class="bg-white rounded shadow p-3">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <input type="text" placeholder="Search" class="form-control p-2 px-4 w-100" id="searchVendor" style="height:58px;">
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="form-floating">
+                                <select class="form-select" id="proffessionType">
+                                    <option value="0">All Professions</option>
+                                </select>
+                                <label for="proffessionType" class="form-label">Search</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <a asp-action="AddBusiness" asp-controller="Provider" class="btn btn-outline-info text-info rounded-2 me-2 bg-white">+ Add Business</a>
+                </div>
+            </div>
+
+            <div id="vendorTableDiv">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_ActiveTabPartial" model=active />
+<script src="/js/Partners.js" asp-append-version="true"></script>

@@ -1,0 +1,58 @@
+﻿@model List<VendorsDTO>
+
+<table class="table mt-3">
+    <thead class="table-light">
+        <tr>
+            <th class="col">
+                Profession
+            </th>
+            <th class="col text-center">
+                Business Name
+            </th>
+            <th class="col text-center pe-5">
+                Email
+            </th>
+            <th class="col text-center">
+                Fax Number
+            </th>
+            <th class="col text-center">
+                Phone Number
+            </th>
+            <th class="col text-center">
+                Business Contact
+            </th>
+            <th class="col text-center">
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Profession
+                </td>
+                <td class="text-center">
+                    @item.BusinessName
+                </td>
+                <td class="text-center">
+                    @item.Email
+                </td>
+                <td class="text-center">
+                    @item.FaxNumber
+                </td>
+                <td class="text-center">
+                    @item.PhoneNumber
+                </td>
+                <td class="text-center">
+                    @item.BusinessContact
+                </td>
+                <td class="text-end">
+                    <a class="btn btn-outline-info" asp-action="EditBusiness" asp-route-vendorId="@item.VendorId">Edit</a>
+                    <a class="btn btn-outline-info">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

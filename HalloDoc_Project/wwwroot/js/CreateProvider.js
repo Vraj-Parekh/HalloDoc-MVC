@@ -16,6 +16,24 @@
     }
     return true;
 };
+function signature_validation() {
+    var val = $('#sign').val().toLowerCase(),
+        regex = new RegExp("(.*?)\.(jpg|png)$");
+    if (val == null || val == "") {
+        return true;
+    }
+    if (!(regex.test(val))) {
+        $('#filename').html('Please select only jpg or png type signature');
+        $('#sign_img').attr("src", "");
+        return false;
+    }
+    $('#filename').html('');
+    var file = document.getElementById('sign').files[0];
+    if (file) {
+        $('#sign_img').attr("src", URL.createObjectURL(file))
+    }
+    return true;
+};
 
 function selectcheckbox(id, btnId) {
     var checkbox = document.getElementById(id);

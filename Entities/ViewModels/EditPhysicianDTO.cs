@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,6 +71,9 @@ namespace Entities.ViewModels
         [Required(ErrorMessage = "Photo is required")]
         public IFormFile? Photo { get; set; }
         public IFormFile? Signature { get; set; }
+
+        public string PhotoImg { get; set; }
+        public string SignImg { get; set; }
 
         public string? AdminNotes { get; set; }
 

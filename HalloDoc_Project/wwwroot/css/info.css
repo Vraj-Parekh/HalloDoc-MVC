@@ -31,7 +31,7 @@
         color: #01bce9;
     }
 
-#fileLoader {
+#fileLoader,#sign {
     position: absolute;
     left: -9999px;
 }

@@ -17,8 +17,10 @@ namespace HalloDoc_Project.Controllers
         private readonly IShiftService shiftService;
         private readonly IShiftDetailService shiftDetailService;
         private readonly IShiftDetailRegionService shiftDetailRegionService;
+        private readonly IHealthProfessionalsService healthProfessionalsService;
+        private readonly IHealthProfessionalTypeService healthProfessionalTypeService;
 
-        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService)
+        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService,IHealthProfessionalsService healthProfessionalsService,IHealthProfessionalTypeService healthProfessionalTypeService)
         {
             this.regionService = regionService;
             this.roleService = roleService;
@@ -26,6 +28,8 @@ namespace HalloDoc_Project.Controllers
             this.shiftService = shiftService;
             this.shiftDetailService = shiftDetailService;
             this.shiftDetailRegionService = shiftDetailRegionService;
+            this.healthProfessionalsService = healthProfessionalsService;
+            this.healthProfessionalTypeService = healthProfessionalTypeService;
         }
 
         [HttpGet]
@@ -59,6 +63,43 @@ namespace HalloDoc_Project.Controllers
                 return View(model);
             }
             return View();
+        }
+
+        public async Task<IActionResult> Partners()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> VendorsTable(string searchVendor,int professionType)
+        {
+            List<VendorsDTO>? filteredData = await healthProfessionalsService.GetHealthProfessionals(searchVendor, professionType);
+            return PartialView("_VendorTable", filteredData);
+        }
+
+        [HttpGet("{vendorId}")]
+        public async Task<IActionResult> EditBusiness(int vendorId)
+        {
+            EditBusinessDTO? model = await healthProfessionalsService.GetHealthProfessionalInfo(vendorId);
+            model.Regions = regionService.GetRegionList();
+            model.ProfessionList = healthProfessionalTypeService.GetProfession();
+
+            return View(model);
+        }
+
+        [HttpPost("{vendorId}")]
+        public async Task<IActionResult> EditBusiness(int vendorId,EditBusinessDTO model)
+        {
+            await healthProfessionalsService.EditProfessional(vendorId, model);
+            return RedirectToAction("Partners","Provider");
+        }
+
+        public async Task<IActionResult> AddBusiness()
+        {
+            EditBusinessDTO? model = new EditBusinessDTO();
+            model.Regions = regionService.GetRegionList();
+            model.ProfessionList = healthProfessionalTypeService.GetProfession();
+
+            return View(model);
         }
     }
 }

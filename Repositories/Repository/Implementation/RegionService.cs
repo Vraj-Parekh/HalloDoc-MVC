@@ -7,6 +7,7 @@ using Entities.DataContext;
 using Repositories.Repository.Interface;
 using Entities.Models;
 using Entities.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.Repository.Implementation
 {
@@ -36,6 +37,11 @@ namespace Repositories.Repository.Implementation
             }).ToList();
 
             return regionList;
+        }
+
+        public string GetRegionAbrName(int regionId)
+        {
+            return _context.Regions.Where(a=>a.Regionid == regionId).Select(a=>a.Abbreviation).FirstOrDefault();
         }
     }
 }
