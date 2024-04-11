@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "PatientRecords";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#records";
+}
+
+<div class="mx-5">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <h4>Patient History</h4>
+        </div>
+
+        <div class="bg-white rounded shadow p-3 mb-5">
+            <div class="row align-items-center">
+                <div class="col-lg-3">
+                    <input type="text" placeholder="First Name" class="form-control p-2 px-4 w-100" id="firstname" style="height:58px;">
+                </div>
+                <div class="col-lg-3">
+                    <input type="text" placeholder="Last Name" class="form-control p-2 px-4 w-100" id="lastname" style="height:58px;">
+                </div>
+                <div class="col-lg-3">
+                    <input type="text" placeholder="Email" class="form-control p-2 px-4 w-100" id="email" style="height:58px;">
+                </div>
+                <div class="col-lg-3">
+                    <input type="text" placeholder="Phone Number" class="form-control p-2 px-4 w-100" id="phonenumber" style="height:58px;">
+                </div>
+            </div>
+            <div class="row justify-content-end mt-4">
+                <div class="col-auto">
+                    <button class="btn btn-outline-info text-info bg-white" id="clearButton">Clear</button>
+                    <button type="button" class="btn btn-info text-white" id="searchButton"> Search </button>
+                </div>
+            </div>
+
+            <div id="historyTableDiv">
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_ActiveTabPartial" model=active />
+<script src="/js/PatientHistory.js" asp-append-version="true"></script>

@@ -30,7 +30,7 @@ namespace Repositories.Repository.Implementation
             return business;
         }
 
-        public async Task<List<VendorsDTO>> GetHealthProfessionals(string searchVendor,int profesionType)
+        public async Task<List<VendorsDTO>> GetFilteredHealthProfessionals(string searchVendor,int profesionType)
         {
             IQueryable<Healthprofessional> query = _context.Healthprofessionals
                 .Where(a=>a.Profession == profesionType || profesionType == 0)
@@ -125,6 +125,7 @@ namespace Repositories.Repository.Implementation
                 Regionid = model.State,
                 Vendorname = model.BusinessName,
                 Zip = model.Zip,
+                Vendorid = _context.Healthprofessionals.OrderBy(a => a.Vendorid).LastOrDefault().Vendorid + 1,
             };
 
             _context.Add(healthProfessional);

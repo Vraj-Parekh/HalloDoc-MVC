@@ -1,0 +1,95 @@
+﻿@model List<PatientRecordsDTO>
+@using Entities.Enum;
+@{
+    ViewData["Title"] = "PatientRecords";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#records";
+}
+
+<div class="mx-5">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <h4>Patient History</h4>
+
+            <a class="btn btn-outline-info bg-white text-info" onclick="history.back()"> &lt; Back </a>
+        </div>
+
+        <div class="bg-white rounded shadow p-3 mb-5">
+
+            <table class="table mt-3">
+                <thead class="table-light">
+                    <tr>
+                        <th class="col">
+                            Client/Member
+                        </th>
+                        <th class="col text-center">
+                            Created Date
+                        </th>
+                        <th class="col text-center pe-5">
+                            Confirmation
+                        </th>
+                        <th class="col text-center">
+                            Provider Name
+                        </th>
+                        <th class="col text-center">
+                            Concluded Date
+                        </th>
+                        <th class="col text-center">
+                            Status
+                        </th>
+                        <th class="col text-center">
+                            Final Report
+                        </th>
+                        <th class="col text-center">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @item.ClientName
+                            </td>
+                            <td class="text-center">
+                                @item.CreatedDate
+                            </td>
+                            <td class="text-center">
+                                @item.Confirmation
+                            </td>
+                            <td class="text-center">
+                                @item.ProviderName
+                            </td>
+                            <td class="text-center">
+                                @item.ConcludedDate
+                            </td>
+                            <td class="text-center">
+                                @((RequestStatus)item.Status)
+                            </td>
+                            <td class="text-center">
+                                <a class="btn btn-outline-info" asp-route-requestId="@item.RequestId">View</a>
+                            </td>  
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-info dropdown-toggle bg-white text-info" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="actions">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu shadow">
+                                        <li><a class="dropdown-item" asp-action="ViewCase" asp-controller="Admin" asp-route-requestId="@item.RequestId">View Case</a></li>
+                                        <li><a class="dropdown-item" asp-action="" asp-controller="">Chat</a></li>
+                                        <li><a class="dropdown-item" asp-action="" asp-controller="">Documents</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<partial name="_ActiveTabPartial" model=active />
+<script src="/js/PatientRecords.js" asp-append-version="true"></script>

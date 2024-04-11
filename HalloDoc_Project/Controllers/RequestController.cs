@@ -3,6 +3,7 @@ using Entities.Models;
 using Entities.ViewModels;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Repositories.Repository.Interface;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc_Project.Controllers
@@ -12,12 +13,14 @@ namespace HalloDoc_Project.Controllers
         private readonly HalloDocDbContext _context;
         private readonly IWebHostEnvironment env;
         private readonly IEmailSender emailSender;
+        private readonly IUserService userService;
 
-        public RequestController(HalloDocDbContext context, IWebHostEnvironment env, IEmailSender emailSender)
+        public RequestController(HalloDocDbContext context, IWebHostEnvironment env, IEmailSender emailSender,IUserService userService)
         {
             _context = context;
             this.env = env;
             this.emailSender = emailSender;
+            this.userService = userService;
         }
 
         public IActionResult Index()
@@ -139,7 +142,11 @@ namespace HalloDoc_Project.Controllers
                     
                     _context.Users.Add(user);
                     _context.Aspnetusers.Add(aspNetUser);
-                    //request.User = user;
+                    request.User = user;
+                }
+                else
+                {
+                    request.User = userService.GetUserByEmail(request.Email);
                 }
                 try
                 {

@@ -420,5 +420,36 @@ namespace Repositories.Repository.Implementation
                 _context.SaveChanges();
             }
         }
+
+        public async Task<List<PatientRecordsDTO>> GetPatientRecord(int userId)
+        {
+            List<Request>? patientRecords = await _context.Requests
+                .Where(a => a.Userid == userId)
+                .Include(a => a.Requestclients)
+                .Include(a=>a.Physician)
+                .ToListAsync();
+
+            if(patientRecords.Count > 0)
+            {
+                List<PatientRecordsDTO> modelList = new List<PatientRecordsDTO>();
+
+                foreach (var item in patientRecords)
+                {
+                    PatientRecordsDTO model = new PatientRecordsDTO();
+                    model.ClientName = item.Firstname + ", " + item.Lastname;
+                    model.CreatedDate = item.Createddate.ToString("MMM d,yyyy");
+                    model.Confirmation = item.Confirmationnumber;
+                    model.ProviderName = (item.Physician != null) ? item.Physician.Firstname : "unknown";
+                    model.ConcludedDate = item.Createddate.ToString("MMM d,yyyy"); ;
+                    model.Status = item.Status;
+                    model.RequestId = item.Requestid;
+
+                    modelList.Add(model);
+                }
+
+                return modelList;
+            }
+            return new List<PatientRecordsDTO>();
+        }
     }
 }

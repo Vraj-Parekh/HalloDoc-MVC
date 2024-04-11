@@ -1,0 +1,51 @@
+﻿@model List<PatientHistoryDTO>
+
+<table class="table mt-3">
+    <thead class="table-light">
+        <tr>
+            <th class="col">
+                First Name
+            </th>
+            <th class="col text-center">
+                Last Name
+            </th>
+            <th class="col text-center pe-5">
+                Email
+            </th>
+            <th class="col text-center">
+                Phone
+            </th>
+            <th class="col text-center">
+                Address
+            </th>
+            <th class="col text-center">
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.FirstName
+                </td>
+                <td class="text-center">
+                    @item.LastName
+                </td>
+                <td class="text-center">
+                    @item.Email
+                </td>
+                <td class="text-center">
+                    @item.PhoneNumber
+                </td>
+                <td class="text-center">
+                    @item.Address
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-outline-info" asp-action="PatientRecords" asp-controller="Provider" asp-route-userId="@item.UserId">Explore</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

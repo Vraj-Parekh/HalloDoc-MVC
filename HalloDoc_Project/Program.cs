@@ -45,6 +45,7 @@ builder.Services.AddTransient<IShiftDetailService, ShiftDetailService>();
 builder.Services.AddTransient<IShiftDetailRegionService, ShiftDetailRegionService>();
 builder.Services.AddTransient<IEmailLogService, EmailLogService>();
 builder.Services.AddTransient<ISmsLogService, SmsLogService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

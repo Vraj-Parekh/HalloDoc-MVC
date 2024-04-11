@@ -19,8 +19,10 @@ namespace HalloDoc_Project.Controllers
         private readonly IShiftDetailRegionService shiftDetailRegionService;
         private readonly IHealthProfessionalsService healthProfessionalsService;
         private readonly IHealthProfessionalTypeService healthProfessionalTypeService;
+        private readonly IUserService userService;
+        private readonly IRequestServices requestServices;
 
-        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService,IHealthProfessionalsService healthProfessionalsService,IHealthProfessionalTypeService healthProfessionalTypeService)
+        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService,IHealthProfessionalsService healthProfessionalsService,IHealthProfessionalTypeService healthProfessionalTypeService,IUserService userService,IRequestServices requestServices)
         {
             this.regionService = regionService;
             this.roleService = roleService;
@@ -30,6 +32,8 @@ namespace HalloDoc_Project.Controllers
             this.shiftDetailRegionService = shiftDetailRegionService;
             this.healthProfessionalsService = healthProfessionalsService;
             this.healthProfessionalTypeService = healthProfessionalTypeService;
+            this.userService = userService;
+            this.requestServices = requestServices;
         }
 
         [HttpGet]
@@ -72,7 +76,7 @@ namespace HalloDoc_Project.Controllers
 
         public async Task<IActionResult> VendorsTable(string searchVendor,int professionType)
         {
-            List<VendorsDTO>? filteredData = await healthProfessionalsService.GetHealthProfessionals(searchVendor, professionType);
+            List<VendorsDTO>? filteredData = await healthProfessionalsService.GetFilteredHealthProfessionals(searchVendor, professionType);
             return PartialView("_VendorTable", filteredData);
         }
 
@@ -108,6 +112,24 @@ namespace HalloDoc_Project.Controllers
             //error : duplicate key violates
             await healthProfessionalsService.AddBusiness(model);
             return RedirectToAction("Partners", "Provider");
+        }
+
+        public async Task<IActionResult> PatientHistory()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> PatientHistoryTable(string firstName, string lastName, string email, string phoneNumber)
+        {
+            List<PatientHistoryDTO>? filteredData = await userService.GetFilteredUsers(firstName, lastName, email, phoneNumber);
+            return PartialView("_PatientHistoryTable", filteredData);
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> PatientRecords(int userId)
+        {
+            List<PatientRecordsDTO>? modelList = await requestServices.GetPatientRecord(userId);
+            return View(modelList);
         }
     }
 }
