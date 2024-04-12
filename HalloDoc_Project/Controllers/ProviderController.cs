@@ -131,5 +131,49 @@ namespace HalloDoc_Project.Controllers
             List<PatientRecordsDTO>? modelList = await requestServices.GetPatientRecord(userId);
             return View(modelList);
         }
+
+        public async Task<IActionResult> SearchRecords()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> SearchRecordsTable(string firstName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName)
+        {
+            List<SearchRecordsDTO>? filteredData = await requestServices.GetfilteredSearchRecords(firstName, email, phoneNumber, requestStatus, requestType, fromDateOfService, toDateOfService, providerName);
+            return PartialView("_SearchRecordsTable",filteredData);
+        }
+
+        [HttpPost("{requestId}")]
+        public async Task<IActionResult> DeletePatientRecord(int requestId)
+        {
+            await requestServices.DeletePatientRecord(requestId);
+            return RedirectToAction("SearchRecords", "Provider");
+        }
+
+        public async Task<IActionResult> EmailLogs()
+        {
+            LogsDTO? model = new LogsDTO();
+            model.Roles = roleService.GetRoles();
+            return View(model);
+        }
+
+        public async Task<IActionResult> EmailLogsTable()
+        {
+            //data getting
+            return PartialView("_LogsTable");
+        }      
+        
+        public async Task<IActionResult> SmsLogs()
+        {
+            LogsDTO? model = new LogsDTO();
+            model.Roles = roleService.GetRoles();
+            return View(model);
+        }
+
+        public async Task<IActionResult> SmsLogsTable()
+        {
+            //data getting
+            return PartialView("_LogsTable");
+        }
     }
 }

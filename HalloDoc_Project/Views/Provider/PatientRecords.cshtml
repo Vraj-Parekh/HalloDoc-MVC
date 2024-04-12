@@ -9,7 +9,7 @@
 <div class="mx-5">
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
-            <h4>Patient History</h4>
+            <h4>Patient Records</h4>
 
             <a class="btn btn-outline-info bg-white text-info" onclick="history.back()"> &lt; Back </a>
         </div>
@@ -25,7 +25,7 @@
                         <th class="col text-center">
                             Created Date
                         </th>
-                        <th class="col text-center pe-5">
+                        <th class="col text-center">
                             Confirmation
                         </th>
                         <th class="col text-center">
@@ -78,7 +78,7 @@
                                     <ul class="dropdown-menu shadow">
                                         <li><a class="dropdown-item" asp-action="ViewCase" asp-controller="Admin" asp-route-requestId="@item.RequestId">View Case</a></li>
                                         <li><a class="dropdown-item" asp-action="" asp-controller="">Chat</a></li>
-                                        <li><a class="dropdown-item" asp-action="" asp-controller="">Documents</a></li>
+                                        <li><a class="dropdown-item" asp-action="ViewUploads" asp-controller="Admin" asp-route-requestId="@item.RequestId">Documents</a></li>
                                     </ul>
                                 </div>
                             </td>

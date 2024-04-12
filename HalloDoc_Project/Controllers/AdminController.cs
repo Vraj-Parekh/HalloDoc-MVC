@@ -378,40 +378,7 @@ namespace HalloDoc_Project.Controllers
         public async Task<FileResult> ExportFiltered(int requestTypeId, int status, int pageIndex, int pageSize)
         {
             List<Request>? requests = await requestServices.GetFilteredRequests(requestTypeId, status, pageIndex, pageSize);
-            //byte[]? file = ExcelHelper.CreateFile(requests);
-            List<RequestedExport> filterdData = new List<RequestedExport>();
-
-            foreach (var requ in requests)
-            {
-                RequestedExport ml = new RequestedExport();
-                Requestclient rc = requ.Requestclients.FirstOrDefault();
-                ml.Name = rc.Firstname + " " + rc.Lastname;
-                //ml.DateOfBirth = DateTime.Parse(rc.Intdate.ToString() + rc.Strmonth + rc.Intyear.ToString());
-                ml.DateOfBirth = GenerateDateOfBirth(rc.Intyear, rc.Strmonth, rc.Intdate);
-                ml.Requestor = requ.Firstname + " " + requ.Lastname;
-                ml.RequestedDate = requ.Createddate;
-                ml.address = rc.Address;
-                if (requ.Requesttypeid == 1)
-                {
-                    ml.RequestType = "Business";
-                }
-                else if (requ.Requesttypeid == 2)
-                {
-                    ml.RequestType = "Patient";
-                }
-                else if (requ.Requesttypeid == 3)
-                {
-                    ml.RequestType = "Family";
-                }
-                else if (requ.Requesttypeid == 4)
-
-                {
-                    ml.RequestType = "Concierge";
-                }
-
-                filterdData.Add(ml);
-            }
-            var file = ExcelHelper.CreateFile(filterdData);
+            byte[]? file = ExcelHelper.CreateFile(requests);
             return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_list.xlsx");
         }
 

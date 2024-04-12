@@ -1,0 +1,70 @@
+﻿@model List<LogsDTO>
+@using Entities.Enum;
+
+<table class="table mt-3">
+    <thead class="table-light">
+        <tr>
+            <th class="col">
+                Recipient
+            </th>
+            <th class="col text-center">
+                Active
+            </th>
+            <th class="col text-center">
+                Role Name
+            </th>
+            <th class="col text-center">
+                Email Id
+            </th>
+            <th class="col text-center">
+                Created Date
+            </th>
+            <th class="col text-center">
+                Sent Date
+            </th>
+            <th class="col text-center">
+                Sent
+            </th>
+            <th class="col text-center">
+                Sent Tries
+            </th>
+            <th class="col text-center">
+                Confirmation Number
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+       @*  @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Recipient
+                </td>
+                <td class="text-center">
+                    @item.Active
+                </td>
+                <td class="text-center">
+                    @item.Role
+                </td>
+                <td class="text-center">
+                    @item.Email
+                </td>
+                <td class="text-center">
+                    @item.CreatedDate
+                </td>
+                <td class="text-center">
+                    @item.SentDate
+                </td>
+                <td class="text-center">
+                    @item.Sent
+                </td>
+                <td class="text-center">
+                    @item.SentTries
+                </td>
+                <td class="text-center">
+                    @item.ConfirmationNumber
+                </td>
+            </tr>
+        } *@
+    </tbody>
+</table>

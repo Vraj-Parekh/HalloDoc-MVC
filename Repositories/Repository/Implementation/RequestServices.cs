@@ -2,12 +2,14 @@
 using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Ocsp;
 using Org.BouncyCastle.Utilities;
 using Repositories.Repository.Interface;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
+using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Repositories.Repository.Implementation
 {
@@ -52,13 +54,13 @@ namespace Repositories.Repository.Implementation
             Request? request = new Request()
             {
                 Requesttypeid = (int)RequestTypeId.Patient,
-                
+
                 Firstname = model.FirstName,
                 Lastname = model.LastName,
                 Phonenumber = model.PhoneNumber,
                 Email = model.Email,
                 Status = (int)RequestStatus.Unassigned,
-                Confirmationnumber = GetConfirmationNumber(model.City,model.LastName,model.FirstName,count),
+                Confirmationnumber = GetConfirmationNumber(model.City, model.LastName, model.FirstName, count),
                 Createddate = DateTime.Now,
                 Isdeleted = false,
                 Isurgentemailsent = false,
@@ -203,7 +205,7 @@ namespace Repositories.Repository.Implementation
             return request;
         }
 
-        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize,string searchQuery, int regionId,out int totalCount)
+        public List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, string searchQuery, int regionId, out int totalCount)
         {
             Dictionary<int, int[]> statusMap = new()
             {
@@ -228,7 +230,7 @@ namespace Repositories.Repository.Implementation
                                        || a.Lastname.ToLower().Contains(searchQuery));
             }
 
-            if(regionId > 0)
+            if (regionId > 0)
             {
                 query = query.Where(a => a.Requestclients.Any(rc => rc.Regionid == regionId));
             }
@@ -249,7 +251,7 @@ namespace Repositories.Repository.Implementation
                 {
                     RequestId = req.Requestid,
                     FirstName = requestClient.Firstname,
-                    LastName = requestClient.Lastname??"",
+                    LastName = requestClient.Lastname ?? "",
                     Dob = GenerateDateOfBirth(requestClient.Intyear, requestClient.Strmonth, requestClient.Intdate),
                     Requestor = (RequestTypeId)req.Requesttypeid + ", " + req.Firstname,
                     RequestedDate = req.Createddate,
@@ -426,10 +428,10 @@ namespace Repositories.Repository.Implementation
             List<Request>? patientRecords = await _context.Requests
                 .Where(a => a.Userid == userId)
                 .Include(a => a.Requestclients)
-                .Include(a=>a.Physician)
+                .Include(a => a.Physician)
                 .ToListAsync();
 
-            if(patientRecords.Count > 0)
+            if (patientRecords.Count > 0)
             {
                 List<PatientRecordsDTO> modelList = new List<PatientRecordsDTO>();
 
@@ -439,7 +441,7 @@ namespace Repositories.Repository.Implementation
                     model.ClientName = item.Firstname + ", " + item.Lastname;
                     model.CreatedDate = item.Createddate.ToString("MMM d,yyyy");
                     model.Confirmation = item.Confirmationnumber;
-                    model.ProviderName = (item.Physician != null) ? item.Physician.Firstname : "unknown";
+                    model.ProviderName = (item.Physician != null) ? item.Physician.Firstname : "Not Assigned";
                     model.ConcludedDate = item.Createddate.ToString("MMM d,yyyy"); ;
                     model.Status = item.Status;
                     model.RequestId = item.Requestid;
@@ -450,6 +452,97 @@ namespace Repositories.Repository.Implementation
                 return modelList;
             }
             return new List<PatientRecordsDTO>();
+        }
+
+        public async Task<List<SearchRecordsDTO>> GetfilteredSearchRecords(string firstName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName)
+        {
+            IQueryable<Request>? query = _context.Requests
+                .Include(a => a.Requestclients)
+                .Include(a => a.Physician)
+                .Include(a => a.Requestnotes)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(firstName))
+            {
+                firstName = firstName.ToLower().Trim();
+                query = query.Where(a => a.Firstname.ToLower().Contains(firstName));
+            }
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                email = email.ToLower().Trim();
+                query = query.Where(a => a.Email.ToLower().Contains(email));
+            }
+
+            if (!string.IsNullOrEmpty(phoneNumber))
+            {
+                phoneNumber = phoneNumber.ToLower().Trim();
+                query = query.Where(a => a.Phonenumber.ToLower().Contains(phoneNumber));
+            }
+
+            if (requestStatus != 0)
+            {
+                query = query.Where(a => a.Status == requestStatus);
+            }
+
+            if (requestType != 0)
+            {
+                query = query.Where(a => a.Requesttypeid == requestType);
+            }
+
+            if (fromDateOfService != DateTime.MinValue && toDateOfService != DateTime.MinValue)
+            {
+                query = query.Where(a => a.Createddate >= fromDateOfService && a.Accepteddate <= toDateOfService);
+            }
+
+            if (!string.IsNullOrEmpty(providerName))
+            {
+                providerName = providerName.ToLower().Trim();
+                query = query.Where(a => a.Physician.Firstname.ToLower().Contains(providerName));
+            }
+
+            List<Request>? searchedRecords = await query.Where(a => a.Isdeleted != true).ToListAsync();
+
+            List<SearchRecordsDTO> modelList = new List<SearchRecordsDTO>();
+
+            foreach (var item in searchedRecords)
+            {
+                Requestclient? requestClient = item.Requestclients.FirstOrDefault();
+                Physician? physician = item.Physician;
+                //var requestNotes = item.Requestnotes;
+
+                SearchRecordsDTO model = new SearchRecordsDTO()
+                {
+                    PatientName = item.Firstname ?? "-",
+                    Requestor = item.Requesttypeid,
+                    DateofService = item.Createddate.ToString("MMM dd,yyy"),
+                    CloseCaseDate = item.Createddate.ToString("MMM dd,yyy"),//pending
+                    Email = item.Email ?? "-",
+                    PhoneNumber = item.Phonenumber ?? "-",
+                    Address = requestClient?.City ?? "-",
+                    Zip = requestClient?.Zipcode ?? "-",
+                    RequestStatus = item.Status,
+                    Physician = physician?.Firstname ?? "-",
+                    PhysicianNote = "pending",
+                    CancelledByProviderNote = "pending",
+                    AdminNote = "pending",
+                    PatientNote = "pending",
+                    RequestId = item.Requestid,
+                };
+                modelList.Add(model);
+            }
+            return modelList;
+        }
+
+        public async Task DeletePatientRecord(int requestId)
+        {
+            Request? record = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            if (record is not null)
+            {
+                record.Isdeleted = true;
+                _context.Update(record);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
