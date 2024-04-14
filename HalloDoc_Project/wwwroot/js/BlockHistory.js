@@ -2,36 +2,28 @@
 var itemsPerPage = 10;
 
 function loadFilteredData(page) {
-    var role = $('#role').val();
-    var receiverName = $('#receivername').val();
-    var emailId = $('#emailid').val();
+    var name = $('#name').val();
     var createdDate = $('#createdDate').val();
-    var sentDate = $('#sentDate').val();
-
-    console.log(role);
-    console.log(receiverName);
-    console.log(emailId);
-    console.log(createdDate);
-    console.log(sentDate);
+    var email = $('#email').val();
+    var phonenumber = $('#phonenumber').val();
 
     $.ajax({
-        url: '/Provider/EmailLogsTable',
+        url: '/Provider/BlockHistoryTable',
         type: 'GET',
         data: {
-            role: role,
-            receiverName: receiverName,
-            emailId: emailId,
+            name: name,
             createdDate: createdDate,
-            sentDate: sentDate,
+            email: email,
+            phonenumber: phonenumber,
             page: page,
             itemsPerPage: itemsPerPage
         },
         success: function (data) {
-            $('#emailLogsTableDiv').html(data);
+            $('#blockHistroyTableDiv').html(data);
             console.log("success");
         },
         error: function (xhr, status, error) {
-            $('#emailLogsTableDiv').html("<h3 class='text-center'>No data found</h3>");
+            $('#blockHistroyTableDiv').html("<h3 class='text-center'>No data found</h3>");
             console.log("error");
         }
     });
@@ -43,11 +35,10 @@ $('#searchButton').click(function () {
 });
 
 $('#clearButton').click(function () {
-    $('#role').val(0);
-    $('#receivername').val('');
-    $('#emailid').val('');
+    $('#name').val('');
     $('#createdDate').val('');
-    $('#sentDate').val('');
+    $('#email').val('');
+    $('#phonenumber').val('');
     page = 1;
 
     loadFilteredData(page);

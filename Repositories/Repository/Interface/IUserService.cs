@@ -5,7 +5,7 @@ namespace Repositories.Repository.Interface
 {
     public interface IUserService
     {
-        Task<List<PatientHistoryDTO>> GetFilteredUsers(string firstName, string lastName, string email, string phoneNumber);
+        Task<Pagination<PatientHistoryDTO>> GetFilteredUsers(string firstName, string lastName, string email, string phoneNumber, int page, int itemsPerPage);
         User GetUserByEmail(string email);
     }
 }

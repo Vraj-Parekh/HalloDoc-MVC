@@ -24,5 +24,33 @@
         }
     });
 
-     $('#accountType').trigger('change');
+    $('#accountType').trigger('change');
+
+    function loadFilteredData() {
+        var accountType = $('#accountType').val();
+
+        console.log(accountType);
+
+        $.ajax({
+            url: '/Admin/UserAccessTable',
+            type: 'GET',
+            data: {
+                accountType: accountType
+            },
+            success: function (data) {
+                $('#userAccessTableDiv').html(data);
+                console.log("success");
+            },
+            error: function (xhr, status, error) {
+                console.log("error");
+            }
+        });
+    }
+
+    $("#accountType").on('change', function () {
+        loadFilteredData();
+    });
+
+    // Initial loading of table data
+    loadFilteredData();
 });

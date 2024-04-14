@@ -9,6 +9,6 @@ namespace Repositories.Repository.Interface
         Task EditProfessional(int vendorId, EditBusinessDTO model);
         List<Healthprofessional> GetBusiness(int professionId);
         Task<EditBusinessDTO> GetHealthProfessionalInfo(int vendorId);
-        Task<List<VendorsDTO>> GetFilteredHealthProfessionals(string searchVendor, int profesionType);
+        Task<Pagination<VendorsDTO>> GetFilteredHealthProfessionals(string searchVendor, int profesionType, int page, int itemsPerPage);
     }
 }

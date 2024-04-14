@@ -16,6 +16,7 @@ using System.Globalization;
 using Repositories.Repository.Implementation;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Utilities;
+using MailKit.Search;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -375,9 +376,10 @@ namespace HalloDoc_Project.Controllers
             DateTime finalDate = new DateTime(year ?? 1900, DateTime.ParseExact(month ?? "January", "MMMM", CultureInfo.CurrentCulture).Month, date ?? 01);
             return finalDate;
         }
-        public async Task<FileResult> ExportFiltered(int requestTypeId, int status, int pageIndex, int pageSize)
+        public FileResult ExportFiltered(int requestTypeId, int status, int pageIndex, int pageSize, string searchQuery, int regionId)
         {
-            List<Request>? requests = await requestServices.GetFilteredRequests(requestTypeId, status, pageIndex, pageSize);
+            int totalCount;
+            List<AdminDashboardDTO>? requests = requestServices.GetPatientdata(requestTypeId, status, pageIndex, pageSize, searchQuery, regionId, out totalCount);
             byte[]? file = ExcelHelper.CreateFile(requests);
             return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_list.xlsx");
         }
@@ -451,7 +453,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("MyProfile");
         }
 
-        public IActionResult Provider()
+        public IActionResult Providers()
         {
             List<ProviderMenuDTO>? model = physicianService.GetProviderMenu();
             model.First().Regions = regionService.GetRegionList();
@@ -532,11 +534,16 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
-        public IActionResult UserAccess()
+        public async Task<IActionResult> UserAccess()
         {
             return View();
         }
 
+        public async Task<IActionResult> UserAccessTable(int accountType)
+        {
+            //Pagination<UserAccessDTO>? filteredData =
+            return PartialView("_UserAccessTable");
+        }
         public IActionResult CreateAdminAccount()
         {
             CreateAdminDTO model = new CreateAdminDTO();

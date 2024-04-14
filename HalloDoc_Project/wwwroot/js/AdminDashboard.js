@@ -158,7 +158,7 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             url: '/Admin/ExportFiltered',
-            data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, pageSize: pageSize },
+            data: { status: status, requestTypeId: requestTypeId, pageIndex: pageIndex, pageSize: pageSize, searchQuery: query, regionId: regionId },
             xhrFields: {
                 responseType: 'blob' // Set the response type to blob
             },

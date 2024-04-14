@@ -1,5 +1,6 @@
 ﻿using Entities.Models;
 using Entities.ViewModels;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Repositories.Repository.Interface
 {
@@ -16,7 +17,7 @@ namespace Repositories.Repository.Interface
         object GetCount();
         ViewDocumentList GetDocumentData(int requestId);
         Task<List<Request>> GetFilteredRequests(int requesttypeid, int status, int pageIndex, int pageSize);
-        Task<List<SearchRecordsDTO>> GetfilteredSearchRecords(string firstName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName);
+        Task<Pagination<SearchRecordsDTO>> GetfilteredSearchRecords(string patientName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName,int page,int itemsPerPage);
         SendAgreement GetMobileEmail(SendAgreement model, int requestId);
         List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, string searchQuery, int regionId, out int totalCount);
         Task<List<PatientRecordsDTO>> GetPatientRecord(int userId);

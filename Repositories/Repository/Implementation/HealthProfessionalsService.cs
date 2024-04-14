@@ -30,7 +30,7 @@ namespace Repositories.Repository.Implementation
             return business;
         }
 
-        public async Task<List<VendorsDTO>> GetFilteredHealthProfessionals(string searchVendor,int profesionType)
+        public async Task<Pagination<VendorsDTO>> GetFilteredHealthProfessionals(string searchVendor,int profesionType, int page, int itemsPerPage)
         {
             IQueryable<Healthprofessional> query = _context.Healthprofessionals
                 .Where(a=>a.Profession == profesionType || profesionType == 0)
@@ -42,7 +42,15 @@ namespace Repositories.Repository.Implementation
                 query = query.Where(a => a.Vendorname.ToLower().Contains(searchVendor));
             }
 
-            List<Healthprofessional>? healthprofessional = await query.ToListAsync();
+            int totalItems = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+
+            if (page < 1) page = 1;
+            if (page > totalPages) page = totalPages;
+
+            int skip = (page - 1) * itemsPerPage;
+
+            List<Healthprofessional>? healthprofessional = await query.Skip(skip).Take(itemsPerPage).ToListAsync();
 
             List<VendorsDTO> modelList = new List<VendorsDTO>();
 
@@ -61,7 +69,12 @@ namespace Repositories.Repository.Implementation
                 modelList.Add(model);
             }
 
-            return modelList;
+            return new Pagination<VendorsDTO>
+            {
+                Data = modelList,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
         }
 
         public async Task<EditBusinessDTO> GetHealthProfessionalInfo(int vendorId)

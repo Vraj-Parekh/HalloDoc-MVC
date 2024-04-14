@@ -1,9 +1,14 @@
 ﻿using Entities.Models;
 using Entities.ViewModels;
 using HalloDoc_Project.Attributes;
+using MailKit.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Repository.Interface;
+using Repositories.Utility;
+using System.Configuration.Provider;
+using System.Drawing;
+using Twilio.Types;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -21,8 +26,9 @@ namespace HalloDoc_Project.Controllers
         private readonly IHealthProfessionalTypeService healthProfessionalTypeService;
         private readonly IUserService userService;
         private readonly IRequestServices requestServices;
+        private readonly IBlockRequestService blockRequestService;
 
-        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService,IHealthProfessionalsService healthProfessionalsService,IHealthProfessionalTypeService healthProfessionalTypeService,IUserService userService,IRequestServices requestServices)
+        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService,IHealthProfessionalsService healthProfessionalsService,IHealthProfessionalTypeService healthProfessionalTypeService,IUserService userService,IRequestServices requestServices,IBlockRequestService blockRequestService)
         {
             this.regionService = regionService;
             this.roleService = roleService;
@@ -34,6 +40,7 @@ namespace HalloDoc_Project.Controllers
             this.healthProfessionalTypeService = healthProfessionalTypeService;
             this.userService = userService;
             this.requestServices = requestServices;
+            this.blockRequestService = blockRequestService;
         }
 
         [HttpGet]
@@ -74,9 +81,9 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
-        public async Task<IActionResult> VendorsTable(string searchVendor,int professionType)
+        public async Task<IActionResult> VendorsTable(string searchVendor,int professionType, int page = 1, int itemsPerPage = 10)
         {
-            List<VendorsDTO>? filteredData = await healthProfessionalsService.GetFilteredHealthProfessionals(searchVendor, professionType);
+            Pagination<VendorsDTO>? filteredData = await healthProfessionalsService.GetFilteredHealthProfessionals(searchVendor, professionType, page, itemsPerPage);
             return PartialView("_VendorTable", filteredData);
         }
 
@@ -119,9 +126,9 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
-        public async Task<IActionResult> PatientHistoryTable(string firstName, string lastName, string email, string phoneNumber)
+        public async Task<IActionResult> PatientHistoryTable(string firstName, string lastName, string email, string phoneNumber, int page = 1, int itemsPerPage = 10)
         {
-            List<PatientHistoryDTO>? filteredData = await userService.GetFilteredUsers(firstName, lastName, email, phoneNumber);
+            Pagination<PatientHistoryDTO>? filteredData = await userService.GetFilteredUsers(firstName, lastName, email, phoneNumber, page, itemsPerPage);
             return PartialView("_PatientHistoryTable", filteredData);
         }
 
@@ -137,12 +144,18 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
-        public async Task<IActionResult> SearchRecordsTable(string firstName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName)
+        public async Task<IActionResult> SearchRecordsTable(string patientName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName, int page = 1, int itemsPerPage = 10)
         {
-            List<SearchRecordsDTO>? filteredData = await requestServices.GetfilteredSearchRecords(firstName, email, phoneNumber, requestStatus, requestType, fromDateOfService, toDateOfService, providerName);
+            Pagination<SearchRecordsDTO>? filteredData = await requestServices.GetfilteredSearchRecords(patientName, email, phoneNumber, requestStatus, requestType, fromDateOfService, toDateOfService, providerName,page,itemsPerPage);
             return PartialView("_SearchRecordsTable",filteredData);
         }
 
+        //public async Task<FileResult> ExportSearchRecords(string patientName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName, int page = 1, int itemsPerPage = 10)
+        //{
+        //    Pagination<SearchRecordsDTO>? records = await requestServices.GetfilteredSearchRecords(patientName, email, phoneNumber, requestStatus, requestType, fromDateOfService, toDateOfService, providerName, page, itemsPerPage);
+        //    byte[]? file = ExcelHelper.CreateFile(records);
+        //    return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_records.xlsx");
+        //}
         [HttpPost("{requestId}")]
         public async Task<IActionResult> DeletePatientRecord(int requestId)
         {
@@ -174,6 +187,17 @@ namespace HalloDoc_Project.Controllers
         {
             //data getting
             return PartialView("_LogsTable");
+        }
+
+        public async Task<IActionResult> BlockHistory()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> BlockHistoryTable(string name,DateTime createdDate, string email, string phonenumber, int page = 1, int itemsPerPage = 10)
+        {
+            Pagination<BlockHistoryDTO>? filteredData = await blockRequestService.GetFilteredBlockedHistry(name, createdDate, email, phonenumber, page, itemsPerPage);
+            return PartialView("_BlockHistoryTable",filteredData);
         }
     }
 }

@@ -24,7 +24,7 @@
                     <a class="nav-link active fs-5" asp-action="AdminDashboard" asp-controller="Admin">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  fs-5" asp-action="ProviderLocation">Provider Location</a>
+                    <a class="nav-link  fs-5" asp-action="ProviderLocation" asp-controller="Admin">Provider Location</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fs-5" asp-action="MyProfile" asp-controller="Admin">My Profile</a>
@@ -32,25 +32,25 @@
                 <li class="nav-item">
                     @* <a class="nav-link fs-5" asp-action="Providers">Providers</a> *@
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle bg-white text-black border-0 fs-5 nav-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="providers">
+                        <button class="btn btn-secondary dropdown-toggle bg-white text-black border-0 fs-5 nav-link" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Providers
                         </button>
                         <ul class="dropdown-menu shadow">
-                            <li><a class="dropdown-item" asp-action="Provider" asp-controller="Admin">Provider</a></li>
+                            <li><a class="dropdown-item" asp-action="Providers" asp-controller="Admin">Providers</a></li>
                             <li><a class="dropdown-item" asp-action="Scheduling" asp-controller="Admin">Scheduling</a></li>
                             <li><a class="dropdown-item" asp-action="Invoicing" asp-controller="Admin">Invoicing</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  fs-5" id="partners" asp-action="Partners" asp-controller="Provider">Partners</a>
+                    <a class="nav-link  fs-5" asp-action="Partners" asp-controller="Provider">Partners</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fs-5" asp-action="Access" asp-controller="Admin">Access</a>
                 </li>
                 <li class="nav-item">
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle bg-white text-black border-0 fs-5 nav-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="records">
+                        <button class="btn btn-secondary dropdown-toggle bg-white text-black border-0 fs-5 nav-link" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Records
                         </button>
                         <ul class="dropdown-menu shadow">
@@ -58,7 +58,7 @@
                             <li><a class="dropdown-item" asp-action="EmailLogs" asp-controller="Provider">Email Logs</a></li>
                             <li><a class="dropdown-item" asp-action="SmsLogs" asp-controller="Provider">SMS Logs</a></li>
                             <li><a class="dropdown-item" asp-action="PatientHistory" asp-controller="Provider">Patient Records</a></li>
-                            <li><a class="dropdown-item" asp-action="BlockedHistory" asp-controller="Provider">Blocked History</a></li>
+                            <li><a class="dropdown-item" asp-action="BlockHistory" asp-controller="Provider">Blocked History</a></li>
                         </ul>
                     </div>
                 </li>
@@ -92,13 +92,13 @@
     </li>
     <li class="nav-item">
         <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle bg-white text-black border-0 fs-5 nav-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="providers">
+            <button class="btn btn-secondary dropdown-toggle bg-white text-black border-0 fs-5 nav-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="provider-tab">
                 Providers
             </button>
             <ul class="dropdown-menu shadow">
-                <li><a class="dropdown-item" asp-action="Provider" asp-controller="Admin">Provider</a></li>
-                <li><a class="dropdown-item" asp-action="Scheduling">Scheduling</a></li>
-                <li><a class="dropdown-item" asp-action="Invoicing">Invoicing</a></li>
+                <li><a class="dropdown-item" asp-action="Providers" asp-controller="Admin">Providers</a></li>
+                <li><a class="dropdown-item" asp-action="Scheduling" asp-controller="Admin">Scheduling</a></li>
+                <li><a class="dropdown-item" asp-action="Invoicing" asp-controller="Admin">Invoicing</a></li>
             </ul>
         </div>
     </li>
@@ -126,7 +126,7 @@
                 <li><a class="dropdown-item" asp-action="EmailLogs" asp-controller="Provider">Email Logs</a></li>
                 <li><a class="dropdown-item" asp-action="SmsLogs" asp-controller="Provider">SMS Logs</a></li>
                 <li><a class="dropdown-item" asp-action="PatientHistory" asp-controller="Provider">Patient Records</a></li>
-                <li><a class="dropdown-item" asp-action="BlockedHistory" asp-controller="Provider">Blocked History</a></li>
+                <li><a class="dropdown-item" asp-action="BlockHistory" asp-controller="Provider">Blocked History</a></li>
             </ul>
         </div>
     </li>

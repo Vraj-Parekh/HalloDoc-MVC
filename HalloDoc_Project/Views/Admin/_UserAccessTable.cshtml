@@ -1,0 +1,52 @@
+﻿@model List<UserAccessDTO>
+
+<table class="table mt-3">
+    <thead class="table-light">
+        <tr>
+            <th class="col">
+                Account Type
+                <i class="bi bi-arrow-up"></i>
+            </th>
+            <th class="col text-center">
+                Account POC
+            </th>
+            <th class="col text-center pe-5">
+                Phone
+            </th>
+            <th class="col text-center">
+                Status
+            </th>
+            <th class="col text-center">
+                Open Requests
+            </th>
+            <th class="col text-center">
+                Actions
+            </th>
+        </tr>
+    </thead>
+    @*     <tbody>
+    @foreach (var item in Model)
+    {
+    <tr>
+    <td>
+    @((AccountType)item.AccountType)
+    </td>
+    <td class="text-center">
+    @item.AccountName
+    </td>
+    <td class="text-center">
+    @item.Phone
+    </td>
+    <td class="text-center">
+    @item.Status
+    </td>
+    <td class="text-center">
+    @item.OpenRequests
+    </td>
+    <td class="text-end">
+    <a class="btn btn-outline-info" asp-action="EditRole">Edit</a>
+    </td>
+    </tr>
+    }
+    </tbody> *@
+</table>

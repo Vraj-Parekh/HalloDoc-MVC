@@ -25,25 +25,40 @@ namespace Repositories.Repository.Implementation
             return _context.Users.Where(a => a.Email == email).FirstOrDefault();
         }
 
-        public async Task<List<PatientHistoryDTO>> GetFilteredUsers(string firstName, string lastName, string email, string phoneNumber)
+        public async Task<Pagination<PatientHistoryDTO>> GetFilteredUsers(string firstName, string lastName, string email, string phoneNumber, int page, int itemsPerPage)
         {
             IQueryable<User>? query = _context.Users.AsQueryable();
 
-            if(!string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName) || !string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(phoneNumber))
+            if (!string.IsNullOrEmpty(firstName))
             {
-                firstName = (firstName!=null) ? firstName.ToLower().Trim() : null;
-                lastName = (lastName != null) ? lastName.ToLower().Trim() : null;
-                email = (email != null) ? email.ToLower().Trim() : null;
-                phoneNumber = (phoneNumber != null) ? phoneNumber.ToLower().Trim() : null;
-
-                query = query.Where(a =>
-                    a.Firstname.ToLower().Contains(firstName) ||
-                    a.Lastname.ToLower().Contains(lastName) ||
-                    a.Email.ToLower().Contains(email) ||
-                    a.Mobile.ToLower().Contains(phoneNumber));
+                firstName = firstName.ToLower().Trim();
+                query = query.Where(a=>a.Firstname.ToLower().Contains(firstName));
+            }
+            if (!string.IsNullOrEmpty(lastName))
+            {
+                lastName = lastName.ToLower().Trim();
+                query = query.Where(a=>a.Lastname.ToLower().Contains(lastName));
+            }
+            if (!string.IsNullOrEmpty(email))
+            {
+                email = email.ToLower().Trim();
+                query = query.Where(a=>a.Email.ToLower().Contains(email));
+            }
+            if (!string.IsNullOrEmpty(phoneNumber))
+            {
+                phoneNumber = phoneNumber.ToLower().Trim();
+                query = query.Where(a=>a.Mobile.ToLower().Contains(phoneNumber));
             }
 
-            List<User>? users = await query.ToListAsync(); 
+            int totalItems = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+
+            if (page < 1) page = 1;
+            if (page > totalPages) page = totalPages;
+
+            int skip = (page - 1) * itemsPerPage;
+
+            List<User>? users = await query.Skip(skip).Take(itemsPerPage).ToListAsync();
 
             List<PatientHistoryDTO> modelList = new List<PatientHistoryDTO>();
 
@@ -60,7 +75,12 @@ namespace Repositories.Repository.Implementation
                 };
                 modelList.Add(model);
             }
-            return modelList;
+            return new Pagination<PatientHistoryDTO>
+            {
+                Data = modelList,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
         }
     }
 }

@@ -454,7 +454,7 @@ namespace Repositories.Repository.Implementation
             return new List<PatientRecordsDTO>();
         }
 
-        public async Task<List<SearchRecordsDTO>> GetfilteredSearchRecords(string firstName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName)
+        public async Task<Pagination<SearchRecordsDTO>> GetfilteredSearchRecords(string patientName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName, int page, int itemsPerPage)
         {
             IQueryable<Request>? query = _context.Requests
                 .Include(a => a.Requestclients)
@@ -462,10 +462,10 @@ namespace Repositories.Repository.Implementation
                 .Include(a => a.Requestnotes)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(firstName))
+            if (!string.IsNullOrEmpty(patientName))
             {
-                firstName = firstName.ToLower().Trim();
-                query = query.Where(a => a.Firstname.ToLower().Contains(firstName));
+                patientName = patientName.ToLower().Trim();
+                query = query.Where(a=>a.Requestclients.Any(rc=>rc.Firstname.ToLower().Contains(patientName)));
             }
 
             if (!string.IsNullOrEmpty(email))
@@ -501,7 +501,19 @@ namespace Repositories.Repository.Implementation
                 query = query.Where(a => a.Physician.Firstname.ToLower().Contains(providerName));
             }
 
-            List<Request>? searchedRecords = await query.Where(a => a.Isdeleted != true).ToListAsync();
+            int totalItems = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+
+            if (page < 1) page = 1;
+            if (page > totalPages) page = totalPages;
+
+            int skip = (page - 1) * itemsPerPage;
+
+            List<Request>? searchedRecords = await query
+                .Where(a => a.Isdeleted != true)
+                .Skip(skip)
+                .Take(itemsPerPage)
+                .ToListAsync();
 
             List<SearchRecordsDTO> modelList = new List<SearchRecordsDTO>();
 
@@ -509,7 +521,7 @@ namespace Repositories.Repository.Implementation
             {
                 Requestclient? requestClient = item.Requestclients.FirstOrDefault();
                 Physician? physician = item.Physician;
-                //var requestNotes = item.Requestnotes;
+                Requestnote? requestNotes = item.Requestnotes.FirstOrDefault();
 
                 SearchRecordsDTO model = new SearchRecordsDTO()
                 {
@@ -523,15 +535,21 @@ namespace Repositories.Repository.Implementation
                     Zip = requestClient?.Zipcode ?? "-",
                     RequestStatus = item.Status,
                     Physician = physician?.Firstname ?? "-",
-                    PhysicianNote = "pending",
-                    CancelledByProviderNote = "pending",
-                    AdminNote = "pending",
-                    PatientNote = "pending",
+                    PhysicianNote = requestNotes?.Physiciannotes ?? "-",
+                    CancelledByProviderNote = requestNotes?.Physiciannotes ?? "-",
+                    AdminNote = requestNotes?.Adminnotes ?? "-",
+                    PatientNote = requestNotes?.Physiciannotes ?? "-",
                     RequestId = item.Requestid,
                 };
                 modelList.Add(model);
             }
-            return modelList;
+
+            return new Pagination<SearchRecordsDTO>
+            {
+                Data = modelList,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
         }
 
         public async Task DeletePatientRecord(int requestId)
