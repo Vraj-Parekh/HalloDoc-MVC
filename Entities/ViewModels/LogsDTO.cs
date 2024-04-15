@@ -13,7 +13,9 @@ namespace Entities.ViewModels
         public int Active { get; set; }
         public int Role { get; set; }
         public List<Role> Roles { get; set; }
-        public string Email { get; set; }
+        public string RoleName { get; set; }
+        public string? Email { get; set; }
+        public string? PhoneNumber { get; set; }
         public string CreatedDate { get; set; }
         public string SentDate { get; set; }
         public string Sent {  get; set; }

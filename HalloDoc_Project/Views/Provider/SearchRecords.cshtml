@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "SearchRecords";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     string active = "#records";
@@ -21,10 +20,10 @@
                     <div class="form-floating">
                         <select class="form-select pt-0 pb-0 text-secondary p-2 px-4 w-100" id="requestStatus">
                             <option selected value="0">Select Request Status</option>
-                        @foreach (var status in Enum.GetValues(typeof(RequestStatus)))
-                        {
-                            <option value="@((int)status)">@status.ToString()</option>
-                        }
+                            @foreach (var status in Enum.GetValues(typeof(RequestStatus)))
+                            {
+                                <option value="@((int)status)">@status.ToString()</option>
+                            }
                         </select>
                     </div>
                 </div>
@@ -43,19 +42,25 @@
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <input type="date"
-                           class="form-control text-secondary p-2 px-4 w-100"
-                           id="fromDateofService"
-                           style="height:58px;" />
+                    <div class="form-floating">
+                        <input type="date"
+                               class="form-control text-secondary px-4 w-100"
+                               id="fromDateofService"
+                               style="height:58px;" />
+                        <label for="fromDateofService" class="px-4">From date of service</label>
+                    </div>
                 </div>
             </div>
 
             <div class="row align-items-center">
                 <div class="col-lg-3">
-                    <input type="date"
-                           class="form-control text-secondary p-2 px-4 w-100"
-                           id="toDateofService"
-                           style="height:58px;" />
+                    <div class="form-floating">
+                        <input type="date"
+                               class="form-control text-secondary px-4 w-100"
+                               id="toDateofService"
+                               style="height:58px;" />
+                        <label for="toDateofService" class="px-4">To date of service</label>
+                    </div>
                 </div>
                 <div class="col-lg-3">
                     <input type="text" placeholder="Provider Name" class="form-control p-2 px-4 w-100" id="providername" style="height:58px;">

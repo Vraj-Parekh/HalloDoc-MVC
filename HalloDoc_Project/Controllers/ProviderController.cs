@@ -27,8 +27,10 @@ namespace HalloDoc_Project.Controllers
         private readonly IUserService userService;
         private readonly IRequestServices requestServices;
         private readonly IBlockRequestService blockRequestService;
+        private readonly IEmailLogService emailLogService;
+        private readonly ISmsLogService smsLogService;
 
-        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService,IHealthProfessionalsService healthProfessionalsService,IHealthProfessionalTypeService healthProfessionalTypeService,IUserService userService,IRequestServices requestServices,IBlockRequestService blockRequestService)
+        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService,IHealthProfessionalsService healthProfessionalsService,IHealthProfessionalTypeService healthProfessionalTypeService,IUserService userService,IRequestServices requestServices,IBlockRequestService blockRequestService,IEmailLogService emailLogService,ISmsLogService smsLogService)
         {
             this.regionService = regionService;
             this.roleService = roleService;
@@ -41,6 +43,8 @@ namespace HalloDoc_Project.Controllers
             this.userService = userService;
             this.requestServices = requestServices;
             this.blockRequestService = blockRequestService;
+            this.emailLogService = emailLogService;
+            this.smsLogService = smsLogService;
         }
 
         [HttpGet]
@@ -170,10 +174,10 @@ namespace HalloDoc_Project.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> EmailLogsTable()
+        public async Task<IActionResult> EmailLogsTable(int role, string receiverName, string emailId, DateTime createdDate, DateTime sentDate, int page = 1, int itemsPerPage = 10)
         {
-            //data getting
-            return PartialView("_LogsTable");
+            Pagination<LogsDTO>? filteredData = await emailLogService.GetFilteredEmailLogs(role, receiverName, emailId, createdDate, sentDate, page, itemsPerPage);
+            return PartialView("_EmailLogsTable", filteredData);
         }      
         
         public async Task<IActionResult> SmsLogs()
@@ -183,10 +187,10 @@ namespace HalloDoc_Project.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> SmsLogsTable()
+        public async Task<IActionResult> SmsLogsTable(int role, string receiverName, string phoneNumber, DateTime createdDate, DateTime sentDate, int page=1, int itemsPerPage=10)
         {
-            //data getting
-            return PartialView("_LogsTable");
+            Pagination<LogsDTO>? filteredData = await emailLogService.GetFilteredEmailLogs(role, receiverName, phoneNumber, createdDate, sentDate, page, itemsPerPage);
+            return PartialView("_SmsLogsTable", filteredData);
         }
 
         public async Task<IActionResult> BlockHistory()
@@ -198,6 +202,13 @@ namespace HalloDoc_Project.Controllers
         {
             Pagination<BlockHistoryDTO>? filteredData = await blockRequestService.GetFilteredBlockedHistry(name, createdDate, email, phonenumber, page, itemsPerPage);
             return PartialView("_BlockHistoryTable",filteredData);
+        }
+
+        [HttpPost("{requestId}")]
+        public async Task<IActionResult> UnblockRequest(int requestId)
+        {
+            await blockRequestService.UnblockRequest(requestId);
+            return RedirectToAction("BlockHistory", "Provider");
         }
     }
 }

@@ -21,7 +21,7 @@ using MailKit.Search;
 namespace HalloDoc_Project.Controllers
 {
     [Route("[controller]/[action]")]
-    [CustomAuthorization("Admin")]
+    [CustomAuthorization("Admin, Provider")]
 
     public class AdminController : Controller
     {

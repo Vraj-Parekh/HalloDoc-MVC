@@ -32,7 +32,7 @@ namespace Repositories.Repository.Implementation
 
             if (request != null)
             {
-                request.Status = 20;
+                request.Status = (int)RequestStatus.Blocked;
                 request.Modifieddate = DateTime.Now;
 
                 Requeststatuslog requeststatuslog = new Requeststatuslog()
@@ -44,9 +44,12 @@ namespace Repositories.Repository.Implementation
 
                 Blockrequest blockrequest = new Blockrequest()
                 {
-                    Requestid = request.Requestid.ToString(),
-                    Modifieddate = DateTime.Now,
+                    Requestid = request.Requestid,
                     Reason = reason,
+                    Createddate = DateTime.Now,
+                    Email = request.Email,
+                    Isactive = true,
+                    Phonenumber = request.Phonenumber,
                 };
 
                 _context.Requests.Update(request);
@@ -57,14 +60,16 @@ namespace Repositories.Repository.Implementation
             }
         }
 
-        public async Task<Pagination<BlockHistoryDTO>> GetFilteredBlockedHistry(string name,DateTime createdDate,string email,string phonenumber,int page,int itemsPerPage)
+        public async Task<Pagination<BlockHistoryDTO>> GetFilteredBlockedHistry(string name, DateTime createdDate, string email, string phonenumber, int page, int itemsPerPage)
         {
-            IQueryable<Blockrequest>? query = _context.Blockrequests.AsQueryable();
+            IQueryable<Blockrequest>? query = _context.Blockrequests
+                .Include(a => a.Request)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(name))
             {
                 name = name.ToLower().Trim();
-                query = query.Where(a => a.Email.ToLower().Contains(name));
+                query = query.Where(a => a.Request.Firstname.ToLower().Contains(name));
             }
 
             if (!string.IsNullOrEmpty(email))
@@ -81,14 +86,13 @@ namespace Repositories.Repository.Implementation
 
             if (createdDate != DateTime.MinValue)
             {
-                query = query.Where(a => a.Createddate == createdDate);
+                query = query.Where(a => a.Createddate.Value.Date == createdDate.Date);
             }
 
             int totalItems = await query.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
 
             if (page < 1) page = 1;
-            if (page > totalPages) page = totalPages;
 
             int skip = (page - 1) * itemsPerPage;
 
@@ -100,15 +104,16 @@ namespace Repositories.Repository.Implementation
 
             foreach (var item in blockRequests)
             {
+                //Requestclient? requestClient = item.Request.Requestclients.FirstOrDefault();
                 BlockHistoryDTO model = new BlockHistoryDTO()
                 {
                     CreatedDate = item.Createddate?.ToString("MMM dd,yyy"),
                     Email = item.Email ?? "-",
                     IsActive = (bool)item.Isactive,
-                    Notes = item.Reason??"-",
-                    PatientName = "No idea",
-                    PhoneNumber = item.Phonenumber??"-",
-                    //RequestId = item.Requestid,
+                    Notes = item.Reason ?? "-",
+                    PatientName = item.Request.Firstname ?? "-",
+                    PhoneNumber = item.Phonenumber ?? "-",
+                    RequestId = item.Requestid,
                 };
                 modelList.Add(model);
             }
@@ -119,6 +124,23 @@ namespace Repositories.Repository.Implementation
                 TotalPages = totalPages,
                 CurrentPage = page
             };
+        }
+        public async Task UnblockRequest(int requestId)
+        {
+            Request? request = requestServices.GetRequest(requestId);
+            Blockrequest? blockRequest = _context.Blockrequests.Where(a => a.Requestid == requestId).FirstOrDefault();
+
+            if (request is not null && blockRequest is not null)
+            {
+                request.Status = (int)RequestStatus.Unassigned;
+                blockRequest.Isactive = false;
+
+                await requestStatusLogServices.AddRequestStatusLogAsync(request, RequestStatus.Unassigned);
+
+                _context.Update(request);
+                _context.Update(blockRequest);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -28,7 +28,7 @@
         </tr>
     </thead>
     <tbody>
-       @*  @foreach (var item in Model.Data)
+        @foreach (var item in Model.Data)
         {
             <tr>
                 <td>
@@ -47,7 +47,7 @@
                     @item.Notes
                 </td>
                 <td class="text-center">
-                    @item.IsActive
+                    <input type="checkbox" @(item.IsActive ? "checked" : "") disabled />
                 </td>
                 <td class="text-center">
                     <button class="btn btn-outline-info" data-bs-target="#unblockModal_@item.RequestId" data-bs-toggle="modal" data-item-id="@item.RequestId">Unblock</button>
@@ -56,7 +56,7 @@
                         <div class="modal-dialog modal-dialog-centered">
                             <div class=" p-2 py-3 modal-content text-center justify-content-center">
                                 <div class="modal-body px-5 pt-5 text-center">
-                                    <form method="post" asp-action="UnblockPatient" asp-controller="Provider" asp-route-requestId="@item.RequestId">
+                                    <form method="post" asp-action="UnblockRequest" asp-controller="Provider" asp-route-requestId="@item.RequestId">
                                         <div class="warning_icon" style="color:#f7ad00;">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="85" height="85" fill="currentColor" class="bi bi-exclamation-circle-fill war-i" viewBox="0 0 16 16">
                                                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4m.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2"></path>
@@ -75,36 +75,7 @@
                     </div>
                 </td>
             </tr>
-        } *@
+        }
     </tbody>
 </table>
-@*Pagination code*@
-<div class="pagination d-flex justify-content-center align-items-center">
-
-    @if (Model.TotalPages != 0)
-    {
-        <ul class="mt-2 mb-2 ps-0">
-            <!-- Previous button -->
-            <li class="page-item">
-                <a class="page-link" id="prevBtn" role="button" onclick="previousPage()">&laquo; Previous</a>
-            </li>
-
-            <!-- Page links -->
-            @for (int i = 1; i <= Model.TotalPages; i++)
-            {
-                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                    <a class="page-link" role="button" onclick="changePage(@i)">@i</a>
-                </li>
-            }
-
-            <!-- Next button -->
-            <li class="page-item">
-                <a class="page-link" role="button" onclick="nextPage(@Model.TotalPages)">Next &raquo;</a>
-            </li>
-        </ul>
-    }
-    else
-    {
-        <h3>No data found</h3>
-    }
-</div>
+<partial name="_Pagination"/>

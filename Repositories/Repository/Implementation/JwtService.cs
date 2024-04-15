@@ -21,11 +21,25 @@ namespace Repositories.Repository.Implementation
                     new Claim("userName", user.Username),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),//unique identifier for the JWT token
-                    new Claim("firstname", user.Users.FirstOrDefault()?.Firstname??""),
-                    new Claim("lastname", user.Users.FirstOrDefault()?.Lastname??""),
-                    new Claim("userId", user.Users.FirstOrDefault()?.Aspnetuserid??"Admin"),
+                    //new Claim("firstname", user.??""),
+                    //new Claim("lastname", user.Users.FirstOrDefault()?.Lastname??""),
+                    new Claim("userId", user.Aspnetuserid),
             };
-
+            if (user.Roles.Any(a => a.Name == "Admin"))
+            {
+                authClaims.Add(new Claim("firstname", user.AdminAspnetusers.FirstOrDefault()?.Firstname ?? ""));
+                authClaims.Add(new Claim("lastname", user.AdminAspnetusers.FirstOrDefault()?.Lastname ?? ""));
+            }
+            if (user.Roles.Any(a => a.Name == "Provider"))
+            {
+                authClaims.Add(new Claim("firstname", user.PhysicianAspnetusers.FirstOrDefault()?.Firstname ?? ""));
+                authClaims.Add(new Claim("lastname", user.PhysicianAspnetusers.FirstOrDefault()?.Lastname ?? ""));
+            }
+            if (user.Roles.Any(a => a.Name == "Patient"))
+            {
+                authClaims.Add(new Claim("firstname", user.Users.FirstOrDefault()?.Firstname ?? ""));
+                authClaims.Add(new Claim("lastname", user.Users.FirstOrDefault()?.Lastname ?? ""));
+            }
             foreach (Aspnetrole role in user.Roles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, role.Name));

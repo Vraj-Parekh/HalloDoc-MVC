@@ -4,15 +4,9 @@ var itemsPerPage = 10;
 function loadFilteredData(page) {
     var role = $('#role').val();
     var receiverName = $('#receivername').val();
-    var emailId = $('#emailid').val();
+    var phoneNumber = $('#phoneNumber').val();
     var createdDate = $('#createdDate').val();
     var sentDate = $('#sentDate').val();
-
-    console.log(role);
-    console.log(receiverName);
-    console.log(emailId);
-    console.log(createdDate);
-    console.log(sentDate);
 
     $.ajax({
         url: '/Provider/SmsLogsTable',
@@ -20,7 +14,7 @@ function loadFilteredData(page) {
         data: {
             role: role,
             receiverName: receiverName,
-            emailId: emailId,
+            phoneNumber: phoneNumber,
             createdDate: createdDate,
             sentDate: sentDate,
             page: page,
@@ -45,7 +39,7 @@ $('#searchButton').click(function () {
 $('#clearButton').click(function () {
     $('#role').val(0);
     $('#receivername').val('');
-    $('#emailid').val('');
+    $('#phoneNumber').val('');
     $('#createdDate').val('');
     $('#sentDate').val('');
     page = 1;

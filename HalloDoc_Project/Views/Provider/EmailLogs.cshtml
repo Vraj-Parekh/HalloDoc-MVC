@@ -5,15 +5,12 @@
     string active = "#records";
 }
 
-
 <div class="ms-2 me-2">
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
-            <h4>Search Records</h4>
+            <h4>Email Logs</h4>
 
-            <a class="btn btn-info bg-info text-white" onclick="history.back()">
-                <i class="fa-solid fa-share pe-1"></i><span class="d-lg-inline-block d-none">Export Data To Excel</span>
-            </a>
+            <a class="btn btn-outline-info bg-white text-info" onclick="history.back()"> &lt; Back </a>
         </div>
 
         <div class="bg-white rounded shadow p-3 mb-5">
@@ -37,16 +34,22 @@
                     <input type="text" placeholder="Email Id" class="form-control p-2 px-4 w-100" id="emailid" style="height:58px;">
                 </div>
                 <div class="col-lg-2">
-                    <input type="date"
-                           class="form-control text-secondary p-2 px-4 w-100"
-                           id="createdDate"
-                           style="height:58px;" />
+                    <div class="form-floating">
+                        <input type="date"
+                               class="form-control text-secondary px-4 w-100"
+                               id="createdDate"
+                               style="height:58px;" />
+                        <label for="createdDate" class="px-4">Created Date</label>
+                    </div>
                 </div>
                 <div class="col-lg-2">
-                    <input type="date"
-                           class="form-control text-secondary p-2 px-4 w-100"
-                           id="sentDate"
-                           style="height:58px;" />
+                    <div class="form-floating">
+                        <input type="date"
+                               class="form-control text-secondary px-4 w-100"
+                               id="sentDate"
+                               style="height:58px;" />
+                        <label for="sentDate" class="px-4">Sent Date</label>
+                    </div>
                 </div>
                 <div class="col-lg-2">
                     <div class="row justify-content-end">

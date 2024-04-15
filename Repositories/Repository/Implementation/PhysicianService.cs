@@ -36,6 +36,15 @@ namespace Repositories.Repository.Implementation
             this.regionService = regionService;
         }
 
+        public Physician GetPhysician(string email)
+        {
+            var physician = _context.Physicians
+               .Where(a => a.Email == email)
+               .FirstOrDefault();
+
+            return physician;
+        }
+
         public Physician GetPhysicianById(int physicianId)
         {
             return _context.Physicians.Where(a => a.Physicianid == physicianId).FirstOrDefault();
@@ -134,7 +143,7 @@ namespace Repositories.Repository.Implementation
         {
             Aspnetuser? aspNetUser = await aspNetUserService.AddAspNetUser(model.Email, model.Email, model.PhoneNumber, model.Password);
 
-            Aspnetrole? role = aspNetRoleService.GetName("Admin");
+            Aspnetrole? role = aspNetRoleService.GetName("Provider");
 
             if (role is not null && aspNetUser is not null)
             {

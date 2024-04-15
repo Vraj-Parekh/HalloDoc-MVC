@@ -107,6 +107,9 @@ public partial class Request
     public int? Createduserid { get; set; }
 
     [InverseProperty("Request")]
+    public virtual ICollection<Blockrequest> Blockrequests { get; set; } = new List<Blockrequest>();
+
+    [InverseProperty("Request")]
     public virtual ICollection<Encounterform> Encounterforms { get; set; } = new List<Encounterform>();
 
     [ForeignKey("Physicianid")]

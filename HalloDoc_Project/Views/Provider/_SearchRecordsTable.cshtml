@@ -126,33 +126,4 @@
         }
     </tbody>
 </table>
-@*Pagination code*@
-<div class="pagination d-flex justify-content-center align-items-center">
-
-    @if (Model.TotalPages != 0)
-    {
-        <ul class="mt-2 mb-2 ps-0">
-            <!-- Previous button -->
-            <li class="page-item">
-                <a class="page-link" id="prevBtn" role="button" onclick="previousPage()">&laquo; Previous</a>
-            </li>
-
-            <!-- Page links -->
-            @for (int i = 1; i <= Model.TotalPages; i++)
-            {
-                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                    <a class="page-link" role="button" onclick="changePage(@i)">@i</a>
-                </li>
-            }
-
-            <!-- Next button -->
-            <li class="page-item">
-                <a class="page-link" role="button" onclick="nextPage(@Model.TotalPages)">Next &raquo;</a>
-            </li>
-        </ul>
-    }
-    else
-    {
-        <h3>No data found</h3>
-    }
-</div>
+<partial name="_Pagination" />

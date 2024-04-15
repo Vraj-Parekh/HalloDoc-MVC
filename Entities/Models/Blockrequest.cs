@@ -29,8 +29,7 @@ public partial class Blockrequest
     public string? Reason { get; set; }
 
     [Column("requestid")]
-    [StringLength(50)]
-    public string Requestid { get; set; } = null!;
+    public int Requestid { get; set; }
 
     [Column("ip")]
     [StringLength(20)]
@@ -41,4 +40,8 @@ public partial class Blockrequest
 
     [Column("modifieddate", TypeName = "timestamp without time zone")]
     public DateTime? Modifieddate { get; set; }
+
+    [ForeignKey("Requestid")]
+    [InverseProperty("Blockrequests")]
+    public virtual Request Request { get; set; } = null!;
 }

@@ -6,6 +6,7 @@ namespace Repositories.Repository.Interface
     public interface IPhysicianService
     {
         Task CreatePhysician(CreatePhysicianDTO model);
+        Physician GetPhysician(string email);
         Physician GetPhysicianById(int physicianId);
         List<Physician> GetPhysicianByRegionId(int regionId);
         string GetPhysicianEmail(int physicianId);

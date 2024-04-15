@@ -492,7 +492,7 @@ namespace Repositories.Repository.Implementation
 
             if (fromDateOfService != DateTime.MinValue && toDateOfService != DateTime.MinValue)
             {
-                query = query.Where(a => a.Createddate >= fromDateOfService && a.Accepteddate <= toDateOfService);
+                query = query.Where(a => a.Createddate.Date >= fromDateOfService.Date && a.Accepteddate.Value.Date <= toDateOfService.Date);
             }
 
             if (!string.IsNullOrEmpty(providerName))
@@ -505,7 +505,6 @@ namespace Repositories.Repository.Implementation
             int totalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
 
             if (page < 1) page = 1;
-            if (page > totalPages) page = totalPages;
 
             int skip = (page - 1) * itemsPerPage;
 

@@ -1,28 +1,35 @@
-﻿@model Pagination<VendorsDTO>
+﻿@model Pagination<LogsDTO>
+@using Entities.Enum;
 
 <table class="table mt-3">
     <thead class="table-light">
         <tr>
             <th class="col">
-                Profession
+                Recipient
             </th>
             <th class="col text-center">
-                Business Name
-            </th>
-            <th class="col text-center pe-5">
-                Email
+                Active
             </th>
             <th class="col text-center">
-                Fax Number
+                Role Name
             </th>
             <th class="col text-center">
-                Phone Number
+                Email Id
             </th>
             <th class="col text-center">
-                Business Contact
+                Created Date
             </th>
             <th class="col text-center">
-                Actions
+                Sent Date
+            </th>
+            <th class="col text-center">
+                Sent
+            </th>
+            <th class="col text-center">
+                Sent Tries
+            </th>
+            <th class="col text-center">
+                Confirmation Number
             </th>
         </tr>
     </thead>
@@ -31,26 +38,31 @@
         {
             <tr>
                 <td>
-                    @item.Profession
+                    @item.Recipient
                 </td>
                 <td class="text-center">
-                    @item.BusinessName
+                    @item.Active
+                </td>
+                <td class="text-center">
+                    @item.Role
                 </td>
                 <td class="text-center">
                     @item.Email
                 </td>
                 <td class="text-center">
-                    @item.FaxNumber
+                    @item.CreatedDate
                 </td>
                 <td class="text-center">
-                    @item.PhoneNumber
+                    @item.SentDate
                 </td>
                 <td class="text-center">
-                    @item.BusinessContact
+                    @item.Sent
                 </td>
-                <td class="text-end">
-                    <a class="btn btn-outline-info" asp-action="EditBusiness" asp-route-vendorId="@item.VendorId">Edit</a>
-                    <a class="btn btn-outline-info">Delete</a>
+                <td class="text-center">
+                    @item.SentTries
+                </td>
+                <td class="text-center">
+                    @item.ConfirmationNumber
                 </td>
             </tr>
         }

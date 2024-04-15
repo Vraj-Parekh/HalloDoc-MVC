@@ -152,6 +152,10 @@ public partial class HalloDocDbContext : DbContext
         modelBuilder.Entity<Blockrequest>(entity =>
         {
             entity.HasKey(e => e.Blockrequestid).HasName("blockrequests_pkey");
+
+            entity.HasOne(d => d.Request).WithMany(p => p.Blockrequests)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_blockrequests_request");
         });
 
         modelBuilder.Entity<Business>(entity =>
