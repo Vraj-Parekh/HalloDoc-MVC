@@ -28,7 +28,7 @@ namespace Repositories.Repository.Implementation
             this.requestServices = requestServices;
         }
 
-        public async void AddEmailLog(string email, string message, string subject, List<string>? attachments = null, Request request = null!)
+        public async Task AddEmailLog(string email, string message, string subject,bool isEmailSent, List<string>? attachments = null, Request request = null!)
         {
             Emaillog emailLog = new Emaillog()
             {
@@ -75,12 +75,11 @@ namespace Repositories.Repository.Implementation
         {
             IQueryable<Emaillog>? query = _context.Emaillogs.AsQueryable();
 
-            //if (!string.IsNullOrEmpty(receiverName))
-            //{
-            //    receiverName = receiverName.ToLower().Trim();
-            //    var rc = requestServices.GetRequest();
-            //no idea how to get requestClient firstname
-            //}
+            if (!string.IsNullOrEmpty(receiverName))
+            {
+                receiverName = receiverName.ToLower().Trim();
+                //pending work
+            }
             if (!string.IsNullOrEmpty(emailId))
             {
                 emailId = emailId.ToLower().Trim();

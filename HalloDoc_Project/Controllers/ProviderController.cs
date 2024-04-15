@@ -189,7 +189,7 @@ namespace HalloDoc_Project.Controllers
 
         public async Task<IActionResult> SmsLogsTable(int role, string receiverName, string phoneNumber, DateTime createdDate, DateTime sentDate, int page=1, int itemsPerPage=10)
         {
-            Pagination<LogsDTO>? filteredData = await emailLogService.GetFilteredEmailLogs(role, receiverName, phoneNumber, createdDate, sentDate, page, itemsPerPage);
+            Pagination<LogsDTO>? filteredData = await smsLogService.GetFilteredSmsLogs(role, receiverName, phoneNumber, createdDate, sentDate, page, itemsPerPage);
             return PartialView("_SmsLogsTable", filteredData);
         }
 

@@ -48,8 +48,11 @@ namespace HalloDoc_Project.Controllers
         private readonly IShiftDetailService shiftDetailService;
         private readonly IShiftService shiftService;
         private readonly IShiftDetailRegionService shiftDetailRegionService;
+        private readonly IEmailLogService emailLogService;
+        private readonly ISmsLogService smsLogService;
+        private readonly IPhysicianLocationService physicianLocationService;
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService,IAdminRegionService adminRegionService,IShiftDetailService shiftDetailService, IShiftService shiftService, IShiftDetailRegionService shiftDetailRegionService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService, IAdminRegionService adminRegionService, IShiftDetailService shiftDetailService, IShiftService shiftService, IShiftDetailRegionService shiftDetailRegionService,IEmailLogService emailLogService,ISmsLogService smsLogService,IPhysicianLocationService physicianLocationService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -74,6 +77,9 @@ namespace HalloDoc_Project.Controllers
             this.shiftDetailService = shiftDetailService;
             this.shiftService = shiftService;
             this.shiftDetailRegionService = shiftDetailRegionService;
+            this.emailLogService = emailLogService;
+            this.smsLogService = smsLogService;
+            this.physicianLocationService = physicianLocationService;
         }
         public IActionResult Index()
         {
@@ -460,26 +466,66 @@ namespace HalloDoc_Project.Controllers
             return View(model);
         }
 
-        public void SendMessage(int mode, string message, int physicianId)
+        public async Task SendMessage(int mode, string message, int physicianId)
         {
             string email = physicianService.GetPhysicianEmail(physicianId);
             string phoneNumber = physicianService.GetPhysicianPhone(physicianId);
+            string subject = "For communication";
 
             //message-1
             if (mode == 1)
             {
-                smsSender.SendSms(phoneNumber, message);
+                try
+                {
+                    smsSender.SendSms(phoneNumber, message);
+                    smsLogService.AddSmsLog(phoneNumber, message, true);
+                }
+                catch (Exception ex)
+                {
+                    smsLogService.AddSmsLog(phoneNumber, message, false);
+                }
             }
             //email-2
             else if (mode == 2)
             {
-                emailSender.SendEmailAsync(email, "For communication", message);
+                try
+                {
+                    emailSender.SendEmailAsync(email, subject, message);
+                    emailLogService.AddEmailLog(email, message, subject, true);
+                }
+                catch (Exception ex)
+                {
+                    emailLogService.AddEmailLog(email, message, subject, false);
+                }
             }
             //both-0
             else
             {
-                smsSender.SendSms(phoneNumber, message);
-                emailSender.SendEmailAsync(email, "For communication", message);
+                bool isSmsSent = false;
+                bool isEmailSent = false;
+
+                try
+                {
+                    smsSender.SendSms(phoneNumber, message);
+                    isSmsSent = true;
+                }
+                catch(Exception e)
+                {
+                    //error
+                }
+                try
+                {
+                    await emailSender.SendEmailAsync(email, subject, message);
+                    isEmailSent = true;
+                }
+                catch(Exception e)
+                {
+                    //error
+                }
+                // Log SMS and email sending status
+                await smsLogService.AddSmsLog(phoneNumber, message, isSmsSent);
+                await emailLogService.AddEmailLog(email, message, subject, isEmailSent);
+
             }
         }
 
@@ -561,7 +607,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("UserAccess", "Admin");
         }
 
-        public IActionResult FetchPhysician(int regionId=0)
+        public IActionResult FetchPhysician(int regionId = 0)
         {
             List<Physician>? physician = physicianService.GetPhysicianByRegionId(regionId);
             return Json(physician);
@@ -629,6 +675,11 @@ namespace HalloDoc_Project.Controllers
         public IActionResult RequestedShift()
         {
             return View();
+        }
+        public IActionResult ProviderLocation()
+        {
+            List<Physicianlocation>? location = physicianLocationService.GetLocation();
+            return View(location);
         }
     }
 }

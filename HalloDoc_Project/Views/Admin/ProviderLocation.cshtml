@@ -1,0 +1,46 @@
+﻿@model List<Entities.Models.Physicianlocation>
+
+@{
+    ViewData["Title"] = "ProviderLocation";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class=" container tab-pane fade show active w-100 w-md-50  px-2 px-md-5 text-center" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+
+    <div class="d-flex justify-content-between mb-4">
+
+        <h3 class="ms-2 mt-4">Provider Location</h3>
+
+    </div>
+    <div class=" border border-5 border-white rounded-3 shadow" id="map" style="height: 60vh"></div>
+</div>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<!-- Add Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARrk6kY-nnnSpReeWotnQxCAo_MoI4qbU"></script>
+<script>
+    var map = L.map('map');
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    var providers = @Html.Raw(Json.Serialize(Model));
+
+    var markers = [];
+
+    for (var i = 0; i < providers.length; i++) {
+        var provider = providers[i];
+
+        var marker = L.marker([provider.latitude, provider.longitude])
+            .bindPopup("<h4> " + provider.physicianname + "</h4><p> Address: " + provider.address + "</p>")
+            .addTo(map);
+        markers.push(marker);
+    }
+
+    var group = L.featureGroup(markers).addTo(map);
+    map.fitBounds(group.getBounds());
+</script>
+
+<script>
+    window.onload = function () {
+        setNavActive("ProviderLocation");
+    }
+</script>

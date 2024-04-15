@@ -47,6 +47,7 @@ builder.Services.AddTransient<IEmailLogService, EmailLogService>();
 builder.Services.AddTransient<ISmsLogService, SmsLogService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IHelperService, HelperService>();
+builder.Services.AddTransient<IPhysicianLocationService, PhysicianLocationService>();
 
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
