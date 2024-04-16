@@ -31,7 +31,7 @@ namespace HalloDoc_Project.Attributes
 
             if (token == null || !JwtService.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
             {
-                if(_role.Contains("Admin"))
+                if(_role.Contains("Admin") || _role.Contains("Provider"))
                 {
                     context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));
                 }

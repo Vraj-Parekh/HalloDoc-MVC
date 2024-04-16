@@ -1,10 +1,42 @@
-﻿
+﻿@model ScheduleDTO
 @{
     ViewData["Title"] = "RequestedShift";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    string active = "#providers";
+    string active = "#provider-tab";
 }
 
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Requested Shifts</h4>
 
+        <a class="btn btn-outline-info bg-white text-info" onclick="history.back()"> &lt; Back </a>
+    </div>
+
+    <div class="bg-white rounded shadow p-3">
+        <div class="d-flex justify-content-between container">
+            <div class="col-md-3 mb-1">
+                <div class="form-floating">
+                    <select class="form-select" id="region" asp-for="Region">
+                        <option selected value="0">All Regions</option>
+                        @foreach (var item in Model.Regions)
+                        {
+                            <option value="@item.RegionId">@item.RegionName</option>
+                        }
+                    </select>
+                    <label for="region" class="form-label">Search</label>
+                </div>
+            </div>
+            <div>
+                <a class="btn btn-success text-white m-2" id="monthshifts">View Current Month Shifts</a>
+                <a class="btn btn-success text-white m-2" id="approveSelected">Approve Selected</a>
+                <a class="btn btn-danger text-white m-2" id="deleteSelected">Delete Selected</a>
+            </div>
+
+        </div>
+
+        <div id="requestedShiftTableDiv"></div>
+    </div>
+</div>
 
 <partial name="_ActiveTabPartial" model=active />
+<script src="/js/RequestedShift.js" asp-append-version="true"></script>

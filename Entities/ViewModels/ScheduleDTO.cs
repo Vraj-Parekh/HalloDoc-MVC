@@ -13,8 +13,8 @@ namespace Entities.ViewModels
         public int Physicianid { get; set; }
         public string? PhysicianName { get; set; }
         public string? PhysicianPhoto { get; set; }
-        public int Regionid { get; set; }
-        public string? RegionName { get; set; }
+        public int Region { get; set; }
+        public List<RegionList> Regions { get; set; }
 
         public DateOnly Startdate { get; set; }
         public DateTime Shiftdate { get; set; }
@@ -29,4 +29,16 @@ namespace Entities.ViewModels
         public short Status { get; set; }
         public List<ScheduleDTO> DayList { get; set; }
     }
+
+    public class MdOncallDTO
+    {
+        public List<Physicianforcall> onCall { get; set; }
+        public List<Physicianforcall> offDuty { get; set; }
+    }
+    public class Physicianforcall
+    {
+        public string PhysicianName { get; set; }
+        public string Photo { get; set; }
+    }
+
 }

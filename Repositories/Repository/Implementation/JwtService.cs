@@ -21,8 +21,6 @@ namespace Repositories.Repository.Implementation
                     new Claim("userName", user.Username),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),//unique identifier for the JWT token
-                    //new Claim("firstname", user.??""),
-                    //new Claim("lastname", user.Users.FirstOrDefault()?.Lastname??""),
                     new Claim("userId", user.Aspnetuserid),
             };
             if (user.Roles.Any(a => a.Name == "Admin"))
@@ -43,6 +41,7 @@ namespace Repositories.Repository.Implementation
             foreach (Aspnetrole role in user.Roles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, role.Name));
+
             }
 
             //Get key from configuration

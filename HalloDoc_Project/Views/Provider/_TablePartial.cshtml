@@ -1,0 +1,442 @@
+﻿@using Entities.ViewModels;
+@model List<ProviderDashboardDTO>;
+
+@{
+    var status = Model.Count > 0 ? Model[0].Status : 1;
+
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link asp-append-version="true" rel="stylesheet" href="/css/admin_dashboard.css" />
+
+<div class="table-responsive d-lg-block d-none rounded">
+    <table id="myTable" class="table">
+        <thead>
+            <tr class="bg-light thead-fs">
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Address</th>
+                @if (status == 3)
+                {
+                    <th>Status</th>
+                }
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody class="tbody-fs">
+
+            @foreach (var items in Model)
+            {
+                string BgColor = "patienttype";
+                switch (items.RequestTypeId)
+                {
+                    case 1:
+                        BgColor = "patienttype";
+                        break;
+                    case 2:
+                        BgColor = "patienttype";
+                        break;
+                    case 3:
+                        BgColor = "friendtype";
+                        break;
+                    case 4:
+                        BgColor = "conciergetype";
+                        break;
+                    case 5:
+                        BgColor = "businesstype";
+                        break;
+                    default:
+                        BgColor = "patienttype";
+                        break;
+                }
+
+                <tr class="@BgColor text-white mx-1 border-bottom-white">
+                    <td>
+                        @items.FirstName @items.LastName
+                        <a class="btn bi bi-envelope border-1 border-white text-white float-end"></a>
+                    </td>
+                    <td>
+                        @if (items.RequestTypeId == 1)
+                        {
+                            <a class="btn border-1 border-white text-white text-nowrap">
+                                <i class="bi bi-telephone mx-2"></i>
+                                @items.Phone
+                            </a>
+                            <p>(Business)</p>
+
+                            <a class="btn border-1 border-white text-white text-nowrap">
+                                <i class="bi bi-telephone mx-2"></i>
+                                @items.ClientPhone
+                            </a>
+                            <p>(Patient)</p>
+                        }
+                        @if (items.RequestTypeId == 2)
+                        {
+                            <a class="btn border-1 border-white text-white text-nowrap">
+                                <i class="bi bi-telephone mx-2"></i>
+                                @items.ClientPhone
+                            </a>
+                            <p>(Patient)</p>
+                        }
+                        @if (items.RequestTypeId == 3)
+                        {
+                            <a class="btn border-1 border-white text-white text-nowrap">
+                                <i class="bi bi-telephone mx-2"></i>
+                                @items.Phone
+                            </a>
+                            <p>(Family/Friend)</p>
+
+                            <a class="btn border-1 border-white text-white text-nowrap">
+                                <i class="bi bi-telephone mx-2"></i>
+                                @items.ClientPhone
+                            </a>
+                            <p>(Patient)</p>
+                        }
+                        @if (items.RequestTypeId == 4)
+                        {
+                            <a class="btn border-1 border-white text-white text-nowrap">
+                                <i class="bi bi-telephone mx-2"></i>
+                                @items.Phone
+                            </a>
+                            <p>(Concierge)</p>
+
+                            <a class="btn border-1 border-white text-white text-nowrap">
+                                <i class="bi bi-telephone mx-2"></i>
+                                @items.ClientPhone
+                            </a>
+                            <p>(Patient)</p>
+                        }
+                    </td>
+                    @if (status == 3)
+                    {
+                        <td class="text-break">@items.Status</td>
+                    }
+                   
+                    @* <td class="dropdown">
+                        <button class="btn border border-white text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Action
+                        </button>
+                        <ul class="dropdown-menu">
+                            @if (status == 1)
+                            {
+                                <li><a class="dropdown-item assignCase" role="button" onclick="SetAssignId(@items.RequestId)"><i class="fa-regular fa-file-lines pe-2"></i>Assign Case</a></li>
+                                <li><a class="dropdown-item cancelCase" role="button" onclick="SetCancelInfo(@items.RequestId,'@items.FirstName')"><i class="fa-regular fa-circle-xmark pe-2"></i>Cancel Case</a></li>
+                            }
+
+                            <li><a class="dropdown-item viewCase" role="button" asp-route-requestId="@items.RequestId" asp-action="ViewCase"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
+
+                            @if (status != 1)
+                            {
+                                <li><a class="dropdown-item" role="button" asp-route-requestId="@items.RequestId" asp-action="ViewUploads"><i class="fa-solid fa-file-arrow-up pe-2"></i>View Uploads</a></li>
+                            }
+                            <li><a class="dropdown-item viewNotes" role="button" asp-route-requestId="@items.RequestId" asp-action="ViewNotes"> <i class="fa-solid fa-book pe-2"></i>View Notes</a></li>
+
+                            @if (status == 1)
+                            {
+                                <li><a class="dropdown-item blockCase" role="button" onclick="SetBlockInfo(@items.RequestId,'@items.FirstName')"><i class="fa-solid fa-ban pe-2"></i>Block Case</a></li>
+                            }
+
+                            @if (status == 2)
+                            {
+                                <li><a class="dropdown-item" role="button" onclick="SetTransferId(@items.RequestId)"><i class="fa-solid fa-file-import pe-2"></i>Transfer</a></li>
+                            }
+
+                            @if (status == 3 || status == 4 || status == 5)
+                            {
+                                <li><a class="dropdown-item" role="button" asp-route-requestId="@items.RequestId" asp-action="SendOrder"><i class="fa-solid fa-file-circle-check pe-2"></i>Orders</a></li>
+                            }
+                            @if (status == 5)
+                            {
+                                <li><a class="dropdown-item" role="button" asp-route-requestId="@items.RequestId" asp-action="CloseCase"><i class="fa-regular fa-circle-xmark pe-2"></i>Close Case</a></li>
+                            }
+                            @if (status == 2 || status == 5)
+                            {
+                                <li><a class="dropdown-item" role="button" onclick="SetCancelId(@items.RequestId)"><i class="fa-regular fa-circle-xmark pe-2"></i>Clear Case</a></li>
+                            }
+
+                            @if (status == 3 || status == 4 || status == 5)
+                            {
+                                <li>
+                                    <a class="dropdown-item">
+                                        <i class="fa-regular fa-file-lines pe-2"></i>
+                                        Doctors Note
+                                    </a>
+                                </li>
+                            }
+
+                            @if (status == 2)
+                            {
+                                <li><a class="dropdown-item " role="button" onclick="SetAgreementInfo(@items.RequestId,@items.RequestTypeId,'@items.ClientPhone','@items.Email')"><i class="fa-regular fa-file-lines pe-2"></i>Send Agreement</a></li>
+                            }
+
+                            @if (status == 3 || status == 4 || status == 5)
+                            {
+                                <li>
+                                    <a class="dropdown-item" asp-route-requestId="@items.RequestId" asp-action="Encounter">
+                                        <i class="fa-regular fa-file-lines pe-2"></i>
+                                        Encounter
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </td> *@
+                </tr>
+            }
+        </tbody>
+    </table>
+    @*Pagination code*@
+    <div class="pagination d-flex justify-content-center align-items-center">
+
+        @if (ViewBag.TotalPages != 0)
+        {
+            <ul class="mt-2 mb-2 ps-0">
+                <!-- Previous button -->
+                <li class="page-item">
+                    <a class="page-link" id="prevBtn" role="button" onclick="previousPage()">&laquo; Previous</a>
+                </li>
+
+                <!-- Page links -->
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.PageIndex ? "active" : "")">
+                        <a class="page-link" role="button" onclick="changePage(@i)">@i</a>
+                    </li>
+                }
+
+                <!-- Next button -->
+                <li class="page-item">
+                    <a class="page-link" role="button" onclick="nextPage(@ViewBag.TotalPages)">Next &raquo;</a>
+                </li>
+            </ul>
+        }
+        else
+        {
+            <h3>No data found</h3>
+        }
+    </div>
+</div>
+
+
+<div class="accordion accordion-flush d-lg-none d-block" id="accordionFlushExample">
+    <div class="accordion-item">
+        @foreach (var item in Model)
+        {
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed text-black pt-3 ps-3 pe-3" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseone-@item.RequestId" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#ebfafd;">
+
+                    <div class="col d-flex flex-column">
+                        <span class="text-break">@item.FirstName, @item.LastName,@item.RequestId</span>
+                        <span class=" mt-2 text-break">@item.Address </span>
+                        <span class="mt-3"><i class="bi bi-clock text-info me-2"></i>Wait Time: DEC5, 2023</span>
+                    </div>
+                    <div class="col d-flex flex-column text-end mt-2 p-0">
+                        <div>
+                            @switch (item.RequestTypeId)
+                            {
+                                case 2:
+                                    <span>Patient</span>
+                                    <i class="bi bi-circle-fill green-color"></i>
+                                    break;
+                                case 3:
+                                    <span>Family/Friend</span>
+                                    <i class="bi bi-circle-fill orange-color"></i>
+                                    break;
+                                case 1:
+                                    <span>Business</span>
+                                    <i class="bi bi-circle-fill pink-color"></i>
+                                    break;
+                                case 4:
+                                    <span>Concierge</span>
+                                    <i class="bi bi-circle-fill blue-color"></i>
+                                    break;
+                            }
+
+                        </div>
+                        <div class="btn rounded-pill text-info border-info float-end mt-2">
+                            Map Location
+                        </div>
+                    </div>
+                </button>
+                <hr class="m-0">
+            </h2>
+
+
+            <div id="flush-collapseone-@item.RequestId" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+                <div class="d-flex justify-content-end d-inline">
+                    <div class="rounded-pill me-3 viewCaseBtn p-1 mt-1 viewCase">
+                        <a class="btn" asp-route-requestId="@item.RequestId" asp-action="ViewCase">View Case</a>
+                    </div>
+                </div>
+                <div class="accordion-body gap-2">
+                    @if (status != 6)
+                    {
+                        <div class="d-flex mb-1">
+                            <span class="accordian-span me-2"> <i class="bi bi-calendar2-minus"></i></span>
+                            <span class="fw-lighter"> Date of birth: <span class="fw-bolder">@item.Dob.ToString("D")</span> </span>
+                        </div>
+                    }
+
+                    <div class="d-flex mb-1">
+                        <span class="accordian-span me-2"><i class="bi bi-envelope"></i></span>
+                        <span class="fw-lighter"> Email: <span class="fw-bolder">@item.Email</span> </span>
+
+                    </div>
+
+                    @if (status != 5)
+                    {
+                        <div class="d-flex mb-1">
+                            <span class="accordian-span me-2">  <i class="bi bi-telephone"></i></span>
+                            <span class="fw-lighter"> Patient: <span class="fw-bolder">@item.Phone</span> </span>
+                        </div>
+                    }
+
+                    @if (status == 2 || status == 3 || status == 5)
+                    {
+                        <div class="d-flex mb-1">
+                            <span class="accordian-span me-2"> <i class="bi bi-journal-text"></i></span>
+                            <span class="fw-lighter"> Transfer Notes: <span class="fw-bolder">@item.Notes</span> </span>
+                        </div>
+                    }
+
+                    @if (status != 1)
+                    {
+                        <div class="d-flex mb-1">
+                            <span class="accordian-span me-2">  <i class="bi bi-calendar2-minus"></i> </span>
+                            <span class="fw-lighter"> Date of Service: <span class="fw-bolder">@item.DateOfService.ToString("D")</span> </span>
+                        </div>
+                        <div class="d-flex mb-1">
+                            <span class="accordian-span me-2"> <i class="bi bi-person-add"></i></span>
+                            <span class="fw-lighter"> Physician: <span class="fw-bolder">@item.PhysicianName</span> </span>
+                        </div>
+                    }
+
+                    @if (status == 1 || status == 2 || status == 3)
+                    {
+                        <div class="d-flex mb-1">
+                            <span class="accordian-span me-2"> <i class="bi bi-person"></i></span>
+                            <span class="fw-lighter"> Requestor: <span class="fw-bolder">@item.FirstName, @item.LastName</span> </span>
+                        </div>
+                    }
+                    @if (status == 5)
+                    {
+                        <div class="d-flex mb-1">
+                            <span class="accordian-span me-2"> <i class="bi bi-geo-alt"></i></span>
+                            <span class="fw-lighter"> Region: <span class="fw-bolder">@item.Region</span> </span>
+                        </div>
+                    }
+                </div>
+                <div class="row mx-3">
+                    @if (status == 1)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100  text-white rounded-pill p-2 bg-purple" onclick="SetAssignId(@item.RequestId)">Assign Case</a>
+                        </div>
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-danger text-white rounded-pill p-2" onclick="SetCancelInfo(@item.RequestId,'@item.FirstName')">Cancel Case</a>
+                        </div>
+                    }
+                    @if (status != 1)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-success text-white rounded-pill p-2" asp-route-requestId="@item.RequestId" asp-action="ViewUploads">View Uploads</a>
+                        </div>
+                    }
+
+                    <div class="col-6 mt-1 mb-1">
+                        <a class="btn w-100 bg-success text-white rounded-pill p-2" asp-route-requestId="@item.RequestId" asp-action="ViewNotes">View Notes</a>
+                    </div>
+
+                    @if (status == 1)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-danger text-white rounded-pill p-2" onclick="SetBlockInfo(@item.RequestId,'@item.FirstName')">Block Case</a>
+                        </div>
+                    }
+                    @if (status == 2)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-primary text-white rounded-pill p-2" onclick="SetTransferId(@item.RequestId)">Transfer</a>
+                        </div>
+                    }
+                    @if (status == 3 || status == 4 || status == 5)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-warning text-white rounded-pill p-2" asp-route-requestId="@item.RequestId" asp-action="SendOrder">Orders</a>
+                        </div>
+                    }
+                    @if (status == 5)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-danger text-white rounded-pill p-2">Close Case</a>
+                        </div>
+                    }
+                    @if (status == 2 || status == 5)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-warning text-white rounded-pill p-2" onclick="SetCancelId(@item.RequestId)">Clear Case</a>
+                        </div>
+                    }
+                    @if (status == 3 || status == 4 || status == 5)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-dark-green text-white rounded-pill p-2">Doctors Note</a>
+                        </div>
+                    }
+                    @if (status == 2)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-warning text-white rounded-pill p-2" onclick="SetAgreementInfo(@item.RequestId,@item.RequestTypeId,'@item.ClientPhone','@item.Email')">Send Agreement</a>
+                        </div>
+                    }
+                    @if (status == 3 || status == 4 || status == 5)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-success text-white rounded-pill p-2" asp-route-requestId="@item.RequestId" asp-action="Encounter">Encounter</a>
+                        </div>
+                    }
+
+                    <div class="col-6 mt-1 mb-1">
+                        <a class="btn w-100 bg-success text-white rounded-pill p-2">Email</a>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+
+    @*Pagination code*@
+    <div class="pagination d-flex justify-content-center align-items-center">
+
+        @if (ViewBag.TotalPages != 0)
+        {
+            <ul class="mt-2 mb-2 ps-0">
+                <!-- Previous button -->
+                <li class="page-item">
+                    <a class="page-link" id="prevBtn" role="button" onclick="previousPage()">&laquo; Previous</a>
+                </li>
+
+                <!-- Page links -->
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.PageIndex ? "active" : "")">
+                        <a class="page-link" role="button" onclick="changePage(@i)">@i</a>
+                    </li>
+                }
+
+                <!-- Next button -->
+                <li class="page-item">
+                    <a class="page-link" role="button" onclick="nextPage(@ViewBag.TotalPages)">Next &raquo;</a>
+                </li>
+            </ul>
+        }
+        else
+        {
+            <h3>No data found</h3>
+        }
+    </div>
+</div>
+
+
+
+
+@*Partial view for modals*@
+<partial name="_ModalPartial" model=null />

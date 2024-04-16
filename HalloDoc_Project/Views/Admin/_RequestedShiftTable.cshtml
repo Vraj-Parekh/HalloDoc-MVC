@@ -1,0 +1,47 @@
+﻿@model Pagination<RequestedShiftDTO>
+@using Entities.Enum;
+
+<table class="table">
+    <thead class="table-light">
+        <tr>
+            <th class="col">
+                <input type="checkbox" id="selectAll" />
+            </th>
+            <th class="col text-center">
+                Staff
+            </th>
+            <th class="col text-center">
+                Day
+            </th>
+            <th class="col text-center">
+                Time
+            </th>
+            <th class="col text-center">
+                Region
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Data)
+        {
+            <tr>
+                <td>
+                    <input name="checkedshift" value="@item.ShiftDetailId" type="checkbox" />
+                </td>
+                <td class="text-center">
+                    @item.Staff
+                </td>
+                <td class="text-center">
+                    @item.Day
+                </td>
+                <td class="text-center">
+                    @item.Time
+                </td>
+                <td class="text-center">
+                    @item.RegionName
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<partial name="_Pagination" />

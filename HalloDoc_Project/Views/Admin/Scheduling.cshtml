@@ -211,12 +211,12 @@
         </div>
         <div class="col-auto">
             <a class="btn btn-info text-white me-2" asp-action="ProviderOnCall" asp-controller="Admin">Provider On Call</a>
-            <a class="btn btn-info text-white me-2" asp-controller="Admin">Shifts For Review</a>
+            <a class="btn btn-info text-white me-2" asp-action="RequestedShift" asp-controller="Admin">Shifts For Review</a>
             <button id="openShiftModalBtn" class="btn btn-info text-white me-2">Add New Shift</button>
         </div>
     </div>
 
-    <div class="h5 heading mt-3 mb-3">@DateTime.Now.ToString("dddd, MMM d, yyyy")</div>
+    <div class="h5 heading mt-3 mb-3" id="header_date">@DateTime.Now.ToString("dddd, MMM d, yyyy")</div>
 
     <div class="text-end mb-3">
 
@@ -228,21 +228,21 @@
 
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            <a type="button"  id="prev-button">
+            <a type="button" id="prev-button">
                 <i class="fa-solid fa-less-than text-white  p-2 me-2" style="background-color:#1ad1ff;border-radius:20px;"></i>
             </a>
 
-            <input type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" id="date-title" style="width:40px;border:none">
+            <input type="date" id="date-title" style="width:40px;border:none">
 
             <a type="button" id="next-button">
-                <i class="fa-solid fa-greater-than text-white p-2 me-2" style="background-color:#1ad1ff;border-radius:20px;" ></i>
+                <i class="fa-solid fa-greater-than text-white p-2 me-2" style="background-color:#1ad1ff;border-radius:20px;"></i>
             </a>
         </div>
         <div class="d-flex justify-content-end">
-            <div id="day-button" class="btn btn-outline-info  mx-2" >
+            <div id="day-button" class="btn btn-outline-info  mx-2">
                 Day
             </div>
-            <div id="week-button" class="btn btn-outline-info mx-2" >
+            <div id="week-button" class="btn btn-outline-info mx-2">
                 Week
             </div>
             <div id="month-button" class="btn btn-outline-info mx-2">

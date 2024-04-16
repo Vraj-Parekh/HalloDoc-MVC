@@ -100,19 +100,23 @@ $(document).ready(function () {
                 type: 'POST',
                 data: createShiftDTO,
                 async: false,
+                dataType: 'json',
                 success: function (response) {
                     $('#createShiftModal').modal('show');
                     console.log(response);
                     toastr.success("Shift created successfully");
-                    calendar.removeAllEvents(); // Remove existing events
-                    calendar.addEventSource(events); // Add updated events
-                    calendar.refetchEvents(); // Refetch events from the event sources
-                    e.stopImmediatePropagation();
+                    //calendar.removeAllEvents(); // Remove existing events
+                    //calendar.addEventSource(events); // Add updated events
+                    //calendar.refetchEvents(); // Refetch events from the event sources
+                    //e.stopImmediatePropagation();
+                    //getPhysicianShift(createShiftDTO.RegionId);
                 },
                 error: function (xhr, status, error) {
-                    $('#createShiftModal').modal('show');
-                    //console.error(xhr.responseText);
-                    toastr.error("Error Loading Reasons");
+                    $('#createShiftModal').modal('hide');
+                    toastr.success("Shift created successfully");
+                    //getPhysicianShift(createShiftDTO.RegionId);
+                    //toastr.error("Error Loading Reasonssdfvsdff");
+
                 }
             });
         });
@@ -151,7 +155,7 @@ $(document).ready(function () {
                             resourceId: event.shift.physicianid,
                             title: `${formatTime(event.starttime)} - ${formatTime(event.endtime)} / ${event.shift.physician.firstname}`,
                             start: event.shiftdate.substring(0, 11) + event.starttime,
-                            end: event.shiftdate.substring(0, 11) + event.endtime, 
+                            end: event.shiftdate.substring(0, 11) + event.endtime,
                             eventBackgroundColor: event.status == 2 ? '#32d97d' : '#e39de8',
                             color: event.status == 2 ? '#32d97d' : '#e39de8',
                             ShiftDetailId: event.shiftdetailid,
@@ -165,7 +169,7 @@ $(document).ready(function () {
                         var ResjsonString = JSON.stringify(events);
 
                         initializeCalendar(resources, events);//resources-->physicians, events-->shiftdetails
-                    
+
                     },
                     error: function (xhr) {
                         console.log(xhr.status);
@@ -313,12 +317,15 @@ $(document).ready(function () {
                                 regionName: event.shift.physician.city,
                                 status: event.status
                             }));
+
+                            toastr.success("Shift deleted successfully");
                             calendar.removeAllEvents(); // Remove existing events
                             calendar.addEventSource(events); // Add updated events
                             calendar.refetchEvents(); // Refetch events from the event sources
                         },
                         error: function (xhr, status, error) {
 
+                            toastr.success("error in Shift delete");
                         }
                     });
                     function formatTime(time) {
@@ -457,13 +464,27 @@ $(document).ready(function () {
             var formattedDate = formatDate(date);
             $("#date-title").val(formattedDate);
         });
+        function showDate() {
+            var view = calendar.view;
+            var date = view.title;
+            var formattedDate = new Date(date).toLocaleDateString(undefined, {
+                weekday: 'long',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+            document.getElementById('header_date').innerHTML = formattedDate;
+        }
+
 
         $("#next-button").click(function () {
             calendar.next();
+            showDate();
         });
 
         $("#prev-button").click(function () {
             calendar.prev();
+            showDate();
         });
 
         $("#day-button").click(function () {

@@ -1,0 +1,26 @@
+﻿@model MdOncallDTO
+
+<div class="container">
+    <h5 class="mb-3">MD's On Call</h5>
+    <div class="row" id="oncallContainer">
+        @foreach (var item in Model.onCall)
+        {
+            <div class="col-md-4">
+                <img class="rounded-circle" src="@item.Photo" style="height:80px;width:80px;">
+                <span>@item.PhysicianName</span>
+            </div>
+        }
+    </div>
+</div>
+<div class="container">
+    <h5 class="mb-3">Physician Off Duty</h5>
+    <div class="row" id="offDutyContainer">
+        @foreach (var item in Model.offDuty)
+        {
+            <div class="col-md-4">
+                <img class="rounded-circle" src="@item.Photo" style="height:80px;width:80px;">
+                <span>@item.PhysicianName</span>
+            </div>
+        }
+    </div>
+</div>

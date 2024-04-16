@@ -21,6 +21,7 @@ namespace Repositories.Repository.Interface
         SendAgreement GetMobileEmail(SendAgreement model, int requestId);
         List<AdminDashboardDTO> GetPatientdata(int requesttypeid, int status, int pageIndex, int pageSize, string searchQuery, int regionId, out int totalCount);
         Task<List<PatientRecordsDTO>> GetPatientRecord(int userId);
+        List<ProviderDashboardDTO> GetProviderDashboardData(int requesttypeid, int status, int pageIndex, int pageSize, string searchQuery, out int totalCount);
         Request? GetRequest(int requestId);
         ViewCaseDTO GetViewCase(int requestId);
         bool IsPatientPresent(string email);

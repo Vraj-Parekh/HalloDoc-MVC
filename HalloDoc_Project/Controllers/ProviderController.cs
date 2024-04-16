@@ -2,8 +2,10 @@
 using Entities.ViewModels;
 using HalloDoc_Project.Attributes;
 using MailKit.Search;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Repositories.Repository.Implementation;
 using Repositories.Repository.Interface;
 using Repositories.Utility;
 using System.Configuration.Provider;
@@ -29,8 +31,9 @@ namespace HalloDoc_Project.Controllers
         private readonly IBlockRequestService blockRequestService;
         private readonly IEmailLogService emailLogService;
         private readonly ISmsLogService smsLogService;
+        private readonly IAspNetUserService aspNetUserService;
 
-        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService,IHealthProfessionalsService healthProfessionalsService,IHealthProfessionalTypeService healthProfessionalTypeService,IUserService userService,IRequestServices requestServices,IBlockRequestService blockRequestService,IEmailLogService emailLogService,ISmsLogService smsLogService)
+        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService,IHealthProfessionalsService healthProfessionalsService,IHealthProfessionalTypeService healthProfessionalTypeService,IUserService userService,IRequestServices requestServices,IBlockRequestService blockRequestService,IEmailLogService emailLogService,ISmsLogService smsLogService,IAspNetUserService aspNetUserService)
         {
             this.regionService = regionService;
             this.roleService = roleService;
@@ -45,6 +48,7 @@ namespace HalloDoc_Project.Controllers
             this.blockRequestService = blockRequestService;
             this.emailLogService = emailLogService;
             this.smsLogService = smsLogService;
+            this.aspNetUserService = aspNetUserService;
         }
 
         [HttpGet]
@@ -209,6 +213,65 @@ namespace HalloDoc_Project.Controllers
         {
             await blockRequestService.UnblockRequest(requestId);
             return RedirectToAction("BlockHistory", "Provider");
+        }
+
+        [AllowAnonymous]
+        public IActionResult ProviderLogin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult ProviderLogin(LoginDTO data)
+        {
+            string token = aspNetUserService.AuthenticateUser(data);
+
+            if (token != null)
+            {
+                CookieOptions cookieOptions = new CookieOptions()
+                {
+                    Expires = DateTime.UtcNow.AddMinutes(60),
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict
+                };
+                Response.Cookies.Append("Token", token, cookieOptions);
+
+                return RedirectToAction("ProviderDashboard", "Provider");
+            }
+            else
+            {
+                ModelState.AddModelError(nameof(data.Password), "Incorrect Email or Password.");
+                return View(data);
+            }
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync();
+            Response.Cookies.Delete("Token");
+            return RedirectToAction("ProviderLogin", "Provider");
+        }
+
+        public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize, string searchQuery)
+        {
+            int totalCount;
+            List<ProviderDashboardDTO> data = requestServices.GetProviderDashboardData(requestTypeId, status, pageIndex, pageSize, searchQuery, out totalCount);
+
+            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            ViewBag.TotalCount = totalCount;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageIndex = pageIndex;
+            return PartialView("_TablePartial", data);
+        }
+
+        public IActionResult ProviderDashboard()
+        {
+            object? count = requestServices.GetCount();
+            ViewBag.count = count;
+            return View();
         }
     }
 }

@@ -43,5 +43,9 @@ namespace Repositories.Repository.Implementation
         {
             return httpContext.HttpContext?.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
         }
+        public string GetRegionById(int regionId)
+        {
+            return _context.Regions.Where(a => a.Regionid == regionId).Select(a => a.Name).FirstOrDefault();
+        }
     }
 }

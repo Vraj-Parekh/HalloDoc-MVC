@@ -2,6 +2,7 @@
 using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Repositories.Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,13 @@ namespace Repositories.Repository.Implementation
     {
         private readonly HalloDocDbContext _context;
         private readonly IAspNetUserService aspNetUserService;
+        private readonly IPhysicianService physicianService;
 
-        public ShiftDetailService(HalloDocDbContext _context, IAspNetUserService aspNetUserService)
+        public ShiftDetailService(HalloDocDbContext _context, IAspNetUserService aspNetUserService,IPhysicianService physicianService)
         {
             this._context = _context;
             this.aspNetUserService = aspNetUserService;
+            this.physicianService = physicianService;
         }
 
         public async Task<List<Shiftdetail>> GetShiftDetails()
@@ -97,6 +100,37 @@ namespace Repositories.Repository.Implementation
                 }
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<List<Shiftdetail>> GetShiftsOnDate(DateTime date,int physicianId=0)
+        {
+            var shifts = await _context.Shiftdetails.Where(a => a.Shiftdate == date.Date).Include(a => a.Shift).ToListAsync();
+            shifts = shifts.Where(a => a.Shift.Physicianid == physicianId || physicianId == 0).ToList();
+            shifts = shifts.Where(a=>a.Isdeleted == false).ToList();
+
+            return shifts;
+        }
+        public async Task<MdOncallDTO> GetOnCallData(int regionId)
+        {
+            bool onCall = true;
+            List<Physician>? physicians = physicianService.GetPhysicianByRegionId(regionId);
+
+            List<Physicianforcall> OnDutyModelList = new List<Physicianforcall>();
+            List<Physicianforcall> OffDutyModelList = new List<Physicianforcall>();
+
+            foreach (var physician in physicians)
+            {
+                List<Shiftdetail>? shiftDetails = await GetShiftsOnDate(DateTime.Now, physician.Physicianid);
+
+                if (shiftDetails.Count > 0)                {                    TimeOnly currentTime = TimeOnly.FromDateTime(DateTime.Now);                    foreach (var shift in shiftDetails)                    {                        if(shift.Shift.Physician == physician && (shift.Starttime > currentTime || shift.Endtime < currentTime))                        {                            onCall = false;                        }                        else                        {                            onCall = true;                        }                    }                    if (onCall)                    {                        Physicianforcall onduty = new Physicianforcall()                        {                            PhysicianName = physician.Firstname,                            Photo = (physician.Photo != null) ? "/uploads/" + physician.Photo : "/uploads/Person.jpg",                        };                        OnDutyModelList.Add(onduty);                    }                    else                    {                        Physicianforcall offduty = new Physicianforcall()                        {                            PhysicianName = physician.Firstname,                            Photo = (physician.Photo != null) ? "/uploads/" + physician.Photo : "/uploads/Person.jpg",                        };                        OffDutyModelList.Add(offduty);                    }                }                else                {                    Physicianforcall offduty = new Physicianforcall()                    {                        PhysicianName = physician.Firstname,
+                        Photo = (physician.Photo != null) ? "/uploads/" + physician.Photo : "/uploads/Person.jpg",
+                    };                    OffDutyModelList.Add(offduty);                    onCall = false;                }
+            }
+            return new MdOncallDTO
+            {
+                onCall = OnDutyModelList,
+                offDuty = OffDutyModelList,
+            };
         }
     }
 }

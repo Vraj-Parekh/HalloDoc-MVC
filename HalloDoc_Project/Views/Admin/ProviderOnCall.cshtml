@@ -1,9 +1,9 @@
-﻿@{
+﻿@model ScheduleDTO
+@{
     ViewData["Title"] = "ProviderOnCall";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    string active = "#providers";
+    string active = "#provider-tab";
 }
-
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
@@ -15,38 +15,25 @@
     <div class="row justify-content-between align-items-center pb-2">
         <div class="col-md-3">
             <div class="form-floating">
-                <select class="form-select" id="state">
-                    <option selected value="">All Regions</option>
+                <select class="form-select" id="region" asp-for="Region">
+                    <option selected value="0">All Regions</option>
+                    @foreach (var item in Model.Regions)
+                    {
+                        <option value="@item.RegionId">@item.RegionName</option>
+                    }
                 </select>
-                <label for="state" class="form-label">Search</label>
+                <label for="region" class="form-label">Search</label>
             </div>
         </div>
         <div class="col-auto">
             <button class="btn btn-info text-white me-2">Calender View</button>
-            <button class="btn btn-info text-white me-2">Shifts for Review</button>
+            <a class="btn btn-info text-white me-2" asp-action="RequestedShift" asp-controller="Admin">Shifts for Review</a>
         </div>
     </div>
 
     <div class="bg-white rounded shadow p-3">
-        <h5>MD's On Call</h5>
-        <h5>Physicians Off Duty</h5>
-
-        <div class="row">
-           @*  @foreach (var phy in Model.physician)
-            {
-                <div class="col-4 mb-3">
-                    @if (phy.Photo == null)
-                    {
-                        <img src="~/Photos/person.png" height="50" width="50" />
-                    }
-                    else
-                    {
-                        <img src="~/uploads/@phy.Photo" height="50" width="50" />
-                    }
-                    @phy.Firstname @phy.Lastname
-                </div>
-            } *@
-        </div>
+        <div id="MDsDiv"></div>
     </div>
 </div>
 <partial name="_ActiveTabPartial" model=active />
+<script src="/js/ProviderOnCall.js" asp-append-version="true"></script>

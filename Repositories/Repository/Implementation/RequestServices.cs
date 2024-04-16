@@ -561,5 +561,56 @@ namespace Repositories.Repository.Implementation
                 await _context.SaveChangesAsync();
             }
         }
+
+        public List<ProviderDashboardDTO> GetProviderDashboardData(int requesttypeid, int status, int pageIndex, int pageSize, string searchQuery, out int totalCount)
+        {
+            Dictionary<int, int[]> statusMap = new()
+            {
+                {1, new int[1]{ 1} },//new
+                {2, new int[1]{ 16} },//pending
+                {3, new int[3]{ 2,5,6} },//active
+                {4, new int[1]{ 18} },//conclude
+            };
+
+            IQueryable<Request>? query = _context.Requests
+                .Where(a => statusMap[status].Contains(a.Status) && (requesttypeid == 5 || a.Requesttypeid == requesttypeid))
+                .Include(a => a.Requestclients);
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                searchQuery = searchQuery.Trim().ToLower();
+                query = query.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchQuery)
+                                                                || rc.Lastname.ToLower().Contains(searchQuery))
+                                       || a.Firstname.ToLower().Contains(searchQuery)
+                                       || a.Lastname.ToLower().Contains(searchQuery));
+            }
+
+            totalCount = query.Count();
+
+            List<Request>? request = query
+                .Skip(pageIndex > 0 ? (pageIndex - 1) * pageSize : 0)
+                .Take(pageSize)
+                .ToList();
+
+
+            List<ProviderDashboardDTO> provider = new List<ProviderDashboardDTO>();
+            foreach (Request req in request)
+            {
+                Requestclient? requestClient = req.Requestclients.First();
+                ProviderDashboardDTO? ProviderDashboard = new ProviderDashboardDTO()
+                {
+                    RequestId = req.Requestid,
+                    FirstName = requestClient.Firstname,
+                    LastName = requestClient.Lastname ?? "",
+                    Phone = req.Phonenumber,
+                    ClientPhone = requestClient.Phonenumber,
+                    Address = requestClient.City,
+                    RequestTypeId = req.Requesttypeid,
+                    Status = status,
+                };
+                provider.Add(ProviderDashboard);
+            }
+            return provider;
+        }
     }
 }

@@ -17,6 +17,7 @@ using Repositories.Repository.Implementation;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Utilities;
 using MailKit.Search;
+using System.Xml.Schema;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -51,8 +52,9 @@ namespace HalloDoc_Project.Controllers
         private readonly IEmailLogService emailLogService;
         private readonly ISmsLogService smsLogService;
         private readonly IPhysicianLocationService physicianLocationService;
+        private readonly IHttpContextAccessor httpContext;
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService, IAdminRegionService adminRegionService, IShiftDetailService shiftDetailService, IShiftService shiftService, IShiftDetailRegionService shiftDetailRegionService,IEmailLogService emailLogService,ISmsLogService smsLogService,IPhysicianLocationService physicianLocationService)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService, IAdminRegionService adminRegionService, IShiftDetailService shiftDetailService, IShiftService shiftService, IShiftDetailRegionService shiftDetailRegionService, IEmailLogService emailLogService, ISmsLogService smsLogService, IPhysicianLocationService physicianLocationService,IHttpContextAccessor httpContext)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -80,6 +82,7 @@ namespace HalloDoc_Project.Controllers
             this.emailLogService = emailLogService;
             this.smsLogService = smsLogService;
             this.physicianLocationService = physicianLocationService;
+            this.httpContext = httpContext;
         }
         public IActionResult Index()
         {
@@ -509,7 +512,7 @@ namespace HalloDoc_Project.Controllers
                     smsSender.SendSms(phoneNumber, message);
                     isSmsSent = true;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     //error
                 }
@@ -518,7 +521,7 @@ namespace HalloDoc_Project.Controllers
                     await emailSender.SendEmailAsync(email, subject, message);
                     isEmailSent = true;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     //error
                 }
@@ -656,8 +659,8 @@ namespace HalloDoc_Project.Controllers
                 Shift? shift = await shiftService.AddShift(physician, model);
                 Shiftdetail? shiftDetail = await shiftDetailService.AddShiftDetails(shift, model);
                 await shiftDetailRegionService.AddShiftDetailRegion(shiftDetail, model);
-                return await FetchShiftDetails();
-                //ajax going into error 
+                var res = await FetchShiftDetails();
+                return res;
             }
             return BadRequest("Physician not found");
         }
@@ -669,12 +672,27 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult ProviderOnCall()
         {
-            return View();
+            ScheduleDTO model = new ScheduleDTO();
+            model.Regions = regionService.GetRegionList();
+            return View(model);
         }
 
-        public IActionResult RequestedShift()
+        public async Task<IActionResult> MdOnCallDiv(int regionId)
         {
-            return View();
+            MdOncallDTO? filteredData = await shiftDetailService.GetOnCallData(regionId);
+            return PartialView("_mdOnCall", filteredData);
+        }
+        public async Task<IActionResult> RequestedShift()
+        {
+            ScheduleDTO model = new ScheduleDTO();
+            model.Regions = regionService.GetRegionList();
+            return View(model);
+        }
+
+        public async Task<IActionResult> RequestedShiftTable(int regionId, bool isDateFilter, int page = 1, int itemsPerPage = 10)
+        {
+            Pagination<RequestedShiftDTO>? filteredData = await shiftService.GetFilteredRequestedShifts(regionId, isDateFilter, page, itemsPerPage);
+            return PartialView("_RequestedShiftTable",filteredData);
         }
         public IActionResult ProviderLocation()
         {
