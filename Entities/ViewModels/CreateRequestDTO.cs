@@ -15,8 +15,8 @@ namespace Entities.ViewModels
         [Required(ErrorMessage = "Last Name is required.")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Phone Number is required.")]
-        [Phone(ErrorMessage = "Invalid phone number.")]
+        [Required(ErrorMessage = "Phone Number is required")]
+        [RegularExpression(@"^\+?\d+$", ErrorMessage = "Please enter a valid phone number")]
         public string PhoneNumber { get; set; }
 
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]
@@ -42,5 +42,6 @@ namespace Entities.ViewModels
         public string RoomOrSuite { get; set; }
 
         public string AdminNotes { get; set; }
+
     }
 }

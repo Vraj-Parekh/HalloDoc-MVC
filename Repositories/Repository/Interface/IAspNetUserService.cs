@@ -9,6 +9,7 @@ namespace Repositories.Repository.Interface
         string AuthenticateUser(LoginDTO data);
         void ChnagePassword(LoginDTO data);
         string GetAspNetUserId();
+        bool isUserEmailPresent(string email);
         bool isUserPresent(LoginDTO data);
     }
 }

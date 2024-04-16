@@ -22,7 +22,7 @@ namespace Repositories.Repository.Implementation
             this.requestStatusLogServices = requestStatusLogServices;
             this.requestClientServices = requestClientServices;
         }
-
+        
         public Requestnote? GetRequestNotes(int requestId)
         {
             return _context.Requestnotes.FirstOrDefault(a => a.Requestid == requestId);
@@ -31,29 +31,28 @@ namespace Repositories.Repository.Implementation
         public ViewNotesDTO GetViewRequestNotes(int requestId)
         {
             Request? request = requestServices.GetRequest(requestId);
-            if (request is null)
+            if (request is not null)
             {
-                throw new Exception("Request not found");
-            }
+                Requestnote? notes = GetRequestNotes(requestId);
+                //Requeststatuslog? transferNotes = requestStatusLogServices.GetTransferNotes(requestId);
 
-            Requestnote? notes = GetRequestNotes(requestId);
-            List<Requeststatuslog>? transferNotes = requestStatusLogServices.GetTransferNotes(requestId);
-
-            if (notes != null)
-            {
-                ViewNotesDTO model = new ViewNotesDTO()
+                if (notes != null)
                 {
-                    AdminNotes = notes?.Adminnotes ?? "",
-                    PhysicianNotes = notes?.Physiciannotes??"",
-                };
-                return model;
+                    ViewNotesDTO model = new ViewNotesDTO()
+                    {
+                        AdminNotes = notes?.Adminnotes ?? "",
+                        PhysicianNotes = notes?.Physiciannotes ?? "",
+                        TransferNotes = "",
+                    };
+                    return model;
+                }
             }
             return null;
         }
         public void AddNotes(ViewNotesDTO model, int requestId)
         {
             Request? request = requestServices.GetRequest(requestId);
-            if(request is null)
+            if (request is null)
             {
                 throw new Exception("Request not found");
             }

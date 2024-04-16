@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using Org.BouncyCastle.Utilities;
 using MailKit.Search;
 using System.Xml.Schema;
+using System.Security.Cryptography.X509Certificates;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -54,7 +55,7 @@ namespace HalloDoc_Project.Controllers
         private readonly IPhysicianLocationService physicianLocationService;
         private readonly IHttpContextAccessor httpContext;
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService, IAdminRegionService adminRegionService, IShiftDetailService shiftDetailService, IShiftService shiftService, IShiftDetailRegionService shiftDetailRegionService, IEmailLogService emailLogService, ISmsLogService smsLogService, IPhysicianLocationService physicianLocationService,IHttpContextAccessor httpContext)
+        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService, IAdminRegionService adminRegionService, IShiftDetailService shiftDetailService, IShiftService shiftService, IShiftDetailRegionService shiftDetailRegionService, IEmailLogService emailLogService, ISmsLogService smsLogService, IPhysicianLocationService physicianLocationService, IHttpContextAccessor httpContext)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -193,6 +194,23 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        public IActionResult SendLink(SendLinkDTO model)
+        {
+            var subject = "Admin sent you link";
+            var message = "$\"Tap the link to open page: <a href=\\\"https://localhost:44396/Request/SubmitRequest\\\">Opne request page</a>\"";
+            bool isEmailSent = false;
+            try
+            {
+                emailSender.SendEmailAsync(model.Email, subject, message);
+                isEmailSent = true;
+            }
+            catch (Exception e)
+            {
+
+            }
+            emailLogService.AddEmailLog(model.Email, message, subject, isEmailSent);
+            return RedirectToAction("AdminDashboard", "Admin");
+        }
         [HttpGet("{requestId}")]
         public IActionResult ViewCase(int requestId)
         {
@@ -408,12 +426,17 @@ namespace HalloDoc_Project.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRequest(CreateRequestDTO model)
         {
-            if (!requestServices.IsPatientPresent(model.Email))
+            if (!aspNetUserService.isUserEmailPresent(model.Email))
             {
-
+                string subject = "Create your account";
+                //string message = "Create Account", $"Tap the link to create account: <a href=\"https://localhost:44396/Patient/createaccount/{request.Requestid}\">Create Now</a>";
+                string message = "no idea";
+                await emailSender.SendEmailAsync(model.Email,subject, message);
+                await emailLogService.AddEmailLog(model.Email, message, subject, true);
             }
             await requestServices.AddRequest(model);
-            return View();
+            
+            return RedirectToAction("AdminDashboard","Admin");
         }
         public IActionResult MyProfile()
         {
@@ -692,7 +715,7 @@ namespace HalloDoc_Project.Controllers
         public async Task<IActionResult> RequestedShiftTable(int regionId, bool isDateFilter, int page = 1, int itemsPerPage = 10)
         {
             Pagination<RequestedShiftDTO>? filteredData = await shiftService.GetFilteredRequestedShifts(regionId, isDateFilter, page, itemsPerPage);
-            return PartialView("_RequestedShiftTable",filteredData);
+            return PartialView("_RequestedShiftTable", filteredData);
         }
         public IActionResult ProviderLocation()
         {

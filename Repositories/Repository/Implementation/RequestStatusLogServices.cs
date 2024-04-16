@@ -56,9 +56,10 @@ namespace Repositories.Repository.Implementation
             return requeststatuslog;
         }
 
-        public List<Requeststatuslog>? GetTransferNotes(int requestId)
+        public Requeststatuslog GetTransferNotes(int requestId)
         {
-            return _context.Requeststatuslogs.Where(a=>a.Requestid == requestId).ToList();
+            Requeststatuslog? note =  _context.Requeststatuslogs.Where(a=>a.Requestid == requestId).LastOrDefault();
+            return note;
         }
 
         public void AddCancelNote(int requestId, string reason, string notes)

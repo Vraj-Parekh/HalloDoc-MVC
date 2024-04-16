@@ -17,7 +17,16 @@
                 <i class="fa-solid fa-right-left pt-2"></i>
                 <div class="ps-2">
                     <h4>Transfer Notes</h4>
-                    <span>Admin transferred to Dr. AGOLA on 27/09/2023 on 9:38:04 AM test assign</span>
+                    <span>
+                        @if (@Model.TransferNotes != null)
+                        {
+                            @Model.TransferNotes
+                        }
+                        else
+                        {
+                            @("-")
+                        }
+                    </span>
                 </div>
             </div>
         </div>
@@ -27,7 +36,16 @@
                 <i class="fa-solid fa-user-doctor pt-2"></i>
                 <div class="ps-2">
                     <h4>Physician Notes</h4>
-                    <span>-</span>
+                    <span>
+                        @if (@Model.PhysicianNotes != null)
+                        {
+                            @Model.PhysicianNotes
+                        }
+                        else
+                        {
+                            @("-")
+                        }
+                    </span>
                 </div>
             </div>
         </div>

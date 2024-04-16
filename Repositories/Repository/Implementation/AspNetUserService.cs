@@ -48,6 +48,10 @@ namespace Repositories.Repository.Implementation
         {
             return _context.Aspnetusers.Any(u => u.Email == data.Email);
         }
+        public bool isUserEmailPresent(string email)
+        {
+            return _context.Aspnetusers.Any(u => u.Email == email);
+        }
         public void ChnagePassword(LoginDTO data)
         {
             Aspnetuser? aspNetUserData = new Aspnetuser();

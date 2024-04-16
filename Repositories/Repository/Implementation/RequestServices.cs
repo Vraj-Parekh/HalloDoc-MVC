@@ -66,7 +66,9 @@ namespace Repositories.Repository.Implementation
                 Isurgentemailsent = false,
             };
 
-            await _context.Requests.AddAsync(request);
+            _context.Requests.Add(request);
+            await requestClientServices.AddRequestClient(model, request.Requestid);
+
             await _context.SaveChangesAsync();
         }
         public bool IsRequestPending(int requestId, string email)
@@ -607,6 +609,7 @@ namespace Repositories.Repository.Implementation
                     Address = requestClient.City,
                     RequestTypeId = req.Requesttypeid,
                     Status = status,
+                    Email = req.Email,
                 };
                 provider.Add(ProviderDashboard);
             }

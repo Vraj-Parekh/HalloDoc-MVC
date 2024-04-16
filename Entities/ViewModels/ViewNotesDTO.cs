@@ -12,10 +12,11 @@ namespace Entities.ViewModels
         public string? AdminNotes { get; set; }
 
         [Required(ErrorMessage ="Notes required")]
-        public string AdditionalNotes { get; set; }
+        public string? AdditionalNotes { get; set; }
 
         public string? PhysicianNotes { get; set; }
-        public List<string>? TransferNotes { get; set; }
+        //public List<string>? TransferNotes { get; set; }
+        public string? TransferNotes { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string? CreatedBy { get; set; }
     }

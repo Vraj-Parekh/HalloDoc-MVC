@@ -7,6 +7,6 @@ namespace Repositories.Repository.Interface
         void AddCancelNote(int requestId, string reason, string notes);
         Task<Requeststatuslog> AddRequestStatusLogAsync(Request request, RequestStatus status);
         Task<Requeststatuslog> AddRequestStatusLogAsync(Request request, RequestStatus status, string message);
-        List<Requeststatuslog>? GetTransferNotes(int requestId);
+        Requeststatuslog GetTransferNotes(int requestId);
     }
 }

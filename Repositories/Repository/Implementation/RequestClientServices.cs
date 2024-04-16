@@ -3,6 +3,7 @@ using Entities.Models;
 using Entities.ViewModels;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.SS.Formula.Functions;
 using Repositories.Repository.Interface;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -22,6 +23,29 @@ namespace Repositories.Repository.Implementation
         {
             Requestclient? requestClient = _context.Requestclients.First(a => a.Requestid == requestId);
             return requestClient;
+        }
+
+        public async Task AddRequestClient(CreateRequestDTO model,int requestId)
+        {
+            Requestclient? rrequestClient = new Requestclient()
+            {
+                Requestid = requestId,
+                Firstname = model.FirstName,
+                Lastname = model.LastName,
+                Phonenumber = model.PhoneNumber,
+                Regionid = 4,
+                Strmonth = model.DateOfBirth.Month.ToString(),
+                Intdate = model.DateOfBirth.Date.Day,
+                Intyear = model.DateOfBirth.Year,
+                Notes = model.AdminNotes,
+                Email = model.Email,
+                Street = model.Street,
+                City = model.City,
+                State = model.State,
+                Zipcode = model.Zip,
+            };
+            _context.Add(rrequestClient);
+            await _context.SaveChangesAsync();
         }
         public void UpdateCase(ViewCaseDTO data)
         {

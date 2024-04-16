@@ -5,6 +5,7 @@ namespace Repositories.Repository.Interface
 {
     public interface IRequestClientServices
     {
+        Task AddRequestClient(CreateRequestDTO model, int requestId);
         Requestclient GetClient(int requestId);
         void SendAgreement(int requestId, string phoneNumber, string email);
         void UpdateCase(ViewCaseDTO data);
