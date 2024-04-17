@@ -1,8 +1,10 @@
 ﻿using Entities.DataContext;
+using Entities.Enum;
 using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NPOI.SS.Formula.Functions;
 using Org.BouncyCastle.Ocsp;
 using Org.BouncyCastle.Utilities;
 using Repositories.Repository.Interface;
@@ -18,12 +20,20 @@ namespace Repositories.Repository.Implementation
         private readonly HalloDocDbContext _context;
         private readonly IRequestStatusLogServices requestStatusLogServices;
         private readonly IRequestClientServices requestClientServices;
+        private readonly IAspNetUserService aspNetUserService;
+        private readonly IPhysicianService physicianService;
 
-        public RequestServices(HalloDocDbContext _context, IRequestStatusLogServices requestStatusLogServices, IRequestClientServices requestClientServices)
+        public RequestServices(HalloDocDbContext _context,
+                               IRequestStatusLogServices requestStatusLogServices,
+                               IRequestClientServices requestClientServices,
+                               IAspNetUserService aspNetUserService,
+                               IPhysicianService physicianService)
         {
             this._context = _context;
             this.requestStatusLogServices = requestStatusLogServices;
             this.requestClientServices = requestClientServices;
+            this.aspNetUserService = aspNetUserService;
+            this.physicianService = physicianService;
         }
 
         private string GetConfirmationNumber(string city, string lastname, string firstname, string count)
@@ -68,6 +78,15 @@ namespace Repositories.Repository.Implementation
 
             _context.Requests.Add(request);
             await requestClientServices.AddRequestClient(model, request.Requestid);
+
+            Requestnote? addNote = new Requestnote()
+            {
+                Requestid = request.Requestid,
+                Adminnotes = model.AdminNotes,
+                Createdby = "Admin",
+                Createddate = DateTime.Now,
+            };
+            _context.Add(addNote);
 
             await _context.SaveChangesAsync();
         }
@@ -211,8 +230,8 @@ namespace Repositories.Repository.Implementation
         {
             Dictionary<int, int[]> statusMap = new()
             {
-                {1, new int[1]{ 1} },//new
-                {2, new int[1]{ 16} },//pending
+                {1, new int[2]{ 1,23} },//new
+                {2, new int[1]{ 16} },//accepted
                 {3, new int[3]{ 2,5,6} },//active
                 {4, new int[1]{ 18} },//conclude
                 {5, new int[3]{ 3,21,8} },//to close
@@ -284,14 +303,14 @@ namespace Repositories.Repository.Implementation
                 {
                     Requestid = requestId,
                     Notes = notes,
-                    Status = 16, //pending
+                    Status = (int)RequestStatus.remainToAccept, //23
                     Createddate = DateTime.Now,
                     Physicianid = physicianId,
                     Transtophysicianid = physicianId,
                 };
 
 
-                request.Status = 16; //pending
+                request.Status = 23; 
                 request.Physicianid = physicianId;
 
                 _context.Requeststatuslogs.Add(model);
@@ -339,6 +358,7 @@ namespace Repositories.Repository.Implementation
                 ConfirmationNumber = request.Confirmationnumber,
                 Document = data,
                 RequestId = request.Requestid,
+                Email = request.Email,
             };
             return doc;
         }
@@ -564,18 +584,33 @@ namespace Repositories.Repository.Implementation
             }
         }
 
+        public Object GetCountProvider()
+        {
+            int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+
+            RequestCount? count = new RequestCount
+            {
+                NewCount = _context.Requests.Where(r => r.Status == 23 && r.Physicianid == physicianId).Count(),
+                PendingCount = _context.Requests.Where(r => r.Status == 16 && r.Physicianid == physicianId).Count(),
+                ActiveCount = _context.Requests.Where(r => (r.Status == 2 || r.Status == 5 || r.Status == 6) && r.Physicianid == physicianId).Count(),
+                ConcludeCount = _context.Requests.Where(r => r.Status == 18 && r.Physicianid == physicianId).Count(),
+            };
+            return count;
+        }
         public List<ProviderDashboardDTO> GetProviderDashboardData(int requesttypeid, int status, int pageIndex, int pageSize, string searchQuery, out int totalCount)
         {
             Dictionary<int, int[]> statusMap = new()
             {
-                {1, new int[1]{ 1} },//new
-                {2, new int[1]{ 16} },//pending
+                {1, new int[1]{ 23} },//new(remain to accept)
+                {2, new int[1]{ 16} },//pending(after click on accept)
                 {3, new int[3]{ 2,5,6} },//active
                 {4, new int[1]{ 18} },//conclude
             };
 
+            int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+
             IQueryable<Request>? query = _context.Requests
-                .Where(a => statusMap[status].Contains(a.Status) && (requesttypeid == 5 || a.Requesttypeid == requesttypeid))
+                .Where(a => statusMap[status].Contains(a.Status) && (requesttypeid == 5 || a.Requesttypeid == requesttypeid) && a.Physicianid == physicianId)
                 .Include(a => a.Requestclients);
 
             if (!string.IsNullOrEmpty(searchQuery))
@@ -598,7 +633,7 @@ namespace Repositories.Repository.Implementation
             List<ProviderDashboardDTO> provider = new List<ProviderDashboardDTO>();
             foreach (Request req in request)
             {
-                Requestclient? requestClient = req.Requestclients.First();
+                Requestclient? requestClient = req.Requestclients.FirstOrDefault();
                 ProviderDashboardDTO? ProviderDashboard = new ProviderDashboardDTO()
                 {
                     RequestId = req.Requestid,
@@ -610,10 +645,112 @@ namespace Repositories.Repository.Implementation
                     RequestTypeId = req.Requesttypeid,
                     Status = status,
                     Email = req.Email,
+                    CallType = req.Calltype??0,
                 };
                 provider.Add(ProviderDashboard);
             }
             return provider;
+        }
+
+        public async Task AcceptRequest(int requestId)
+        {
+            Request? request = GetRequest(requestId);
+            if (request != null)
+            {
+                //int physicianId ;//get from aspnet user id
+
+                Requeststatuslog model = new()
+                {
+                    Requestid = requestId,
+                    Status = (int)RequestStatus.Pending, 
+                    Createddate = DateTime.Now,
+                };
+
+
+                request.Status = 16; //pending
+                //request.Physicianid = physicianId;
+
+                _context.Requeststatuslogs.Add(model);
+                _context.Requests.Update(request);
+
+                _context.SaveChanges();
+            }
+        }
+        public async Task RequestBackToAdmin(int requestId,string note)
+        {
+            Request? request = GetRequest(requestId);
+            if (request != null)
+            {
+                int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+                Requeststatuslog model = new()
+                {
+                    Requestid = requestId,
+                    Notes = note,
+                    Status = (int)RequestStatus.Unassigned, //1
+                    Createddate = DateTime.Now,
+                    Physicianid = physicianId,
+                };
+
+
+                request.Status = 1; //pending
+                request.Physicianid = physicianId;
+
+                _context.Requeststatuslogs.Add(model);
+                _context.Requests.Update(request);
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task HouseCallStatusChange(int requestId)
+        {
+            Request? request = GetRequest(requestId);
+            if (request != null)
+            {
+                int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+                Requeststatuslog model = new()
+                {
+                    Requestid = requestId,
+                    Status = (int)RequestStatus.MDOnSite,
+                    Createddate = DateTime.Now,
+                    Physicianid = physicianId,
+                };
+
+
+                request.Status = (int)RequestStatus.MDOnSite;
+                request.Calltype = (int)CallType.HouseCall; 
+                request.Physicianid = physicianId;
+
+                _context.Requeststatuslogs.Add(model);
+                _context.Requests.Update(request);
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task ConsultStatusChange(int requestId)
+        {
+            Request? request = GetRequest(requestId);
+            if (request != null)
+            {
+                int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+                Requeststatuslog model = new()
+                {
+                    Requestid = requestId,
+                    Status = (int)RequestStatus.Conclude, 
+                    Createddate = DateTime.Now,
+                    Physicianid = physicianId,
+                };
+
+
+                request.Status = (int)RequestStatus.Conclude;
+                request.Physicianid = physicianId;
+
+                _context.Requeststatuslogs.Add(model);
+                _context.Requests.Update(request);
+
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

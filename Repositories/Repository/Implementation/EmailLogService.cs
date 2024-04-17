@@ -28,7 +28,7 @@ namespace Repositories.Repository.Implementation
             this.requestServices = requestServices;
         }
 
-        public async Task AddEmailLog(string email, string message, string subject,bool isEmailSent, List<string>? attachments = null, Request request = null!)
+        public async Task AddEmailLog(string email, string message, string subject, bool isEmailSent, List<string>? attachments = null, Request request = null!)
         {
             Emaillog emailLog = new Emaillog()
             {
@@ -109,11 +109,8 @@ namespace Repositories.Repository.Implementation
 
             foreach (var item in emailLogs)
             {
-                Request? request = requestServices.GetRequest((int)item.Requestid);
-
                 LogsDTO model = new LogsDTO()
                 {
-                    Recipient = request?.Firstname ?? "-",
                     Active = 1,
                     RoleName = item.Roleid.ToString(),
                     Email = item.Emailid,
@@ -121,8 +118,13 @@ namespace Repositories.Repository.Implementation
                     SentDate = item.Sentdate?.ToString("MMM dd,yyy"),
                     Sent = (item.Isemailsent == true) ? "Yes" : "No",
                     SentTries = (int)item.Senttries,
-                    ConfirmationNumber = item.Confirmationnumber??"-",
+                    ConfirmationNumber = item.Confirmationnumber ?? "-",
                 };
+                if (item.Requestid is not null)
+                {
+                    Request? request = requestServices.GetRequest((int)item.Requestid);
+                    model.Recipient = request.Firstname ?? "";
+                }
                 modelList.Add(model);
             }
 

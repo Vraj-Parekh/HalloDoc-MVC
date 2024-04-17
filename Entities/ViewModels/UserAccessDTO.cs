@@ -8,7 +8,7 @@ namespace Entities.ViewModels
 {
     public class UserAccessDTO
     {
-        public int AccountType { get; set; }
+        public string AccountType { get; set; }
         public string AccountName { get; set; }
         public string Phone { get; set; }
         public int Status { get; set; }

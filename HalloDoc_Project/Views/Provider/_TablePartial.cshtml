@@ -18,6 +18,8 @@
                 @if (status == 3)
                 {
                     <th>Status</th>
+
+                    <th>Chat with</th>
                 }
                 <th>Action</th>
             </tr>
@@ -106,11 +108,29 @@
                             <p>(Patient)</p>
                         }
                     </td>
+                    <td class="text-break">@items.Address</td>
                     @if (status == 3)
                     {
-                        <td class="text-break">@items.Status</td>
+                        <td class="text-break">
+                            @if (items.CallType == 1)
+                            {
+                                <button class="btn btn-info text-white" onclick="consult(@items.RequestId)">
+                                    House Call
+                                </button>
+                            }
+                        </td>
+
+                        <td class="text-nowrap">
+                            <a class="btn border-1 border-white text-white fs-6">
+                                <i class="bi bi-person-square mx-1"></i>
+                                Patient
+                            </a>
+                            <a class="btn border-1 border-white text-white">
+                                <i class="bi bi-person-square mx-1">
+                                </i>Admin
+                            </a>
+                        </td>
                     }
-                    <td class="text-break">@items.Address</td>
 
                     <td class="dropdown">
                         <button class="btn border border-white text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -119,7 +139,7 @@
                         <ul class="dropdown-menu">
                             @if (status == 1)
                             {
-                                <li><a class="dropdown-item assignCase" role="button" onclick="SetAssignId(@items.RequestId)"><i class="fa-regular fa-file-lines pe-2"></i>Accept</a></li>
+                                <li><a class="dropdown-item assignCase" role="button" asp-action="AcceptRequest" asp-controller="Provider" asp-route-requestId="@items.RequestId"><i class="fa-regular fa-file-lines pe-2"></i>Accept</a></li>
                             }
 
                             @if (status == 2)
@@ -155,7 +175,7 @@
                             @if (status == 3 || status == 4)
                             {
                                 <li>
-                                    <a class="dropdown-item" asp-route-requestId="@items.RequestId" asp-action="Encounter">
+                                    <a class="dropdown-item" onclick="SetEncounterInfo(@items.RequestId)">
                                         <i class="fa-regular fa-file-lines pe-2"></i>
                                         Encounter
                                     </a>
@@ -350,4 +370,4 @@
 
 
 @*Partial view for modals*@
-@* <partial name="_ModalPartial" model=null /> *@
+<partial name="_ModalsPartial" model=null />

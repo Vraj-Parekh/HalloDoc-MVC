@@ -22,7 +22,7 @@ namespace Repositories.Repository.Implementation
             this.requestStatusLogServices = requestStatusLogServices;
             this.requestClientServices = requestClientServices;
         }
-        
+
         public Requestnote? GetRequestNotes(int requestId)
         {
             return _context.Requestnotes.FirstOrDefault(a => a.Requestid == requestId);
@@ -47,7 +47,7 @@ namespace Repositories.Repository.Implementation
                     return model;
                 }
             }
-            return null;
+            return new ViewNotesDTO();
         }
         public void AddNotes(ViewNotesDTO model, int requestId)
         {

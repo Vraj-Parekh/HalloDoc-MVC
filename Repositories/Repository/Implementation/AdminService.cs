@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using Entities.DataContext;
 using Entities.Models;
 using Entities.ViewModels;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repository.Interface;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Repositories.Repository.Implementation
 {
@@ -20,7 +22,12 @@ namespace Repositories.Repository.Implementation
         private readonly IAdminRegionService adminRegionService;
         private readonly IRegionService regionService;
 
-        public AdminService(HalloDocDbContext _context,IAspNetUserService aspNetUserService,IAspNetRoleService aspNetRoleService,IAspNetUserRolesService aspNetUserRolesService,IAdminRegionService adminRegionService,IRegionService regionService)
+        public AdminService(HalloDocDbContext _context,
+                            IAspNetUserService aspNetUserService,
+                            IAspNetRoleService aspNetRoleService,
+                            IAspNetUserRolesService aspNetUserRolesService,
+                            IAdminRegionService adminRegionService,
+                            IRegionService regionService)
         {
             this._context = _context;
             this.aspNetUserService = aspNetUserService;
@@ -46,7 +53,7 @@ namespace Repositories.Repository.Implementation
                 UserName = admin.Aspnetuser.Username,
                 Password = admin.Aspnetuser.Passwordhash,
                 Status = (short)(admin.Status ?? 0),
-                Role = admin.Roleid??0,
+                Role = admin.Roleid ?? 0,
                 FirstName = admin.Firstname,
                 LastName = admin.Lastname,
                 Email = admin.Email,
@@ -115,7 +122,7 @@ namespace Repositories.Repository.Implementation
 
             Aspnetrole? role = aspNetRoleService.GetName("Admin");
 
-            if(role is not null && aspNetUser is not null)
+            if (role is not null && aspNetUser is not null)
             {
                 //add into aspnet user roles table
                 await aspNetUserRolesService.AddAspNetUserRole(aspNetUser, role);
@@ -146,6 +153,94 @@ namespace Repositories.Repository.Implementation
             await _context.SaveChangesAsync();
 
             await adminRegionService.AddOrRemoveRegion(admin, model.Regions);
+        }
+
+        public async Task<Pagination<UserAccessDTO>> GetFilteredUserAccessData(int accountType, int page, int itemsPerPage)
+        {
+            List<UserAccessDTO> modelList = new List<UserAccessDTO>();
+
+            if (accountType == 0)
+            {
+                var admins = await _context.Admins.ToListAsync();
+                var physicians = await _context.Physicians.ToListAsync();
+
+                foreach (var item in admins)
+                {
+                    modelList.Add(new UserAccessDTO
+                    {
+                        AccountName = item.Firstname + " " + item.Lastname,
+                        AccountType = "Admin",
+                        Id = item.Adminid,
+                        OpenRequests = 0,//no idea
+                        Phone = item.Mobile,
+                        Status = (int)item.Status,
+                    });
+                }
+
+                foreach (var item in physicians)
+                {
+                    modelList.Add(new UserAccessDTO
+                    {
+                        AccountName = item.Firstname + " " + item.Lastname,
+                        AccountType = "Physician",
+                        Id = item.Physicianid,
+                        OpenRequests = 0,//no idea
+                        Phone = item.Mobile,
+                        Status = (int)item.Status,
+                    });
+                }
+            }
+            else if(accountType == 1)
+            {
+                var admins = await _context.Admins.ToListAsync();
+
+                foreach (var item in admins)
+                {
+                    modelList.Add(new UserAccessDTO
+                    {
+                        AccountName = item.Firstname + " " + item.Lastname,
+                        AccountType = "Admin",
+                        Id = item.Adminid,
+                        OpenRequests = 0,//no idea
+                        Phone = item.Mobile,
+                        Status = (int)item.Status,
+                    });
+                }
+            }
+            else
+            {
+                var physicians = await _context.Physicians.ToListAsync();
+                foreach (var item in physicians)
+                {
+                    modelList.Add(new UserAccessDTO
+                    {
+                        AccountName = item.Firstname + " " + item.Lastname,
+                        AccountType = "Physician",
+                        Id = item.Physicianid,
+                        OpenRequests = 0,//no idea
+                        Phone = item.Mobile,
+                        Status = (int)item.Status,
+                    });
+                }
+            }
+
+            int totalItems = modelList.Count();
+            int totalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+
+            if (page < 1) page = 1;
+
+            int skip = (page - 1) * itemsPerPage;
+
+            List<UserAccessDTO> paginatedUsers = modelList.Skip(skip)
+                .Take(itemsPerPage)
+                .ToList();
+
+            return new Pagination<UserAccessDTO>
+            {
+                Data = paginatedUsers,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
         }
     }
 }

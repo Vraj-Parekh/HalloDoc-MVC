@@ -35,6 +35,8 @@
     ToClosed = 17,
     Blocked = 20,
 
+    Accepted = 22,//for admin dashboard pending
+    remainToAccept = 23,
 
     //Request Status		 Dashboard Status
 

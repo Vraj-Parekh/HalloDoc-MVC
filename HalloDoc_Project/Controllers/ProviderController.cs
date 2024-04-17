@@ -1,5 +1,6 @@
 ﻿using Entities.Models;
 using Entities.ViewModels;
+using HalloDoc.Utility;
 using HalloDoc_Project.Attributes;
 using MailKit.Search;
 using Microsoft.AspNetCore.Authentication;
@@ -32,8 +33,31 @@ namespace HalloDoc_Project.Controllers
         private readonly IEmailLogService emailLogService;
         private readonly ISmsLogService smsLogService;
         private readonly IAspNetUserService aspNetUserService;
+        private readonly IRequestClientServices requestClientServices;
+        private readonly IEmailSender emailSender;
+        private readonly IRequestNotesServices requestNotesServices;
+        private readonly IOrderDetailsService orderDetailsService;
+        private readonly IEncounterFormService encounterFormService;
 
-        public ProviderController(IRegionService regionService, IRoleService roleService, IPhysicianService physicianService, IShiftService shiftService, IShiftDetailService shiftDetailService, IShiftDetailRegionService shiftDetailRegionService,IHealthProfessionalsService healthProfessionalsService,IHealthProfessionalTypeService healthProfessionalTypeService,IUserService userService,IRequestServices requestServices,IBlockRequestService blockRequestService,IEmailLogService emailLogService,ISmsLogService smsLogService,IAspNetUserService aspNetUserService)
+        public ProviderController(IRegionService regionService,
+                                  IRoleService roleService,
+                                  IPhysicianService physicianService,
+                                  IShiftService shiftService,
+                                  IShiftDetailService shiftDetailService,
+                                  IShiftDetailRegionService shiftDetailRegionService,
+                                  IHealthProfessionalsService healthProfessionalsService,
+                                  IHealthProfessionalTypeService healthProfessionalTypeService,
+                                  IUserService userService,
+                                  IRequestServices requestServices,
+                                  IBlockRequestService blockRequestService,
+                                  IEmailLogService emailLogService,
+                                  ISmsLogService smsLogService,
+                                  IAspNetUserService aspNetUserService,
+                                  IRequestClientServices requestClientServices,
+                                  IEmailSender emailSender,
+                                  IRequestNotesServices requestNotesServices,
+                                  IOrderDetailsService orderDetailsService,
+                                  IEncounterFormService encounterFormService)
         {
             this.regionService = regionService;
             this.roleService = roleService;
@@ -49,6 +73,11 @@ namespace HalloDoc_Project.Controllers
             this.emailLogService = emailLogService;
             this.smsLogService = smsLogService;
             this.aspNetUserService = aspNetUserService;
+            this.requestClientServices = requestClientServices;
+            this.emailSender = emailSender;
+            this.requestNotesServices = requestNotesServices;
+            this.orderDetailsService = orderDetailsService;
+            this.encounterFormService = encounterFormService;
         }
 
         [HttpGet]
@@ -269,9 +298,148 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult ProviderDashboard()
         {
-            object? count = requestServices.GetCount();
+            object? count = requestServices.GetCountProvider();
             ViewBag.count = count;
             return View();
+        }
+
+        [HttpGet("{requestId}")]
+        public async Task<IActionResult> AcceptRequest(int requestId)
+        {
+            await requestServices.AcceptRequest(requestId);
+            return RedirectToAction("ProviderDashboard", "Provider");
+        }
+
+        [HttpGet("{requestId}")]
+        public IActionResult ViewCase(int requestId)
+        {
+            ViewCaseDTO? request = requestServices.GetViewCase(requestId);
+            return View(request);
+        }
+
+        [HttpPost("{requestId}")]
+        public IActionResult ViewCase(ViewCaseDTO data)
+        {
+            if (ModelState.IsValid)
+            {
+                requestClientServices.UpdateCase(data);
+                return View(data);
+            }
+            return View(data);
+        }
+        public IActionResult CreateRequest()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRequest(CreateRequestDTO model)
+        {
+            if (!aspNetUserService.isUserEmailPresent(model.Email))
+            {
+                string subject = "Create your account";
+                //string message = "Create Account", $"Tap the link to create account: <a href=\"https://localhost:44396/Patient/createaccount/{request.Requestid}\">Create Now</a>";
+                string message = "no idea";
+
+                bool isEmailSent = false;
+                try
+                {
+                    await emailSender.SendEmailAsync(model.Email, subject, message);
+                    isEmailSent = true;
+                }
+                catch (Exception ex)
+                {
+                }
+                await emailLogService.AddEmailLog(model.Email, message, subject, isEmailSent);
+            }
+            await requestServices.AddRequest(model);
+
+            return RedirectToAction("AdminDashboard", "Admin");
+        }
+
+        [HttpGet("{requestId}")]
+        public IActionResult ViewNotes(int requestId)
+        {
+            ViewNotesDTO? data = requestNotesServices.GetViewRequestNotes(requestId);
+            ViewBag.requestId = requestId;
+            return View(data);
+        }
+
+        [HttpPost("{requestId}")]
+        public IActionResult ViewNotes(ViewNotesDTO data, int requestId)
+        {
+            if (ModelState.IsValid)
+            {
+                requestNotesServices.AddNotes(data, requestId);
+            }
+            return RedirectToAction("ViewNotes", new { requestId = requestId });
+        }
+
+        [HttpGet("{requestId}")]
+        public IActionResult ViewUploads(int requestId)
+        {
+            ViewDocumentList? doc = requestServices.GetDocumentData(requestId);
+            return View(doc);
+        }
+
+        [HttpGet("{requestId}")]
+        public IActionResult SendOrder(int requestId)
+        {
+            ViewBag.requestId = requestId;
+            return View();
+        }
+
+        [HttpPost("{requestId}")]
+        public IActionResult SendOrder(SendOrderDTO data, int requestId)
+        {
+            if (ModelState.IsValid)
+            {
+                orderDetailsService.AddOrderDetails(data, requestId);
+            }
+            return View();
+        }
+
+        [HttpGet("{requestId}")]
+        public IActionResult Encounter(int requestId)
+        {
+            ViewBag.requestId = requestId;
+            EncounterDTO? data = encounterFormService.GetEncounterInfo(requestId);
+            return View(data);
+        }
+
+        [HttpPost("{requestId}")]
+        public IActionResult Encounter(int requestId, EncounterDTO model)
+        {
+            encounterFormService.AddEncounterInfo(requestId, model);
+            return View();
+        }
+
+        [HttpPost("{requestId}")]
+        public async Task<IActionResult> TransferCase(int requestId,string notes)
+        {
+            await requestServices.RequestBackToAdmin(requestId, notes);
+            return RedirectToAction("ProviderDashboard", "Provider");
+        }
+
+        [HttpPost("{requestId}")]
+        public IActionResult SendAgreement(int requestId, [FromForm] string phoneNumber, [FromForm] string email)
+        {
+            requestClientServices.SendAgreement(requestId, phoneNumber, email);
+            return RedirectToAction("ProviderDashboard", "Provider");
+        }
+
+        [HttpGet("{requestId}")]
+        public async Task<IActionResult> HouseCall(int requestId)
+        {
+            await requestServices.HouseCallStatusChange(requestId);
+            return RedirectToAction("ProviderDashboard", "Provider");
+        }
+
+        [HttpGet("{requestId}")]
+        public async Task<IActionResult> Consult(int requestId)
+        {
+            await requestServices.ConsultStatusChange(requestId);
+            return RedirectToAction("ProviderDashboard", "Provider");
         }
     }
 }

@@ -1,0 +1,96 @@
+﻿@model ViewNotesDTO
+@{
+    ViewData["Title"] = "ViewNotes";
+    Layout = "~/Views/Shared/_ProviderLayout.cshtml";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Notes</h4>
+
+        <a class="btn btn-outline-info text-info" onclick="history.back()"> < Back </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-12">
+            <div class="bg d-flex">
+                <i class="fa-solid fa-right-left pt-2"></i>
+                <div class="ps-2">
+                    <h4>Transfer Notes</h4>
+                    <span>
+                        @if (@Model.TransferNotes != null)
+                        {
+                            @Model.TransferNotes
+                        }
+                        else
+                        {
+                            @("-")
+                        }
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-12">
+            <div class="bg d-flex">
+                <i class="fa-solid fa-user-doctor pt-2"></i>
+                <div class="ps-2">
+                    <h4>Physician Notes</h4>
+                    <span>
+                        @if (@Model.PhysicianNotes != null)
+                        {
+                            @Model.PhysicianNotes
+                        }
+                        else
+                        {
+                            @("-")
+                        }
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-6 col-12">
+            <div class="bg d-flex">
+                <i class="fa-solid fa-user-tie pt-2"></i>
+                <div class="ps-2">
+                    <h4>Admin Notes</h4>
+                    <span>
+                        @if (@Model.AdminNotes != null)
+                        {
+                            @Model.AdminNotes
+                        }
+                        else
+                        {
+                            @("-")
+                        }
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="ViewNotes" asp-route-requestId="@ViewBag.requestId" asp-controller="Provider" method="post">
+        <div class="bg mt-4">
+            <div class="mb-3">
+                <div class="form-floating">
+                    <textarea asp-for="AdditionalNotes"
+                              class="form-control"
+                              placeholder="adminNotes"
+                              id="floatingTextarea2"
+                              style="height: 100px"></textarea>
+                    <label for="floatingTextarea2">Admin Notes</label>
+                </div>
+            </div>
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button class="btn btn-info text-white"> Save Changes </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

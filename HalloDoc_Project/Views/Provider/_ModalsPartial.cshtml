@@ -1,0 +1,149 @@
+﻿@model SendAgreement
+
+
+<!-- Modal For Transfer Case-->
+<div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form class="transferCaseForm" method="post">
+                <div class="modal-header bg-info text-white ">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Transfer Request</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col text-muted">
+                            This request will be transferred to admin
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="desc" id="floatingTextarea2" name="notes" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Description</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info text-white" id="assignCaseSubmit">Confirm</button>
+                    <button type="button" class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- For transfer case-->
+<script>
+    function SetTransferId(id) {
+        console.log("start");
+        console.log(id);
+        const myModal = new bootstrap.Modal("#transferModal", {});
+        myModal.show();
+        $(".transferCaseForm").attr("action", "/Provider/TransferCase/" + id);
+    }
+</script>
+
+
+<!-- Modal For Send Agreement-->
+<div class="modal fade text-start" id="sendAgreementModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title fs-5" id="exampleModalLabel">Send Agreement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" class="sendAgreementForm">
+                <div class="modal-body">
+                    <div class="d-md-flex gap-1 mx-auto text-center align-items-center">
+
+                        <i class="bi bi-circle-fill pe-2"></i>
+                        <span class="text-sm-start" id="displayName"></span>
+                    </div>
+                    <p> To Send Agreement please make sure you are updating the correct contact information below for the responsible party. </p>
+                    <div class="form-floating mb-3">
+                        <input type="text" id="phoneNumber" class="input-outline w-100 h-100 fs-6 form-control shadow-none" name="phoneNumber">
+                        <label class="inputs-label inputs-label fs-6">Phone Number</label>
+                        @* <span asp-validation-for="PhoneNumber" class="text-danger"></span> *@
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input id="email" class="input-outline w-100 h-100 fs-6 form-control shadow-none" type="email" name="email" />
+                        <label class="inputs-label inputs-label-textarea fs-6" id="notedata">Email</label>
+                        @* <span asp-validation-for="Email" class="text-danger"></span> *@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class=" btn btn-info text-white">Send</button>
+                    <a class="btn btn-outline-info" data-bs-dismiss="modal">Close</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- For Send agreement-->
+<script>
+    function SetAgreementInfo(requestId, requestTypeId, phone, email) {
+        console.log("start");
+        console.log(requestId);
+        console.log(requestTypeId);
+        if (requestTypeId == 1) {
+            $("#displayName").text('Business');
+            $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 pink-color');
+        } else if (requestTypeId == 2) {
+            $("#displayName").text('Patient');
+            $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 green-color');
+        } else if (requestTypeId == 3) {
+            $("#displayName").text('Family');
+            $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 orange-color');
+        } else if (requestTypeId == 4) {
+            $("#displayName").text('Concierge');
+            $('i.bi.bi-circle-fill.pe-2').removeClass().addClass('bi bi-circle-fill pe-2 blue-color');
+        }
+
+        document.getElementById('phoneNumber').value = phone;
+        document.getElementById('email').value = email;
+
+        const myModal = new bootstrap.Modal("#sendAgreementModal", {});
+        myModal.show();
+
+        $(".sendAgreementForm").attr("action", "/Provider/SendAgreement/" + requestId);
+    }
+</script>
+
+<!-- Modal For Encounter-->
+
+<div class="modal fade" id="Encounter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Select Type Of Care</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+
+                    <a id="houseCall" ><button class="btn btn-white text-info border-info me-md-2" type="button">Housecall</button></a>
+                    <a id="consult"><button class="btn btn-white text-info border-info" type="button">Consult</button></a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white">Save</button>
+                <button type="button" class="btn btn-white text-info border-info" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- For Send agreement-->
+<script>
+    function SetEncounterInfo(requestId) {
+        console.log(requestId);
+        const myModal = new bootstrap.Modal("#Encounter", {});
+
+        $('#houseCall').attr('href', '/Provider/HouseCall/' + requestId);
+        $('#consult').attr('href', '/Provider/Consult/' + requestId);
+        myModal.show();
+    }
+</script>

@@ -1,5 +1,8 @@
 ﻿using Entities.DataContext;
+using HalloDoc.Utility;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -11,19 +14,25 @@ using System.Threading.Tasks;
 
 namespace Repositories.Repository.Implementation
 {
-    public class HelperService: IHelperService
+    public class HelperService : IHelperService
     {
         private readonly HalloDocDbContext _context;
         private readonly IAdminService adminService;
         private readonly IPhysicianService physicianService;
         private readonly IHttpContextAccessor httpContext;
+        private readonly IEmailSender emailSender;
+        private readonly IWebHostEnvironment env;
+        private readonly IEmailLogService emailLogService;
 
-        public HelperService(HalloDocDbContext _context,IAdminService adminService,IPhysicianService physicianService, IHttpContextAccessor httpContext)
+        public HelperService(HalloDocDbContext _context, IAdminService adminService, IPhysicianService physicianService, IHttpContextAccessor httpContext, IEmailSender emailSender, IWebHostEnvironment env)
         {
             this._context = _context;
             this.adminService = adminService;
             this.physicianService = physicianService;
             this.httpContext = httpContext;
+            this.emailSender = emailSender;
+            this.env = env;
+            this.emailLogService = emailLogService;
         }
 
         public List<string> GetRoles()
@@ -46,6 +55,30 @@ namespace Repositories.Repository.Implementation
         public string GetRegionById(int regionId)
         {
             return _context.Regions.Where(a => a.Regionid == regionId).Select(a => a.Name).FirstOrDefault();
+        }
+
+        public async Task SendAttachment(int request_id, int[] files_jx, string email)
+        {
+            string subject = "Your documents for request";
+            string message = "See all the attachments";
+            List<string> attach = new List<string>();
+            foreach (var item in files_jx)
+            {
+                attach.Add(await GetFileAsync(item, request_id));
+            }
+
+            await emailSender.SendEmailAsync(email, subject, message, attach);
+        }
+        private string RootPathBuilder(string folder, string fileName) => Path.Combine(Path.Combine(env.WebRootPath, "uploads"), fileName);
+
+        public async Task<string> GetFileAsync(int fileId, int requestId)
+        {
+            var file = await _context.Requestwisefiles.FirstOrDefaultAsync(a => a.Isdeleted == false && a.Requestwisefileid == fileId && a.Requestid == requestId);
+            if (file is null)
+                return null!;
+
+            string filePath = RootPathBuilder("uploads", file.Filename);
+            return filePath;
         }
     }
 }

@@ -7,15 +7,26 @@ namespace HalloDoc.Utility
 {
     public class EmailSender : IEmailSender
     {
-        public Task SendEmailAsync(string email, string subject, string message)
+        public Task SendEmailAsync(string email, string subject, string message, List<string>? attachments = null)
         {
             MimeMessage? emailToSend = new MimeMessage();
             emailToSend.From.Add(MailboxAddress.Parse("vraj.parekh@etatvasoft.com"));
             emailToSend.To.Add(MailboxAddress.Parse(email));
             emailToSend.Subject = subject;
-            emailToSend.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message };
 
+            BodyBuilder builder = new BodyBuilder();
+            builder.HtmlBody = message;
 
+            if (attachments != null)
+            {
+                foreach (string attachment in attachments)
+                {
+                    MemoryStream memoryStream = new MemoryStream(File.ReadAllBytes(attachment));
+                    builder.Attachments.Add(attachment, memoryStream);
+                }
+            }
+            emailToSend.Body = builder.ToMessageBody();
+          
             using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
             {
                 emailClient.Connect("mail.etatvasoft.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
@@ -25,7 +36,9 @@ namespace HalloDoc.Utility
                 return Task.CompletedTask;
             }
         }
+
     }
+
 }
 
 

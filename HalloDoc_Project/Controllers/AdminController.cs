@@ -54,8 +54,36 @@ namespace HalloDoc_Project.Controllers
         private readonly ISmsLogService smsLogService;
         private readonly IPhysicianLocationService physicianLocationService;
         private readonly IHttpContextAccessor httpContext;
+        private readonly IHelperService helperService;
 
-        public AdminController(IRequestClientServices requestClientServices, IRequestServices requestServices, IRequestNotesServices requestNotesServices, IRequestStatusLogServices requestStatusLogServices, IBlockRequestService blockRequestService, IRegionService regionService, IPhysicianService physicianService, IRequestWiseFilesServices requestWiseFilesServices, IHealthProfessionalTypeService healthProfessionalTypeService, IHealthProfessionalsService healthProfessionalsService, IOrderDetailsService orderDetailsService, IAspNetUserService aspNetUserService, IEncounterFormService encounterFormService, IEmailSender emailSender, IAdminService adminService, ISmsSender smsSender, IMenuService menuService, IRoleService roleService, IRoleMenuService roleMenuService, IAdminRegionService adminRegionService, IShiftDetailService shiftDetailService, IShiftService shiftService, IShiftDetailRegionService shiftDetailRegionService, IEmailLogService emailLogService, ISmsLogService smsLogService, IPhysicianLocationService physicianLocationService, IHttpContextAccessor httpContext)
+        public AdminController(IRequestClientServices requestClientServices,
+                               IRequestServices requestServices,
+                               IRequestNotesServices requestNotesServices,
+                               IRequestStatusLogServices requestStatusLogServices,
+                               IBlockRequestService blockRequestService,
+                               IRegionService regionService,
+                               IPhysicianService physicianService,
+                               IRequestWiseFilesServices requestWiseFilesServices,
+                               IHealthProfessionalTypeService healthProfessionalTypeService,
+                               IHealthProfessionalsService healthProfessionalsService,
+                               IOrderDetailsService orderDetailsService,
+                               IAspNetUserService aspNetUserService,
+                               IEncounterFormService encounterFormService,
+                               IEmailSender emailSender,
+                               IAdminService adminService,
+                               ISmsSender smsSender,
+                               IMenuService menuService,
+                               IRoleService roleService,
+                               IRoleMenuService roleMenuService,
+                               IAdminRegionService adminRegionService,
+                               IShiftDetailService shiftDetailService,
+                               IShiftService shiftService,
+                               IShiftDetailRegionService shiftDetailRegionService,
+                               IEmailLogService emailLogService,
+                               ISmsLogService smsLogService,
+                               IPhysicianLocationService physicianLocationService,
+                               IHttpContextAccessor httpContext,
+                               IHelperService helperService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -84,6 +112,7 @@ namespace HalloDoc_Project.Controllers
             this.smsLogService = smsLogService;
             this.physicianLocationService = physicianLocationService;
             this.httpContext = httpContext;
+            this.helperService = helperService;
         }
         public IActionResult Index()
         {
@@ -137,11 +166,24 @@ namespace HalloDoc_Project.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult ResetPwd(LoginDTO data)
+        public async Task<IActionResult> ResetPwd(LoginDTO data)
         {
             if (aspNetUserService.isUserPresent(data))
             {
-                emailSender.SendEmailAsync(data.Email, "Reset Password", $"Tap the link to reset the password: <a href=\"https://localhost:44396/admin/changepassword/{data.Email}\">Reset now</a>");
+                string email = data.Email;
+                string subject = "Reset Password";
+                string message = $"Tap the link to reset the password: <a href=\"https://localhost:44396/admin/changepassword/{data.Email}\">Reset now</a>";
+
+                bool isEmailSent = false;
+                try
+                {
+                    await emailSender.SendEmailAsync(email, subject, message);
+                    isEmailSent = true;
+                }
+                catch (Exception ex)
+                {
+                }
+                await emailLogService.AddEmailLog(email, message, subject, isEmailSent);
                 return RedirectToAction("AdminLogin", "Admin");
             }
             else
@@ -194,21 +236,21 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
-        public IActionResult SendLink(SendLinkDTO model)
+        public async Task<IActionResult> SendLink(SendLinkDTO model)
         {
             var subject = "Admin sent you link";
             var message = "$\"Tap the link to open page: <a href=\\\"https://localhost:44396/Request/SubmitRequest\\\">Opne request page</a>\"";
             bool isEmailSent = false;
             try
             {
-                emailSender.SendEmailAsync(model.Email, subject, message);
+                await emailSender.SendEmailAsync(model.Email, subject, message);
                 isEmailSent = true;
             }
             catch (Exception e)
             {
 
             }
-            emailLogService.AddEmailLog(model.Email, message, subject, isEmailSent);
+            await emailLogService.AddEmailLog(model.Email, message, subject, isEmailSent);
             return RedirectToAction("AdminDashboard", "Admin");
         }
         [HttpGet("{requestId}")]
@@ -244,7 +286,7 @@ namespace HalloDoc_Project.Controllers
             {
                 requestNotesServices.AddNotes(data, requestId);
             }
-            return View();
+            return RedirectToAction("ViewNotes",new { requestId = requestId});
         }
 
         [HttpPost("{requestId}")]
@@ -257,6 +299,7 @@ namespace HalloDoc_Project.Controllers
         [HttpPost("{requestId}")]
         public IActionResult AssignCase(int requestId, string phyRegion, string phyId, string notes)
         {
+            //status-->reamil to accept -> 23
             requestServices.AssignCase(requestId, phyRegion, phyId, notes);
             return RedirectToAction("AdminDashboard");
         }
@@ -319,6 +362,11 @@ namespace HalloDoc_Project.Controllers
             return Redirect(HttpContext.Request.Headers.Referer!);
         }
 
+        [HttpPost]
+        public async Task SendAttachment(int request_id, int[] files_jx, string mail)
+        {
+            await helperService.SendAttachment(request_id, files_jx, mail);
+        }
         [HttpGet("{requestId}")]
         public IActionResult SendOrder(int requestId)
         {
@@ -431,12 +479,21 @@ namespace HalloDoc_Project.Controllers
                 string subject = "Create your account";
                 //string message = "Create Account", $"Tap the link to create account: <a href=\"https://localhost:44396/Patient/createaccount/{request.Requestid}\">Create Now</a>";
                 string message = "no idea";
-                await emailSender.SendEmailAsync(model.Email,subject, message);
-                await emailLogService.AddEmailLog(model.Email, message, subject, true);
+
+                bool isEmailSent = false;
+                try
+                {
+                    await emailSender.SendEmailAsync(model.Email, subject, message);
+                    isEmailSent = true;
+                }
+                catch (Exception ex)
+                {
+                }
+                await emailLogService.AddEmailLog(model.Email, message, subject, isEmailSent);
             }
             await requestServices.AddRequest(model);
-            
-            return RedirectToAction("AdminDashboard","Admin");
+
+            return RedirectToAction("AdminDashboard", "Admin");
         }
         public IActionResult MyProfile()
         {
@@ -497,6 +554,8 @@ namespace HalloDoc_Project.Controllers
             string email = physicianService.GetPhysicianEmail(physicianId);
             string phoneNumber = physicianService.GetPhysicianPhone(physicianId);
             string subject = "For communication";
+            bool isSmsSent = false;
+            bool isEmailSent = false;
 
             //message-1
             if (mode == 1)
@@ -504,31 +563,29 @@ namespace HalloDoc_Project.Controllers
                 try
                 {
                     smsSender.SendSms(phoneNumber, message);
-                    smsLogService.AddSmsLog(phoneNumber, message, true);
+                    isSmsSent = true;
                 }
                 catch (Exception ex)
                 {
-                    smsLogService.AddSmsLog(phoneNumber, message, false);
                 }
+                await smsLogService.AddSmsLog(phoneNumber, message, isSmsSent);
             }
             //email-2
             else if (mode == 2)
             {
                 try
                 {
-                    emailSender.SendEmailAsync(email, subject, message);
-                    emailLogService.AddEmailLog(email, message, subject, true);
+                    await emailSender.SendEmailAsync(email, subject, message);
+                    isEmailSent = true;
                 }
                 catch (Exception ex)
                 {
-                    emailLogService.AddEmailLog(email, message, subject, false);
                 }
+                await emailLogService.AddEmailLog(email, message, subject, isEmailSent);
             }
             //both-0
             else
             {
-                bool isSmsSent = false;
-                bool isEmailSent = false;
 
                 try
                 {
@@ -537,7 +594,6 @@ namespace HalloDoc_Project.Controllers
                 }
                 catch (Exception e)
                 {
-                    //error
                 }
                 try
                 {
@@ -546,12 +602,10 @@ namespace HalloDoc_Project.Controllers
                 }
                 catch (Exception e)
                 {
-                    //error
                 }
                 // Log SMS and email sending status
                 await smsLogService.AddSmsLog(phoneNumber, message, isSmsSent);
                 await emailLogService.AddEmailLog(email, message, subject, isEmailSent);
-
             }
         }
 
@@ -611,10 +665,10 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
-        public async Task<IActionResult> UserAccessTable(int accountType)
+        public async Task<IActionResult> UserAccessTable(int accountType, int page = 1, int itemsPerPage = 5)
         {
-            //Pagination<UserAccessDTO>? filteredData =
-            return PartialView("_UserAccessTable");
+            Pagination<UserAccessDTO>? filteredData = await adminService.GetFilteredUserAccessData(accountType, page, itemsPerPage);
+            return PartialView("_UserAccessTable",filteredData);
         }
         public IActionResult CreateAdminAccount()
         {

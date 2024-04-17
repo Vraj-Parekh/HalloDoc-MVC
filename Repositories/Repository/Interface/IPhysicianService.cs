@@ -10,6 +10,7 @@ namespace Repositories.Repository.Interface
         Physician GetPhysicianById(int physicianId);
         List<Physician> GetPhysicianByRegionId(int regionId);
         string GetPhysicianEmail(int physicianId);
+        int GetPhysicianIdByAspNetUserId(string aspNetUserId);
         EditPhysicianDTO GetPhysicianInfo(Physician physician);
         string GetPhysicianPhone(int physicianId);
         List<ProviderMenuDTO> GetProviderMenu();

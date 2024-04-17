@@ -56,6 +56,10 @@ namespace Repositories.Repository.Implementation
             return physician;
         }
 
+        public int GetPhysicianIdByAspNetUserId(string aspNetUserId)
+        {
+            return _context.Physicians.Where(a => a.Aspnetuserid == aspNetUserId).Select(a=>a.Physicianid).FirstOrDefault();
+        }
         public List<ProviderMenuDTO> GetProviderMenu()
         {
             List<Physician>? providerList = _context.Physicians

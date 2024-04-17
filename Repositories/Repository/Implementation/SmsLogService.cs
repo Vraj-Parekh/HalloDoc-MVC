@@ -110,11 +110,8 @@ namespace Repositories.Repository.Implementation
 
             foreach (var item in smsLogs)
             {
-                Request? request = requestServices.GetRequest((int)item.Requestid);
-
                 LogsDTO model = new LogsDTO()
                 {
-                    Recipient = request?.Firstname ?? "-",
                     Active = 1,
                     RoleName = item.Roleid.ToString(),
                     PhoneNumber = item.Mobilenumber,
@@ -124,6 +121,11 @@ namespace Repositories.Repository.Implementation
                     SentTries = (int)item.Senttries,
                     ConfirmationNumber = item.Confirmationnumber ?? "-",
                 };
+                if (item.Requestid is not null)
+                {
+                    Request? request = requestServices.GetRequest((int)item.Requestid);
+                    model.Recipient = request.Firstname ?? "";
+                }
                 modelList.Add(model);
             }
 

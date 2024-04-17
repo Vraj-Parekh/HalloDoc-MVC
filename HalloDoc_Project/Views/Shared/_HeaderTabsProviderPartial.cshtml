@@ -1,0 +1,66 @@
+﻿
+<link asp-append-version="true" rel="stylesheet" href="/css/admin_dashboard.css" />
+<link asp-append-version="true" rel="stylesheet" href="/css/header_footer_layout.css" />
+
+<div class="d-flex header_nav justify-content-between align-items-center bg-white p-3">
+
+    <button class="btn text-info bg-white d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" style="border: 1px solid cyan;">
+        <i class="bi bi-list fs-5"></i>
+    </button>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="width:320px;">
+        <div class="offcanvas-header d-flex justify-content-between">
+            <button class="btn text-info bg-white d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" style="border: 1px solid cyan;">
+                <i class="bi bi-list fs-5"></i>
+            </button>
+            <img src="/img/hallodoc_img.png" alt="logo_img">
+        </div>
+
+        <div class="offcanvas-body aside-cont">
+            <span class="fw-light fs-5">Welcome</span><span class="h5 ps-1">@User.FindFirst("firstname")?.Value,@User.FindFirst("lastname")?.Value</span>
+
+            <ul class="nav flex-column mt-2">
+                <li class="nav-item">
+                    <a class="nav-link active fs-5" asp-action="ProviderDashboard" asp-controller="Provider">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link  fs-5" asp-action="Invoicing" asp-controller="Provider">Invoicing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="dropdown-item" asp-action="Scheduling" asp-controller="Provider">My Scheduling</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fs-5" asp-action="MyProfile" asp-controller="Provider">My Profile</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <img src="/img/hallodoc_img.png" class="d-lg-block d-none" alt="logo_img">
+    <div class="d-flex align-items-center">
+        <span class="fw-light fs-5 d-lg-block d-none">Welcome<span class="h5 ps-1">@User.FindFirst("firstname")?.Value, @User.FindFirst("lastname")?.Value</span> </span>
+        <a class="btn btn-outline-info text-info bg-white ms-2 me-2" role="button" asp-action="Logout" asp-controller="Admin">
+            <i class="bi bi-box-arrow-right d-lg-none"></i>
+            <span class="d-lg-block d-none"> Logout</span>
+        </a>
+        <button type="button" class="btn btn-outline-info bg-white" id="toggle_theme_btn">
+            <i class="bi bi-moon"></i>
+        </button>
+    </div>
+
+</div>
+
+<ul class="nav nav-underline tabs bg-white shadow d-lg-flex d-none">
+    <li class="nav-item">
+        <a id="dashboard" class="nav-link active fs-5" asp-action="ProviderDashboard" asp-controller="Provider">Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a id="invoicing" class="nav-link  fs-5" asp-action="Invoicing" asp-controller="Provider">Invoicing</a>
+    </li>
+    <li class="nav-item">
+        <a id="scheduling" class="nav-link  fs-5" asp-action="Scheduling" asp-controller="Provider">Scheduling</a>
+    </li>
+    <li class="nav-item">
+        <a id="my-profile" class="nav-link fs-5" asp-action="MyProfile" asp-controller="Provider">My Profile</a>
+    </li>
+</ul>
