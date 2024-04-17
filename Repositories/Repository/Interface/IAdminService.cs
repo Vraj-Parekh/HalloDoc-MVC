@@ -8,6 +8,7 @@ namespace Repositories.Repository.Interface
         Task ChangePassword(Admin admin, AdminProfileDTO model);
         Task CreateAdmin(CreateAdminDTO model);
         Admin GetAdmin(string email);
+        Admin GetAdminById(int adminId);
         AdminProfileDTO GetAdminInfo(Admin admin);
         Task<Pagination<UserAccessDTO>> GetFilteredUserAccessData(int accountType, int page, int itemsPerPage);
         Task UpdateAdminInfo(Admin admin, AdminProfileDTO model);

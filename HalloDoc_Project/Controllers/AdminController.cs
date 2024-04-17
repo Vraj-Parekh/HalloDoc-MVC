@@ -495,6 +495,21 @@ namespace HalloDoc_Project.Controllers
 
             return RedirectToAction("AdminDashboard", "Admin");
         }
+
+        [HttpGet("{id}")]
+        public IActionResult EditAdmin(int id)
+        {
+            Admin? admin = adminService.GetAdminById(id);
+            if (admin is not null)
+            {
+                AdminProfileDTO? model = adminService.GetAdminInfo(admin);
+                model.Regions = regionService.GetRegionList();
+                model.Roles = roleService.GetRoles();
+
+                return View(model);
+            }
+            return View();
+        }
         public IActionResult MyProfile()
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);

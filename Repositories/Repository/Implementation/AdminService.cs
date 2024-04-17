@@ -46,26 +46,31 @@ namespace Repositories.Repository.Implementation
 
             return admin;
         }
+
+        public Admin GetAdminById(int adminId)
+        {
+            return _context.Admins.Where(a => a.Adminid == adminId).FirstOrDefault();
+        }
         public AdminProfileDTO GetAdminInfo(Admin admin)
         {
-            AdminProfileDTO? model = new AdminProfileDTO()
-            {
-                UserName = admin.Aspnetuser.Username,
-                Password = admin.Aspnetuser.Passwordhash,
-                Status = (short)(admin.Status ?? 0),
-                Role = admin.Roleid ?? 0,
-                FirstName = admin.Firstname,
-                LastName = admin.Lastname,
-                Email = admin.Email,
-                ConfirmEmail = admin.Email,
-                PhoneNumber = admin.Mobile,
-                Address1 = admin.Address1,
-                Address2 = admin.Address2,
-                City = admin.City,
-                State = (int)admin.Regionid,
-                Zip = admin.Zip,
-                AltPhoneNumber = admin.Altphone,
-            };
+            AdminProfileDTO? model = new AdminProfileDTO();
+
+            model.UserName = admin.Email;
+            model.Password = admin.Aspnetuser.Passwordhash;
+            model.Status = admin.Status ?? 0;
+            model.Role = admin.Roleid ?? 0;
+            model.FirstName = admin.Firstname;
+            model.LastName = admin.Lastname;
+            model.Email = admin.Email;
+            model.ConfirmEmail = admin.Email;
+            model.PhoneNumber = admin.Mobile;
+            model.Address1 = admin.Address1;
+            model.Address2 = admin.Address2;
+            model.City = admin.City;
+            model.State = (int)admin.Regionid;
+            model.Zip = admin.Zip;
+            model.AltPhoneNumber = admin.Altphone;
+
 
             List<Adminregion>? adminRegions = adminRegionService.GetAdminRegions(admin);
             model.Regions = regionService.GetRegionList().Select(a => new RegionList()
@@ -190,7 +195,7 @@ namespace Repositories.Repository.Implementation
                     });
                 }
             }
-            else if(accountType == 1)
+            else if (accountType == 1)
             {
                 var admins = await _context.Admins.ToListAsync();
 
