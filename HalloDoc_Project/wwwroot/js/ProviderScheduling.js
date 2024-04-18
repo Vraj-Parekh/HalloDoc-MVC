@@ -201,7 +201,7 @@ $(document).ready(function () {
             schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
             themeSystem: 'bootstrap5',
             headerToolbar: false,
-            initialView: 'resourceTimelineDay',
+            initialView: 'dayGridMonth',
             views: {
                 resourceTimelineDay: {
                     buttonText: 'Day',

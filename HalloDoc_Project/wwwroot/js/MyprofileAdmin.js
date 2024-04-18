@@ -104,16 +104,4 @@
             }
         });
     });
-
-    //-------------ajax for state dropdown-------------
-    $.ajax({
-        url: './FetchRegions',
-        method: 'GET',
-        success: function (response) {
-            response.forEach(function (res) {
-                console.log("calls region");
-                $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
-            });
-        }
-    });
 });

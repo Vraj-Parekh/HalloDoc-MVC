@@ -19,6 +19,7 @@ using Org.BouncyCastle.Utilities;
 using MailKit.Search;
 using System.Xml.Schema;
 using System.Security.Cryptography.X509Certificates;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -142,7 +143,15 @@ namespace HalloDoc_Project.Controllers
                 };
                 Response.Cookies.Append("Token", token, cookieOptions);
 
-                return RedirectToAction("AdminDashboard", "Admin");
+                JwtService.ValidateToken(token, out JwtSecurityToken jwtSecurityToken);
+
+                var roleClaim = jwtSecurityToken.Claims.Where(claims => claims.Type == ClaimTypes.Role).Select(a => a.Value).ToList();
+                if (roleClaim.Contains("Admin"))
+                {
+                    return RedirectToAction("AdminDashboard", "Admin");
+                }
+
+                return RedirectToAction("ProviderDashboard", "Provider");
             }
             else
             {
@@ -286,7 +295,7 @@ namespace HalloDoc_Project.Controllers
             {
                 requestNotesServices.AddNotes(data, requestId);
             }
-            return RedirectToAction("ViewNotes",new { requestId = requestId});
+            return RedirectToAction("ViewNotes", new { requestId = requestId });
         }
 
         [HttpPost("{requestId}")]
@@ -683,7 +692,7 @@ namespace HalloDoc_Project.Controllers
         public async Task<IActionResult> UserAccessTable(int accountType, int page = 1, int itemsPerPage = 5)
         {
             Pagination<UserAccessDTO>? filteredData = await adminService.GetFilteredUserAccessData(accountType, page, itemsPerPage);
-            return PartialView("_UserAccessTable",filteredData);
+            return PartialView("_UserAccessTable", filteredData);
         }
         public IActionResult CreateAdminAccount()
         {
@@ -735,14 +744,26 @@ namespace HalloDoc_Project.Controllers
         {
             await shiftDetailService.DeleteShift(shiftDetailId);
             return await FetchShiftDetails();
+        }    
+        
+        public async Task<IActionResult> DeleteSelectedShift(List<int> Ids)
+        {
+            await shiftDetailService.DeleteSelectedShift(Ids);
+            return RedirectToAction("RequestedShift", "Admin");
         }
 
         public async Task<IActionResult> SaveShift(ScheduleDTO model)
         {
             await shiftDetailService.EditShift(model);
-            return await FetchShiftDetails();
+            var res = await FetchShiftDetails();
+            return res;
         }
 
+        public async Task<IActionResult> ApproveSelected(List<int> Ids)
+        {
+            await shiftDetailService.ApproveShift(Ids);
+            return RedirectToAction("RequestedShift","Admin");
+        }
         public async Task<IActionResult> CreateShift(CreateShiftDTO model)
         {
             Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);

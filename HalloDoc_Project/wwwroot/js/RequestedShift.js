@@ -60,3 +60,64 @@ function nextPage(totalPages) {
         loadFilteredData(page);
     }
 }
+
+
+$(document).ready(function () {
+
+    $('thead input[name="headCheck"]').change(function () {
+        const isChecked = $(this).prop('checked');
+     
+        $('tbody input[type="checkbox"]').prop('checked', isChecked);
+    });
+
+
+    $('#approveSelected').click(function () {
+        var selectedIds = [];
+        $('input[name="checkedshift"]:checked').each(function () {
+            selectedIds.push($(this).val());
+        });
+
+        console.log(selectedIds);
+
+        $.ajax({
+            url: '/Admin/ApproveSelected',
+            type: 'post',
+            async:false,
+            data: {
+                Ids: selectedIds ,
+            },
+            success: function (data) {
+                console.log("success");
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log("error");
+            }
+        });
+    });
+    $('#deleteSelected').click(function () {
+        var selectedIds = [];
+        $('input[name="checkedshift"]:checked').each(function () {
+            selectedIds.push($(this).val());
+        });
+
+        console.log(selectedIds);
+
+        $.ajax({
+            url: '/Admin/DeleteSelectedShift',
+            type: 'post',
+            async:false,
+            data: {
+                Ids: selectedIds ,
+            },
+            success: function (data) {
+                console.log("success");
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log("error");
+            }
+        });
+    });
+
+});

@@ -45,7 +45,7 @@ namespace Repositories.Repository.Implementation
         {
             IQueryable<Shift>? query = _context.Shifts
                     .Include(a => a.Shiftdetails)
-                    .Where(a=>a.Shiftdetails.Any(a=>!a.Isdeleted))
+                    .Where(a=>a.Shiftdetails.Any(a=>!a.Isdeleted && a.Status == 1))
                     .Include(a => a.Physician)
                     .AsQueryable();
 

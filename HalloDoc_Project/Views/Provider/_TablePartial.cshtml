@@ -149,7 +149,7 @@
 
                             @if (status == 4)
                             {
-                                <li><a class="dropdown-item blockCase" role="button" onclick="SetBlockInfo(@items.RequestId,'@items.FirstName')"><i class="fa-solid fa-ban pe-2"></i>Conclude Care</a></li>
+                                <li><a class="dropdown-item blockCase" role="button" asp-action="ConcludeCare"><i class="fa-solid fa-ban pe-2"></i>Conclude Care</a></li>
                             }
 
                             <li><a class="dropdown-item viewCase" role="button" asp-route-requestId="@items.RequestId" asp-action="ViewCase"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
@@ -172,10 +172,19 @@
                                 <li><a class="dropdown-item" role="button" asp-route-requestId="@items.RequestId" asp-action="SendOrder"><i class="fa-solid fa-file-circle-check pe-2"></i>Orders</a></li>
                             }
 
-                            @if (status == 3 || status == 4)
+                            @if (status == 3)
                             {
                                 <li>
                                     <a class="dropdown-item" onclick="SetEncounterInfo(@items.RequestId)">
+                                        <i class="fa-regular fa-file-lines pe-2"></i>
+                                        Encounter
+                                    </a>
+                                </li>
+                            }
+                            @if (status == 4)
+                            {
+                                <li>
+                                    <a class="dropdown-item" onclick="checkFinalize(@items.RequestId)">
                                         <i class="fa-regular fa-file-lines pe-2"></i>
                                         Encounter
                                     </a>
@@ -318,10 +327,17 @@
                         </div>
                     }
 
-                    @if (status == 3 || status == 4)
+                    @if (status == 3)
                     {
                         <div class="col-6 mt-1 mb-1">
                             <a class="btn w-100 bg-success text-white rounded-pill p-2" asp-route-requestId="@item.RequestId" asp-action="Encounter">Encounter</a>
+                        </div>
+                    }
+                    
+                    @if (status == 4)
+                    {
+                        <div class="col-6 mt-1 mb-1">
+                            <a class="btn w-100 bg-success text-white rounded-pill p-2" onclick="checkFinalize(@item.RequestId)">Encounter</a>
                         </div>
                     }
 

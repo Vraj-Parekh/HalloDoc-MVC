@@ -125,7 +125,7 @@
             <div class="modal-body">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center">
 
-                    <a id="houseCall" ><button class="btn btn-white text-info border-info me-md-2" type="button">Housecall</button></a>
+                    <a id="houseCall"><button class="btn btn-white text-info border-info me-md-2" type="button">Housecall</button></a>
                     <a id="consult"><button class="btn btn-white text-info border-info" type="button">Consult</button></a>
                 </div>
             </div>
@@ -136,7 +136,7 @@
         </div>
     </div>
 </div>
-<!-- For Send agreement-->
+<!-- For encounter house call consult-->
 <script>
     function SetEncounterInfo(requestId) {
         console.log(requestId);
@@ -145,5 +145,78 @@
         $('#houseCall').attr('href', '/Provider/HouseCall/' + requestId);
         $('#consult').attr('href', '/Provider/Consult/' + requestId);
         myModal.show();
+    }
+</script>
+
+<!-- modal for finalize true-->
+<div class="modal fade" id="finalize" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Encounter Form</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col text-muted">
+                        Encounter Form Is Finalize Successfully.
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-info text-white">
+                        Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* <script>
+    const myModal = new bootstrap.Modal("#finalize", {});
+    myModal.show();
+
+    // $(".sendAgreementForm").attr("action", "/Provider/SendAgreement/" + requestId);
+</script> *@
+download
+<!-- Modal For Req to admin-->
+<div class="modal fade" id="reqToAdmin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Request To Administrator</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col text-muted">
+                        Need To Send Message To Edit
+                    </div>
+                </div>
+                <form asp-action="UpdateProfileRequest" asp-controller="Provider" class="reqToAdminForm" method="post">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <textarea class="form-control" name="Adminnotes" placeholder="Leave a comment here" id="notes" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Message</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info text-white">Send</button>
+                        <button type="button" id="cancelbtn" class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function reqToAdminModal(requestId) {
+        const myModal = new bootstrap.Modal("#reqToAdmin", {});
+        myModal.show();
+
+        $(".reqToAdminForm").attr("action", "/Provider/RequestToAdmin/");
+
     }
 </script>

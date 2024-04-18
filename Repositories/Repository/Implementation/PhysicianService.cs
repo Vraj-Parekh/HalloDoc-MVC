@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Entities.DataContext;
+using Entities.Enum;
 using Entities.Models;
 using Entities.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -108,7 +109,7 @@ namespace Repositories.Repository.Implementation
             EditPhysicianDTO model = new EditPhysicianDTO();
 
             model.UserName = physician.Email;
-            model.Status = (short)(physician.Status ?? 0);
+            model.Status = physician.Status ?? 0;
             model.Role = physician.Roleid ?? 0;
             model.FirstName = physician.Firstname;
             model.LastName = physician.Lastname;
@@ -178,7 +179,7 @@ namespace Repositories.Repository.Implementation
                 Regionid = model.State,
                 Zip = model.Zip,
                 Roleid = model.Role,
-                Status = (short)RequestStatus.Pending,
+                Status = (short)UserStatus.Pending,
                 Photo = model.Photo.FileName,
                 Signature = model.Signature.FileName,
                 Physicianid = _context.Physicians.OrderBy(u => u.Physicianid).LastOrDefault().Physicianid + 1,
@@ -244,6 +245,56 @@ namespace Repositories.Repository.Implementation
 
             await physicianNotificationService.CreateNotification(physician);
             await physicianRegionService.AddOrRemovePhysicianRegion(physician, model.Regions);
+        }
+
+        public async Task ChangePassword(Physician physician, EditPhysicianDTO model)
+        {
+            Aspnetuser? aspNetUser = await _context.Aspnetusers.FirstOrDefaultAsync(a => a.Aspnetuserid == physician.Aspnetuserid);
+            if (aspNetUser is not null)
+            {
+                aspNetUser.Passwordhash = model.Password;
+                _context.Aspnetusers.Update(aspNetUser);
+                await _context.SaveChangesAsync();
+            }
+        }
+        public async Task UpdatePhysicianInfo(Physician physician,EditPhysicianDTO model)
+        {
+            physician.Firstname = model.FirstName;
+            physician.Lastname = model.LastName;
+            physician.Email = model.Email;
+            physician.Mobile = model.PhoneNumber;
+            physician.Medicallicense = model.MedicalLicense;
+            physician.Npinumber = model.NPINumber;
+
+            _context.Physicians.Update(physician);
+            await _context.SaveChangesAsync();
+
+            await physicianRegionService.AddOrRemovePhysicianRegion(physician, model.Regions);
+        }
+
+        public async Task UpdateBillingInfo(Physician physician,EditPhysicianDTO model)
+        {
+            physician.Address1 = model.Address1;
+            physician.Address2 = model.Address2;
+            physician.City = model.City;
+            physician.Zip = model.Zip;
+            physician.Altphone = model.AltPhoneNumber;
+            physician.Regionid = model.State;
+
+            _context.Physicians.Update(physician);
+            await _context.SaveChangesAsync();
+        }     
+        
+        public async Task UpdateProfileInfo(Physician physician,EditPhysicianDTO model)
+        {
+            physician.Businessname = model.BusinessName;
+            physician.Businesswebsite = model.BusinessWebsite;
+            physician.Adminnotes = model.AdminNotes;
+            physician.Photo = model.Photo.FileName;
+            physician.Signature = model.Signature.FileName;
+
+            _context.Physicians.Update(physician);
+            await _context.SaveChangesAsync();
         }
     }
 }

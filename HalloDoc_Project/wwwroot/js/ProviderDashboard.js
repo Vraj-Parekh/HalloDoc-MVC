@@ -145,3 +145,29 @@ function nextPage(totalPages) {
         getData();
     }
 }
+
+function checkFinalize(requestId) {
+    console.log(requestId);
+    $.ajax({
+        url: '/Provider/CheckIsFinalize',
+        type: 'POST',
+        data: {
+            requestId: requestId
+        },
+        success: function (response) {
+            if (response === true) {
+                //popup
+                const myModal = new bootstrap.Modal("#finalize", {});
+                myModal.show();
+
+            } else {
+                console.log("Request is not finalized");
+                window.location.href = '/Provider/Encounter/' + requestId;
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(xhr.status + ': ' + xhr.statusText);
+            // Handle other errors here
+        }
+    });
+}

@@ -310,7 +310,7 @@ namespace Repositories.Repository.Implementation
                 };
 
 
-                request.Status = 23; 
+                request.Status = (int)RequestStatus.remainToAccept;
                 request.Physicianid = physicianId;
 
                 _context.Requeststatuslogs.Add(model);
@@ -692,7 +692,7 @@ namespace Repositories.Repository.Implementation
                 };
 
 
-                request.Status = 1; //pending
+                request.Status = 1; 
                 request.Physicianid = physicianId;
 
                 _context.Requeststatuslogs.Add(model);

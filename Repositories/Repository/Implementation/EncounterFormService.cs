@@ -1,6 +1,7 @@
 ﻿using Entities.DataContext;
 using Entities.Models;
 using Entities.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,13 @@ namespace Repositories.Repository.Implementation
     {
         private readonly HalloDocDbContext _context;
         private readonly IRequestClientServices requestClientServices;
+        private readonly IHelperService helperService;
 
-        public EncounterFormService(HalloDocDbContext _context,IRequestClientServices requestClientServices)
+        public EncounterFormService(HalloDocDbContext _context, IRequestClientServices requestClientServices,IHelperService helperService)
         {
             this._context = _context;
             this.requestClientServices = requestClientServices;
+            this.helperService = helperService;
         }
         private DateTime GenerateDateOfBirth(int? year, string? month, int? date)
         {
@@ -29,7 +32,7 @@ namespace Repositories.Repository.Implementation
         public EncounterDTO GetEncounterInfo(int requestId)
         {
             Requestclient? requestClient = requestClientServices.GetClient(requestId);
-            if(requestClient == null) { return null; }
+            if (requestClient == null) { return null; }
 
             EncounterDTO? encounter = new EncounterDTO()
             {
@@ -39,13 +42,13 @@ namespace Repositories.Repository.Implementation
                 //Location = requestClient.Location,
                 Location = requestClient.Street + ", " + requestClient.City + ", " + requestClient.State + ", " + requestClient.Zipcode,
                 DateOfBirth = GenerateDateOfBirth(requestClient.Intyear, requestClient.Strmonth, requestClient.Intdate),
-                PhoneNumber = requestClient.Phonenumber??"",
-                Email = requestClient.Email??"",
+                PhoneNumber = requestClient.Phonenumber ?? "",
+                Email = requestClient.Email ?? "",
             };
             return encounter;
         }
 
-        public void AddEncounterInfo(int requestId,EncounterDTO data)
+        public void AddEncounterInfo(int requestId, EncounterDTO data)
         {
             Encounterform encounterform = new Encounterform()
             {
@@ -76,8 +79,28 @@ namespace Repositories.Repository.Implementation
                 Requestid = requestId,
             };
 
+
             _context.Encounterforms.Add(encounterform);
             _context.SaveChanges();
+        }
+
+        public async Task<bool> isFinalize(int requestId)
+        {
+            Request? request = await _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefaultAsync();
+
+            bool finalize = await _context.Encounterforms.Where(a => a.Requestid == requestId).Select(a => a.Isfinalize).FirstOrDefaultAsync();
+            return finalize;
+        }
+
+        public async Task FinalizeRequest(int requestId)
+        {
+            Request? request = await _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefaultAsync();
+
+            Encounterform? data = await _context.Encounterforms.Where(a => a.Requestid == requestId).FirstOrDefaultAsync();
+            data.Isfinalize = true;
+
+            _context.Update(data);
+            await _context.SaveChangesAsync();
         }
     }
 }

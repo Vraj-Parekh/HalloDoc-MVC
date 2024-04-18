@@ -1,9 +1,9 @@
 ﻿@using Entities.Enum;
-    @model EditPhysicianDTO
+@model EditPhysicianDTO
 @{
-    ViewData["Title"] = "EditProviderAccount";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    string active = "#access";
+    ViewData["Title"] = "MyProfileProvider";
+    Layout = "~/Views/Shared/_ProviderLayout.cshtml";
+    string active = "#my-profile";
 }
 
 <div class="container">
@@ -15,6 +15,13 @@
 
     <div class="bg">
         <form asp-action="" asp-controller="Admin" method="post">
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button class="btn btn-outline-info" onclick="reqToAdminModal()"> Request To Admin </button>
+                </div>
+            </div>
+
             <h5 class="mb-4">Account Information</h5>
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -43,34 +50,7 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <select class="form-select" id="status" asp-for="Status" disabled>
-                            @* <option selected value="0">Status</option> *@
-                            @foreach (var status in Enum.GetValues(typeof(UserStatus)))
-                            {
-                                <option value="@((int)status)">@status.ToString()</option>
-                            }
-                        </select>
-                        <label for="status" class="form-label">Status</label>
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <select class="form-select" id="role" asp-for="Role" disabled>
-                            <option selected value="0">Select Role</option>
-                            @foreach (var item in Model.Roles)
-                            {
-                                <option value="@item.Roleid">@item.Name</option>
-                            }
-                        </select>
-                        <label for="role" class="form-label">Role</label>
-                    </div>
-                    <span asp-validation-for="Role" class="text-danger"></span>
-                </div>
-            </div>
+           
 
             <div class="row justify-content-end">
                 <div class="col-auto">
@@ -370,7 +350,7 @@
                     }
                 </div>
             </div>
-             <div class="row">
+            <div class="row">
                 <div class="col-12 mb-3">
                     <div class="form-floating">
                         <textarea class="form-control dis-provider-field" placeholder="Adminnotes" id="Adminnotes" style="height: 100px" asp-for="AdminNotes"></textarea>
@@ -465,4 +445,6 @@
 </div>
 
 <partial name="_ActiveTabPartial" model=active />
+<partial name="_ModalsPartial" model=null />
 <script src="/js/EditPhysician.js" asp-append-version="true"></script>
+

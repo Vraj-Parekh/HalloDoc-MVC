@@ -11,6 +11,7 @@ using Repositories.Repository.Interface;
 using Repositories.Utility;
 using System.Configuration.Provider;
 using System.Drawing;
+using System.Security.Claims;
 using Twilio.Types;
 
 namespace HalloDoc_Project.Controllers
@@ -113,6 +114,45 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        public async Task<IActionResult> ResetPasswordProviderAsync(EditPhysicianDTO model)
+        {
+            Physician? physician = physicianService.GetPhysician(model.Email);
+            if (model.Password is not null && physician is not null)
+            {
+                await physicianService.ChangePassword(physician, model);
+            }
+            return RedirectToAction("UserAccess","Admin");
+        }
+
+        public async Task<IActionResult> UpdatePhysicianInfoAsync(EditPhysicianDTO model)
+        {
+            Physician? physician = physicianService.GetPhysician(model.Email);
+            if (physician is not null)
+            {
+                await physicianService.UpdatePhysicianInfo(physician, model);
+            }
+            return RedirectToAction("UserAccess", "Admin");
+        }
+
+        public async Task<IActionResult> UpdatePhysicianBillingInfoAsync(EditPhysicianDTO model)
+        {
+            Physician? physician = physicianService.GetPhysician(model.Email);
+            if (physician is not null)
+            {
+                await physicianService.UpdateBillingInfo(physician, model);
+            }
+            return RedirectToAction("UserAccess", "Admin");
+        }   
+        
+        public async Task<IActionResult> UpdatePhysicianProfileInfo(EditPhysicianDTO model)
+        {
+            Physician? physician = physicianService.GetPhysician(model.Email);
+            if (physician is not null)
+            {
+                await physicianService.UpdateProfileInfo(physician, model);
+            }
+            return RedirectToAction("UserAccess", "Admin");
+        }
         public async Task<IActionResult> Partners()
         {
             return View();
@@ -244,38 +284,6 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("BlockHistory", "Provider");
         }
 
-        [AllowAnonymous]
-        public IActionResult ProviderLogin()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public IActionResult ProviderLogin(LoginDTO data)
-        {
-            string token = aspNetUserService.AuthenticateUser(data);
-
-            if (token != null)
-            {
-                CookieOptions cookieOptions = new CookieOptions()
-                {
-                    Expires = DateTime.UtcNow.AddMinutes(60),
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict
-                };
-                Response.Cookies.Append("Token", token, cookieOptions);
-
-                return RedirectToAction("ProviderDashboard", "Provider");
-            }
-            else
-            {
-                ModelState.AddModelError(nameof(data.Password), "Incorrect Email or Password.");
-                return View(data);
-            }
-        }
-
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync();
@@ -354,7 +362,7 @@ namespace HalloDoc_Project.Controllers
             }
             await requestServices.AddRequest(model);
 
-            return RedirectToAction("AdminDashboard", "Admin");
+            return RedirectToAction("ProviderDashboard", "Provider");
         }
 
         [HttpGet("{requestId}")]
@@ -414,6 +422,12 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [HttpGet("{requestId}")]
+        public async Task<IActionResult> FinalizeRequest(int requestId)
+        {
+            await encounterFormService.FinalizeRequest(requestId);
+            return RedirectToAction("ProviderDashboard", "Provider");
+        }
         [HttpPost("{requestId}")]
         public async Task<IActionResult> TransferCase(int requestId,string notes)
         {
@@ -440,6 +454,38 @@ namespace HalloDoc_Project.Controllers
         {
             await requestServices.ConsultStatusChange(requestId);
             return RedirectToAction("ProviderDashboard", "Provider");
+        }
+
+        //[HttpGet("{requestId}")]
+        public async Task<IActionResult> ConcludeCare()
+        {
+            return View();
+        }
+
+        public IActionResult Scheduling()
+        {
+            return View();
+        }
+
+        public IActionResult MyProfileProvider()
+        {
+            int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+            Physician? physician = physicianService.GetPhysicianById(physicianId);
+            if (physician is not null)
+            {
+                EditPhysicianDTO model = physicianService.GetPhysicianInfo(physician);
+                model.Regions = regionService.GetRegionList();
+                model.Roles = roleService.GetRoles();
+
+                return View(model);
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> CheckIsFinalize(int requestId)
+        {
+            bool finalize = await encounterFormService.isFinalize(requestId);
+            return Ok(finalize);
         }
     }
 }

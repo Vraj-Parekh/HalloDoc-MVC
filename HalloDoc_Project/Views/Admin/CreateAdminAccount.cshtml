@@ -20,13 +20,13 @@
                 <div class="col-md-4">
                     <div class="form-floating mb-3">
                         <input type="text"
-                               @* asp-for="UserName" *@
+                               asp-for="UserName"
                                class="form-control"
                                id="Username"
-                               placeholder="username" disabled/>
+                               placeholder="username"/>
                         <label for="Username">Username (Email)</label>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
-                    @* <span asp-validation-for="UserName" class="text-danger"></span> *@
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating flex-grow-1">

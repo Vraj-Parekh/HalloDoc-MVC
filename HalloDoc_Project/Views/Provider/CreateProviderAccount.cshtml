@@ -20,10 +20,12 @@
                 <div class="col-md-4">
                     <div class="form-floating mb-3">
                         <input type="text"
+                               asp-for="UserName"
                                class="form-control"
                                id="Username"
-                               placeholder="username" disabled />
-                        <label for="Username">Username (MD Lastname)</label>
+                               placeholder="username" />
+                        <label for="Username">Username (Email)</label>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.DataContext;
+using Entities.Enum;
 using Entities.Models;
 using Entities.ViewModels;
 using MathNet.Numerics.LinearAlgebra.Factorization;
@@ -56,7 +57,7 @@ namespace Repositories.Repository.Implementation
             AdminProfileDTO? model = new AdminProfileDTO();
 
             model.UserName = admin.Email;
-            model.Password = admin.Aspnetuser.Passwordhash;
+            //model.Password = admin.Aspnetuser.Passwordhash;
             model.Status = admin.Status ?? 0;
             model.Role = admin.Roleid ?? 0;
             model.FirstName = admin.Firstname;
@@ -151,7 +152,7 @@ namespace Repositories.Repository.Implementation
                 Aspnetuserid = aspNetUser.Aspnetuserid,
                 Regionid = model.State,
                 Zip = model.Zip,
-                Status = (short)RequestStatus.Pending,
+                Status = (short)UserStatus.Active,
             };
 
             _context.Admins.Add(admin);

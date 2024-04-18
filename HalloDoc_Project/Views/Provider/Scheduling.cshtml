@@ -1,0 +1,249 @@
+﻿@{
+    ViewData["Title"] = "Scheduling";
+    Layout = "~/Views/Shared/_ProviderLayout.cshtml";
+    string active = "#scheduling-tab";
+}
+
+@section style{
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.11/index.global.min.js"></script>
+    <style>
+        /*Calender Styles*/
+
+
+        .fc-toolbar {
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            grid-template-rows: auto auto !important;
+        }
+
+        .fc-toolbar-title {
+            margin-bottom: 10px !important;
+        }
+
+        .fc-toolbar .fc-toolbar-chunk:nth-child(1) {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .fc-toolbar .fc-toolbar-chunk:nth-child(2) {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .fc-toolbar .fc-toolbar-chunk:nth-child(3) {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .fc-button-primary.fc-button-active {
+            background-color: #0dcaf0 !important;
+            box-shadow: none !important;
+            background-image: none !important;
+            color: white !important;
+        }
+
+        .fc-button-primary {
+            margin: 0px 10px 0px 10px !important;
+            padding: 5px 15px 5px 15px;
+            align-items: center !important;
+            border-color: #0dcaf0 !important;
+            background-image: none !important;
+            background-color: transparent !important;
+            color: #0dcaf0 !important;
+            border: 1px solid #0dcaf0 !important;
+            border-radius: 10px !important;
+            font-weight: normal !important;
+        }
+
+        .fc-daygrid-day-top {
+            text-align: center !important;
+            padding: 8px 0px 8px 0px !important;
+            background-color: rgb(239, 174, 218) !important;
+        }
+
+        .fc-prev-button {
+            margin-right: 5px !important;
+            border-radius: 50% !important;
+            border: none !important;
+            background-color: #0dcaf0 !important;
+            background-image: none !important;
+        }
+
+        .fc-next-button {
+            margin-right: 5px !important;
+            border-radius: 50% !important;
+            border: none !important;
+            background-color: #0dcaf0 !important;
+            background-image: none !important;
+        }
+
+        a {
+            text-decoration: none !important;
+            color: inherit !important;
+        }
+
+        .fc-icon {
+            color: white !important;
+        }
+
+        .fc-license-message {
+            display: none !important;
+        }
+
+        .fc-col-header-cell-cushion {
+            text-transform: uppercase !important;
+        }
+
+        tr .fc-timeline-slot-frame {
+            background-color: #c2bfbf !important;
+            padding: 20px 0px 20px 0px !important;
+            height: 100% !important;
+        }
+
+        @@media screen and (max-width: 700px) {
+            #shifts {
+                margin-bottom: 0px !important;
+            }
+
+            #calendar {
+                margin-top: 0px !important;
+            }
+
+            .fc-toolbar .fc-toolbar-chunk:nth-child(2) {
+                grid-column: 1 !important;
+                grid-row: 2 !important;
+                margin-bottom: 5px !important;
+            }
+
+            .fc-toolbar .fc-toolbar-chunk:nth-child(3) {
+                grid-column: 1 !important;
+                grid-row: 3 !important;
+            }
+
+            .fc-scrollgrid-sync-inner {
+                font-size: 0.8em !important;
+            }
+
+            .fc-timegrid-axis-frame {
+                display: none !important
+            }
+        }
+
+        th[role=presentation] {
+            background-color: #c2bfbf !important;
+        }
+
+        th[role=columnheader] .fc-datagrid-cell-frame {
+            height: 72px !important;
+            justify-content: center !important;
+        }
+
+        .fc-daygrid-event {
+            cursor: pointer;
+        }
+
+
+        .fc-header-toolbar .fc-button {
+            padding: 0.25rem 0.5rem !important;
+        }
+
+        .input-group {
+            width: 300px;
+        }
+
+        #calendar {
+            margin-top: 2rem;
+        }
+
+        .fc-daygrid-event {
+            cursor: pointer;
+        }
+
+        .fc-header-toolbar.fc-header-resources-only {
+            background-color: #ff9999;
+            border: none;
+        }
+
+        .fc-header-toolbar,
+        .fc-daygrid-event {
+            background-color: #CCCCCC !important;
+        }
+
+
+        .fc-timeline-header-row {
+            background-color: gray !important;
+        }
+
+        .btn22 {
+            padding: 0.25rem 0.5rem !important;
+        }
+
+        .fc-header-toolbar .fc-button {
+            padding: 0.25rem 0.5rem !important;
+        }
+
+        .input-group {
+            width: 300px;
+        }
+
+        #calendar {
+            margin-top: 2rem;
+        }
+        /*End of (Calender Styles)*/
+    </style>
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>My Schedule</h4>
+
+        <a class="btn btn-outline-info bg-white text-info" onclick="history.back()"> &lt; Back </a>
+    </div>
+
+    <div class="h5 heading mt-3 mb-3" id="header_date">@DateTime.Now.ToString("dddd, MMM d, yyyy")</div>
+
+    <div class="text-end mb-3">
+
+        <i class="bi bi-square-fill" style="color: #ff80ff;"></i>
+        <span class="me-2">Pending Shifts</span>
+        <i class="bi bi-square-fill" style="color: #00cc00;"></i>
+        <span>Approved Shifts</span>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <a type="button" id="prev-button">
+                <i class="fa-solid fa-less-than text-white  p-2 me-2" style="background-color:#1ad1ff;border-radius:20px;"></i>
+            </a>
+
+            <input type="date" style="width:40px;border:none;">
+
+            <a type="button" id="next-button">
+                <i class="fa-solid fa-greater-than text-white p-2 me-2" style="background-color:#1ad1ff;border-radius:20px;"></i>
+            </a>
+        </div>
+
+        <button id="openShiftModalBtn" class="btn btn-success text-white">Add New Shift</button>
+    </div>
+    <div class="mt-5" id="calendar">
+    </div>
+</div>
+
+
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-white bg-info">
+                <h5 class="modal-title" id="eventModalLabel">View Shift</h5>
+                <button type="button" class="btn-close-white btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+
+        </div>
+    </div>
+</div>
+<partial name="_ShiftModals" />
+<partial name="_ActiveTabPartial" model=active />
+<script src="~/js/StateDropdown.js" asp-append-version="true"></script>
+<script src="/js/ProviderScheduling.js" asp-append-version="true"></script>

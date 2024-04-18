@@ -1,4 +1,5 @@
-﻿@model AdminProfileDTO
+﻿@using Entities.Enum;
+@model AdminProfileDTO
 @{
     ViewData["Title"] = "MyProfile";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -45,8 +46,12 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select" id="status" disabled>
-                            <option>Active</option>
+                        <select class="form-select" id="status" asp-for="Status" disabled>
+                            @* <option selected value="0">Status</option> *@
+                            @foreach (var status in Enum.GetValues(typeof(UserStatus)))
+                            {
+                                <option value="@((int)status)">@status.ToString()</option>
+                            }
                         </select>
                         <label for="status" class="form-label">Status</label>
                     </div>
@@ -55,7 +60,7 @@
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
                         <select class="form-select" id="role" asp-for="Role" disabled>
-                            <option selected value="0">Select Role</option>
+                            @* <option selected value="0">Select Role</option> *@
                             @foreach (var item in Model.Roles)
                             {
                                 <option value="@item.Roleid">@item.Name</option>
@@ -149,7 +154,7 @@
                     @foreach (var item in Model.Regions)
                     {
                         <div class="form-check form-check-inline me-2">
-                            <input class="form-check-input addministrator checkedregion" name="checkedregion" type="checkbox" value="" id="@item.RegionId" @(item.IsPresent ? "checked" : "") >
+                            <input class="form-check-input addministrator checkedregion" name="checkedregion" type="checkbox" value="" id="@item.RegionId" @(item.IsPresent ? "checked" : "")>
                             <label class="form-check-label" for="@item.RegionId">
                                 @item.RegionName
                             </label>
@@ -211,7 +216,7 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select" id="state" asp-for="State"disabled>
+                        <select class="form-select dis-billing-field" id="state" asp-for="State">
                             <option selected value="0">Select State</option>
                             @foreach (var item in Model.Regions)
                             {

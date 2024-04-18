@@ -5,6 +5,7 @@ namespace Repositories.Repository.Interface
 {
     public interface IPhysicianService
     {
+        Task ChangePassword(Physician physician, EditPhysicianDTO model);
         Task CreatePhysician(CreatePhysicianDTO model);
         Physician GetPhysician(string email);
         Physician GetPhysicianById(int physicianId);
@@ -14,5 +15,8 @@ namespace Repositories.Repository.Interface
         EditPhysicianDTO GetPhysicianInfo(Physician physician);
         string GetPhysicianPhone(int physicianId);
         List<ProviderMenuDTO> GetProviderMenu();
+        Task UpdateBillingInfo(Physician physician, EditPhysicianDTO model);
+        Task UpdatePhysicianInfo(Physician physician, EditPhysicianDTO model);
+        Task UpdateProfileInfo(Physician physician, EditPhysicianDTO model);
     }
 }

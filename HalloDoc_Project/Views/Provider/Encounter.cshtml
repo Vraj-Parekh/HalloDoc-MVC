@@ -1,7 +1,7 @@
 ﻿@model EncounterDTO
 @{
     ViewData["Title"] = "Encounter";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Views/Shared/_ProviderLayout.cshtml";
 }
 <link asp-append-version="true" rel="stylesheet" href="~/css/view_case.css" />
 
@@ -391,8 +391,8 @@
             <div class="row justify-content-end">
                 <div class="col-auto">
                     <button class="btn btn-info text-white rounded-2 border-0 me-2"> Save Changes </button>
-                    <button type="button" class="btn btn-info text-white rounded-2 border-0 me-2" style="background-color: #6f42c1"> Finalize </button>
-                    <button type="button" class="btn btn-outline-info text-info rounded-2"> Cancel </button>
+                    <a class="btn btn-info text-white rounded-2 border-0 me-2" style="background-color: #6f42c1" asp-action="FinalizeRequest" asp-controller="Provider" asp-route-requestId="@ViewBag.requestId"> Finalize </a>
+                    <button type="button" class="btn btn-outline-info text-info rounded-2" onclick="history.back()"> Cancel </button>
                 </div>
             </div>
         </form>
