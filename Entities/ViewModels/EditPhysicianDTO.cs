@@ -12,6 +12,7 @@ namespace Entities.ViewModels
 {
     public class EditPhysicianDTO
     {
+        public int PhysicianId { get; set; }
         [Required(ErrorMessage = "User Name is required")]
         public string UserName { get; set; }
 

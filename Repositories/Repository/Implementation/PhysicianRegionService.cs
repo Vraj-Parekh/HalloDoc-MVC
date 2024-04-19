@@ -4,13 +4,14 @@ using Entities.ViewModels;
 using Repositories.Repository.Interface;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Repositories.Repository.Implementation
 {
-    public class PhysicianRegionService: IPhysicianRegionService
+    public class PhysicianRegionService : IPhysicianRegionService
     {
         private readonly HalloDocDbContext _context;
 
@@ -26,22 +27,21 @@ namespace Repositories.Repository.Implementation
 
         public async Task AddOrRemovePhysicianRegion(Physician physician, List<RegionList> regions)
         {
+            var physicianRegions = GetPhysicianRegions(physician);
+
+            foreach (var item in physicianRegions)
+            {
+                _context.Remove(item);
+
+            }
             foreach (RegionList item in regions)
             {
-                Physicianregion? region = physician.Physicianregions.FirstOrDefault(a => a.Regionid == item.RegionId);
-                if (region is not null && !item.IsPresent)
+                Physicianregion physicianregion = new()
                 {
-                    _context.Remove(region);
-                }
-                else if (region is null && item.IsPresent)
-                {
-                    Physicianregion physicianregion = new()
-                    {
-                        Physicianid = physician.Physicianid,
-                        Regionid = item.RegionId
-                    };
-                    _context.Add(physicianregion);
-                }
+                    Physicianid = physician.Physicianid,
+                    Regionid = item.RegionId
+                };
+                _context.Add(physicianregion);
             }
             await _context.SaveChangesAsync();
         }

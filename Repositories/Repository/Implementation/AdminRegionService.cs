@@ -5,6 +5,7 @@ using NuGet.Protocol.Core.Types;
 using Repositories.Repository.Interface;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,22 +27,21 @@ namespace Repositories.Repository.Implementation
         }
         public async Task AddOrRemoveRegion(Admin admin,List<RegionList> model)
         {
+            var adminRegions = GetAdminRegions(admin);
+
+            foreach (var item in adminRegions)
+            {
+                _context.Remove(item);
+
+            }
             foreach (RegionList item in model)
             {
-                Adminregion? region = admin.Adminregions.FirstOrDefault(a => a.Regionid == item.RegionId);
-                if (region is not null && !item.IsPresent)
+                Adminregion adminregion= new()
                 {
-                    _context.Remove(region);
-                }
-                else if (region is null && item.IsPresent)
-                {
-                    Adminregion adminregion = new Adminregion()
-                    {
-                        Adminid = admin.Adminid,
-                        Regionid = item.RegionId
-                    };
-                    _context.Add(adminregion);
-                }
+                    Adminid = admin.Adminid,
+                    Regionid = item.RegionId
+                };
+                _context.Add(adminregion);
             }
             await _context.SaveChangesAsync();
         }

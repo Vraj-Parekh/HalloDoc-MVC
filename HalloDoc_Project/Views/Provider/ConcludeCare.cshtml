@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ConcludeCareDTO
+@{
     ViewData["Title"] = "ConcludeCare";
     Layout = "~/Views/Shared/_ProviderLayout.cshtml";
 }
@@ -11,13 +12,69 @@
     </div>
 
     <div class="bg mt-2 mb-3">
-        Patient Name
-        <h5><span class="text-info"> Name </span> </h5>
+        <h6>Patient Name</h6>
+        <h3 class="text-info">@Model.Name</h3>
+        <div class="d-flex justify-content-between mt-2">
+            <h3>Encounter Form</h3>
+            @*      <form id="encounterUpload" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="@Model.RequestID" />
+            <div>
+            <span id="FileName"></span>
+            <div class="file NDAPhy btn btn-info text-white mx-3">
+            Upload<input class="inputFilePhy" type="file" id="uploadEncounter" name="encntrFile" onchange="uploadencounterUpload()" />
+            </div>
+            <button class="btn btn-outline-info" id="submitUpload" style="display:none">Upload the File</button> @* onclick="uploadEncounterForm(@Model.RequestID)"
+            </div>
+            </form> *@
 
-        <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
-            <h5>Encounter Forms</h5>
+            <div class="p-0">
+                <form id="encounterUpload" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="@Model.RequestID" />
+                    <label for="fileLoader"
+                           class="bg-info text-white text-center h-100 rounded-end py-2 px-2">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <label for="upload" class="h-100 upl-btn">Upload</label>
+                    </label>
+                    <input type="file" asp-for="Files" class="d-none" id="upload" accept=".pdf,.jpeg,.png, .txt, .doc" multiple />
+                </form>
+            </div>
 
+        </div>
+        <div class="mt-2">
+            <table class="table">
+                <thead class="table-active">
+                    <tr>
+                        <th>
+                            Documents
+                        </th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var obj in Model.Files)
+                    {
 
+                        <tr>
+                            <td>
+                                <a href="~@obj.FileName" id="FileName">@obj.FileName</a>
+                            </td>
+                            <td>
+                                <a href="~/content/@obj.FileName" download="@obj.FileName" class="download-btn"><i class="bi bi-cloud-download border border-info p-1 rounded text-info"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h5>Provider Notes</h5>
+            <div class="form-floating mt-3">
+                <textarea class="form-control" placeholder="" id="notes" rows="3" style="height:100%;"></textarea>
+                <label for="floatingTextarea">Provider Notes</label>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end m-2">
+             <button class="btn btn-info text-white" onclick="onConcludeCare(@Model.RequestID)">Conclude Care</button> 
         </div>
     </div>
 </div>

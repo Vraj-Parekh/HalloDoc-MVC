@@ -15,7 +15,7 @@ namespace Entities.ViewModels
         public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Phone Number is required")]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone Number must be 10 digits")]
+        [RegularExpression(@"^\+?\d+$", ErrorMessage = "Please enter a valid phone number")]
         public required string PhoneNumber { get; set; }
 
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid Email Address")]

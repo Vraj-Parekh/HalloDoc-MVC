@@ -155,10 +155,13 @@ function checkFinalize(requestId) {
             requestId: requestId
         },
         success: function (response) {
+
             if (response === true) {
                 //popup
                 const myModal = new bootstrap.Modal("#finalize", {});
                 myModal.show();
+
+                $('#downloadId').attr('onclick', 'DownloadEncounter(' + requestId + ')');
 
             } else {
                 console.log("Request is not finalized");
@@ -168,6 +171,40 @@ function checkFinalize(requestId) {
         error: function (xhr, status, error) {
             console.error(xhr.status + ': ' + xhr.statusText);
             // Handle other errors here
+        }
+    });
+}
+
+
+toastr.options = {
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-bottom-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+}
+
+function consult(requestId) {
+    console.log(requestId);
+    $.ajax({
+        url: '/Provider/Consult/' + requestId,
+        type: 'get',
+        success: function (response) {
+            toastr.success("Request Moved to conclude state");
+            window.location.reload();
+        },
+        error: function (xhr, status, error) {
+            toastr.error("Error Loading Reasons");
         }
     });
 }

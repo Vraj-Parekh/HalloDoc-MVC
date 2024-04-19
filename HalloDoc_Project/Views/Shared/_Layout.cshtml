@@ -14,11 +14,46 @@
 </head>
 <body>
     <header>
-        <div class="header_nav d-flex justify-content-between align-items-center ps-3 pe-3">
-            <img src="~/img/hallodoc_img.png" class="img-fluid" alt="logo_img" />
-            <button type="button" class="btn btn-outline-info" id="toggle_theme_btn">
-                <i class="bi bi-moon"></i>
+        <div class="d-flex header_nav justify-content-between align-items-center bg-white p-3">
+
+            <button class="btn text-info bg-white d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" style="border: 1px solid cyan;">
+                <i class="bi bi-list fs-5"></i>
             </button>
+
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="width:320px;">
+                <div class="offcanvas-header d-flex justify-content-between">
+                    <button class="btn text-info bg-white d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" style="border: 1px solid cyan;">
+                        <i class="bi bi-list fs-5"></i>
+                    </button>
+                    <img src="/img/hallodoc_img.png" alt="logo_img">
+                </div>
+
+                <div class="offcanvas-body aside-cont">
+                    <span class="fw-light fs-5">Welcome</span><span class="h5 ps-1">@User.FindFirst("firstname")?.Value,@User.FindFirst("lastname")?.Value</span>
+
+                    <ul class="nav flex-column mt-2">
+                        <li class="nav-item">
+                            <a class="nav-link active fs-5" asp-action="PatientDashboard" asp-controller="Patient">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link  fs-5" asp-action="Profile" asp-controller="Patient">Profile</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <img src="/img/hallodoc_img.png" class="d-lg-block d-none" alt="logo_img">
+            <div class="d-flex align-items-center">
+                <span class="fw-light fs-5 d-lg-block d-none">Welcome<span class="h5 ps-1">@User.FindFirst("firstname")?.Value, @User.FindFirst("lastname")?.Value</span> </span>
+                <a class="btn btn-outline-info text-info bg-white ms-2 me-2" role="button" asp-action="Logout">
+                    <i class="bi bi-box-arrow-right d-lg-none"></i>
+                    <span class="d-lg-block d-none"> Logout</span>
+                </a>
+                <button type="button" class="btn btn-outline-info bg-white" id="toggle_theme_btn">
+                    <i class="bi bi-moon"></i>
+                </button>
+            </div>
+
         </div>
     </header>
 

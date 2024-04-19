@@ -149,7 +149,7 @@
 
                             @if (status == 4)
                             {
-                                <li><a class="dropdown-item blockCase" role="button" asp-action="ConcludeCare"><i class="fa-solid fa-ban pe-2"></i>Conclude Care</a></li>
+                                <li><a class="dropdown-item blockCase" role="button" asp-action="ConcludeCare" asp-controller="Provider" asp-route-requestId="@items.RequestId"><i class="fa-solid fa-ban pe-2"></i>Conclude Care</a></li>
                             }
 
                             <li><a class="dropdown-item viewCase" role="button" asp-route-requestId="@items.RequestId" asp-action="ViewCase"><i class="fa-solid fa-file-signature pe-2"></i>View Case</a></li>
@@ -382,7 +382,7 @@
     </div>
 </div>
 
-
+<div id="page" class="d-none"></div>
 
 
 @*Partial view for modals*@

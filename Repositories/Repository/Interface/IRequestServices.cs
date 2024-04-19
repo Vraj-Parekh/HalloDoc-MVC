@@ -12,6 +12,7 @@ namespace Repositories.Repository.Interface
         Task<bool> AgreeWithAgreementAsync(int requestId);
         void AssignCase(int assignReqId, string phyRegion, string phyId, string assignNote);
         void ClearCase(int requestId);
+        ConcludeCareDTO ConcludeService(int requestId);
         Task ConsultStatusChange(int requestId);
         Task DeletePatientRecord(int requestId);
         Task<List<Request>> GetAllRequests(int status);

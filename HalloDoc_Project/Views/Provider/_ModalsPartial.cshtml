@@ -113,7 +113,7 @@
     }
 </script>
 
-<!-- Modal For Encounter-->
+<!-- Modal For Encounter (in active state)-->
 
 <div class="modal fade" id="Encounter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -148,7 +148,7 @@
     }
 </script>
 
-<!-- modal for finalize true-->
+<!-- modal for finalize true (download pdf)-->
 <div class="modal fade" id="finalize" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -163,7 +163,7 @@
                     </div>
                 </div>
                 <div class="text-center">
-                    <button class="btn btn-info text-white">
+                    <button type="button" class="btn btn-info text-white" id="downloadId">
                         Download
                     </button>
                 </div>
@@ -172,13 +172,40 @@
     </div>
 </div>
 
-@* <script>
-    const myModal = new bootstrap.Modal("#finalize", {});
-    myModal.show();
+<script>
 
-    // $(".sendAgreementForm").attr("action", "/Provider/SendAgreement/" + requestId);
-</script> *@
-download
+    window.jsPDF = window.jspdf.jsPDF;
+    var docPDF = new jsPDF();
+
+    function DownloadEncounter(id) {
+        console.log("hiii");
+        $.ajax({
+            type: 'GET',
+            url: "/Provider/EncounterDownload/" + id,
+            async: false,
+            dataType: 'html',
+            success: function (response) {
+                $('#page').html(response);
+                var elementHTML = document.querySelector("#EncounterForm");
+                docPDF.html(elementHTML, {
+                    callback: function (docPDF) {
+                        docPDF.save("Encounter_Request_" + id + '.pdf');
+                    },
+                    x: 15,
+                    y: 15,
+                    width: 170,
+                    windowWidth: 650
+                });
+            },
+            error: function (error) {
+                console.log(error);
+                toastr.error("Problem Downloading Encounter Form");
+            }
+        });
+    }
+</script>
+
+
 <!-- Modal For Req to admin-->
 <div class="modal fade" id="reqToAdmin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

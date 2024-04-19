@@ -1,0 +1,271 @@
+﻿@using Entities.Enum;
+@model AdminProfileDTO
+@{
+    ViewData["Title"] = "EditAdmin";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#access";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>My Profile</h4>
+
+        <a class="btn btn-outline-info" onclick="history.back()"> < Back </a>
+    </div>
+
+    <div class="bg">
+        <form asp-action="" asp-controller="Admin" method="post">
+            <h4 class="mb-4">Account Information</h4>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="UserName"
+                               class="form-control "
+                               id="username"
+                               placeholder="username"
+                               readonly />
+                        <label for="floatingPassword">User Name</label>
+                    </div>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Password"
+                               class="form-control"
+                               id="password"
+                               placeholder="password" />
+                        <label for="password">Password</label>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="status" asp-for="Status" disabled>
+                            @* <option selected value="0">Status</option> *@
+                            @foreach (var status in Enum.GetValues(typeof(UserStatus)))
+                            {
+                                <option value="@((int)status)">@status.ToString()</option>
+                            }
+                        </select>
+                        <label for="status" class="form-label">Status</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="role" asp-for="Role" disabled>
+                            @* <option selected value="0">Select Role</option> *@
+                            @foreach (var item in Model.Roles)
+                            {
+                                <option value="@item.Roleid">@item.Name</option>
+                            }
+                        </select>
+                        <label for="role" class="form-label">Role</label>
+                    </div>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button class="btn btn-outline-info" type="submit" asp-action="ResetPassword" asp-controller="Admin"> Reset Password </button>
+                </div>
+            </div>
+
+            <h4 class="mb-4">Administrator Information</h4>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="FirstName"
+                               class="form-control dis-admin-field"
+                               id="firstname"
+                               placeholder="firstname"
+                               disabled />
+                        <label for="firstname">First Name</label>
+                    </div>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="LastName"
+                               class="form-control dis-admin-field"
+                               id="lastname"
+                               placeholder="lastname"
+                               disabled />
+                        <label for="firstname">Last Name</label>
+                    </div>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Email"
+                               class="form-control dis-admin-field"
+                               id="email"
+                               placeholder="email"
+                               disabled />
+                        <label for="firstname">Email</label>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="ConfirmEmail"
+                               class="form-control dis-admin-field"
+                               id="confirmEmail"
+                               placeholder="confirm email"
+                               disabled />
+                        <label for="confirmEmail">Confirm Email</label>
+                    </div>
+                    <span asp-validation-for="ConfirmEmail" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="tel"
+                               asp-for="PhoneNumber"
+                               class="form-control dis-admin-field"
+                               id="phone"
+                               placeholder=""
+                               style="height: 58px"
+                               disabled />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    @foreach (var item in Model.Regions)
+                    {
+                        <div class="form-check form-check-inline me-2">
+                            <input class="form-check-input addministrator checkedregion" name="checkedregion" type="checkbox" value="" id="@item.RegionId" @(item.IsPresent ? "checked" : "")>
+                            <label class="form-check-label" for="@item.RegionId">
+                                @item.RegionName
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-info text-white btn-edit-admin"> Edit </button>
+                    <button type="button" class="btn btn-info text-white btn-save" id="saveBtn">Save</button>
+                </div>
+            </div>
+
+            <h4 class="mb-4">Mailing & Billing Information</h4>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Address1"
+                               class="form-control  dis-billing-field"
+                               id="address1"
+                               placeholder="address"
+                               disabled />
+                        <label for="address1">Address 1</label>
+                    </div>
+                    <span asp-validation-for="Address1" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Address2"
+                               class="form-control  dis-billing-field"
+                               id="address2"
+                               placeholder="address"
+                               disabled />
+                        <label for="address2">Address 2</label>
+                    </div>
+                    <span asp-validation-for="Address2" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="City"
+                               class="form-control dis-billing-field"
+                               id="city"
+                               placeholder="city"
+                               disabled />
+                        <label for="city">City</label>
+                    </div>
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <select class="form-select dis-billing-field" id="state" asp-for="State">
+                            <option selected value="0">Select State</option>
+                            @foreach (var item in Model.Regions)
+                            {
+                                <option value="@item.RegionId">@item.RegionName</option>
+                            }
+                        </select>
+                        <label for="state" class="form-label">State</label>
+                    </div>
+                    <span asp-validation-for="State" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Zip"
+                               class="form-control dis-billing-field"
+                               id="zip"
+                               placeholder="zip"
+                               disabled />
+                        <label for="address1">Zip</label>
+                    </div>
+                    <span asp-validation-for="Zip" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="tel"
+                               asp-for="AltPhoneNumber"
+                               class="form-control dis-billing-field"
+                               id="phone1"
+                               placeholder=""
+                               style="height: 58px"
+                               disabled />
+                        <span asp-validation-for="AltPhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-info text-white btn-edit-billing"> Edit </button>
+                    <button type="button" class="btn btn-info text-white btn-save-billing" id="saveBtn">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<partial name="_ActiveTabPartial" model=active />
+<script src="~/js/MyprofileAdmin.js" asp-append-version="true"></script>

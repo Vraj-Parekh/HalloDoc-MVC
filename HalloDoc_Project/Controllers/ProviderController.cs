@@ -116,42 +116,42 @@ namespace HalloDoc_Project.Controllers
 
         public async Task<IActionResult> ResetPasswordProviderAsync(EditPhysicianDTO model)
         {
-            Physician? physician = physicianService.GetPhysician(model.Email);
+            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
             if (model.Password is not null && physician is not null)
             {
                 await physicianService.ChangePassword(physician, model);
             }
-            return RedirectToAction("UserAccess","Admin");
+            return RedirectToAction("MyProfileProvider", "Provider");
         }
 
         public async Task<IActionResult> UpdatePhysicianInfoAsync(EditPhysicianDTO model)
         {
-            Physician? physician = physicianService.GetPhysician(model.Email);
+            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
             if (physician is not null)
             {
                 await physicianService.UpdatePhysicianInfo(physician, model);
             }
-            return RedirectToAction("UserAccess", "Admin");
+            return RedirectToAction("MyProfileProvider", "Provider");
         }
 
         public async Task<IActionResult> UpdatePhysicianBillingInfoAsync(EditPhysicianDTO model)
         {
-            Physician? physician = physicianService.GetPhysician(model.Email);
+            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
             if (physician is not null)
             {
                 await physicianService.UpdateBillingInfo(physician, model);
             }
-            return RedirectToAction("UserAccess", "Admin");
+            return RedirectToAction("MyProfileProvider", "Provider");
         }   
         
         public async Task<IActionResult> UpdatePhysicianProfileInfo(EditPhysicianDTO model)
         {
-            Physician? physician = physicianService.GetPhysician(model.Email);
+            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
             if (physician is not null)
             {
                 await physicianService.UpdateProfileInfo(physician, model);
             }
-            return RedirectToAction("UserAccess", "Admin");
+            return RedirectToAction("MyProfileProvider", "Provider");
         }
         public async Task<IActionResult> Partners()
         {
@@ -227,12 +227,12 @@ namespace HalloDoc_Project.Controllers
             return PartialView("_SearchRecordsTable",filteredData);
         }
 
-        //public async Task<FileResult> ExportSearchRecords(string patientName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName, int page = 1, int itemsPerPage = 10)
-        //{
-        //    Pagination<SearchRecordsDTO>? records = await requestServices.GetfilteredSearchRecords(patientName, email, phoneNumber, requestStatus, requestType, fromDateOfService, toDateOfService, providerName, page, itemsPerPage);
-        //    byte[]? file = ExcelHelper.CreateFile(records);
-        //    return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_records.xlsx");
-        //}
+        public async Task<FileResult> ExportSearchRecords(string patientName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName, int page = 1, int itemsPerPage = 10)
+        {
+            Pagination<SearchRecordsDTO>? records = await requestServices.GetfilteredSearchRecords(patientName, email, phoneNumber, requestStatus, requestType, fromDateOfService, toDateOfService, providerName, page, itemsPerPage);
+            byte[]? file = ExcelHelper.CreateFile(records.Data);
+            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_records.xlsx");
+        }
         [HttpPost("{requestId}")]
         public async Task<IActionResult> DeletePatientRecord(int requestId)
         {
@@ -413,6 +413,14 @@ namespace HalloDoc_Project.Controllers
             ViewBag.requestId = requestId;
             EncounterDTO? data = encounterFormService.GetEncounterInfo(requestId);
             return View(data);
+        }     
+        
+        [HttpGet("{requestId}")]
+        public IActionResult EncounterDownload(int requestId)
+        {
+            ViewBag.requestId = requestId;
+            EncounterDTO? data = encounterFormService.GetEncounterInfo(requestId);
+            return PartialView("Encounter",data);
         }
 
         [HttpPost("{requestId}")]
@@ -456,12 +464,12 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
-        //[HttpGet("{requestId}")]
-        public async Task<IActionResult> ConcludeCare()
+        [HttpGet("{requestId}")]
+        public IActionResult ConcludeCare(int requestId)
         {
-            return View();
+            var model = requestServices.ConcludeService(requestId);
+            return View(model);
         }
-
         public IActionResult Scheduling()
         {
             return View();
@@ -474,7 +482,7 @@ namespace HalloDoc_Project.Controllers
             if (physician is not null)
             {
                 EditPhysicianDTO model = physicianService.GetPhysicianInfo(physician);
-                model.Regions = regionService.GetRegionList();
+                //model.Regions = regionService.GetRegionList();
                 model.Roles = roleService.GetRoles();
 
                 return View(model);

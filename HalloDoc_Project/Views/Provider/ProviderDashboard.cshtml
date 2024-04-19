@@ -3,7 +3,10 @@
     Layout = "~/Views/Shared/_ProviderLayout.cshtml";
     var count = ViewBag.count;
 }
+
 @section style {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link asp-append-version="true" rel="stylesheet" href="~/css/admin_dashboard.css" />
 }
 
@@ -105,6 +108,7 @@
     <div id="tableRecords" class="tableData mb-5"></div>
 
 </div>
+
 <partial name="_SendLinkModal" />
 
 @section Scripts {

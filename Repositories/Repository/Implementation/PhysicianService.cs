@@ -133,6 +133,7 @@ namespace Repositories.Repository.Implementation
             model.IsTrainingDoc = physician.Istrainingdoc;
             model.PhotoImg = physician.Photo;
             model.SignImg = physician.Signature;
+            model.PhysicianId = physician.Physicianid;
 
             List<Physicianregion>? physicianRegions = physicianRegionService.GetPhysicianRegions(physician);
             model.Regions = regionService.GetRegionList().Select(a => new RegionList()

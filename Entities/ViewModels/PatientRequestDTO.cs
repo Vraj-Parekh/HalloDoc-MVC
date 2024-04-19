@@ -9,7 +9,7 @@ namespace Entities.ViewModels
 
         [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; }
-
+        [Required(ErrorMessage = "Last name is required")]
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "Date of Birth is required")]
@@ -20,7 +20,8 @@ namespace Entities.ViewModels
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
 
-        [Phone(ErrorMessage = "Invalid phone number")]
+        [Required(ErrorMessage = "Phone Number is required")]
+        [RegularExpression(@"^\+?\d+$", ErrorMessage = "Please enter a valid phone number")]
         public string PhoneNumber { get; set; }
 
         [DataType(DataType.Password)]
@@ -30,11 +31,12 @@ namespace Entities.ViewModels
         [Compare("Password", ErrorMessage = "Password Not Match")]
         [Required(ErrorMessage="Field missing")]
         public string ConfirmPassword { get; set; }
+        [Required]
         public string Street { get; set; }
-
+        [Required]
         public string City { get; set; }
 
-
+        [Required]
         public string State { get; set; }
 
         [RegularExpression(@"^\d{6}$", ErrorMessage = "ZIP code must be 6 digits")]

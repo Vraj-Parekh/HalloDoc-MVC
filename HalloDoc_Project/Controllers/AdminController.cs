@@ -505,6 +505,21 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard", "Admin");
         }
 
+       
+        public IActionResult MyProfile()
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            Admin? admin = adminService.GetAdmin(email);
+            if (admin is not null && admin.Aspnetuser is not null)
+            {
+                AdminProfileDTO? model = adminService.GetAdminInfo(admin);
+                model.Roles = roleService.GetRoles();
+
+                return View(model);
+            }
+            return View();
+        }
+
         [HttpGet("{id}")]
         public IActionResult EditAdmin(int id)
         {
@@ -519,21 +534,6 @@ namespace HalloDoc_Project.Controllers
             }
             return View();
         }
-        public IActionResult MyProfile()
-        {
-            string? email = User.FindFirstValue(ClaimTypes.Email);
-            Admin? admin = adminService.GetAdmin(email);
-            if (admin is not null && admin.Aspnetuser is not null)
-            {
-                AdminProfileDTO? model = adminService.GetAdminInfo(admin);
-                model.Regions = regionService.GetRegionList();
-                model.Roles = roleService.GetRoles();
-
-                return View(model);
-            }
-            return View();
-        }
-
         public async Task<IActionResult> ResetPasswordAsync(AdminProfileDTO model)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);

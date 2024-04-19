@@ -62,6 +62,7 @@ $(document).ready(function () {
         var phonenumber = $('#phone').val();
         var medicalLicense = $('#medicalLicense').val();
         var npiNumber = $('#npiNumber').val();
+        var phyId = $('#phyId').val();
 
         var checkedMenus = [];
 
@@ -79,7 +80,8 @@ $(document).ready(function () {
             PhoneNumber: phonenumber,
             Regions: checkedMenus,
             MedicalLicense: medicalLicense,
-            NPINumber: npiNumber
+            NPINumber: npiNumber,
+            PhysicianId: phyId
         };
         console.log(data);
         $.ajax({
@@ -106,6 +108,7 @@ $(document).ready(function () {
         var state = $('#state').val();
         var zip = $('#zip').val();
         var altPhoneNumber = $('#phone1').val();
+        var phyId = $('#phyId').val();
 
         var data = {
             Address1: address1,
@@ -113,7 +116,8 @@ $(document).ready(function () {
             City: city,
             State: state,
             Zip: zip,
-            AltPhoneNumber: altPhoneNumber
+            AltPhoneNumber: altPhoneNumber,
+            PhysicianId: phyId
         };
 
         $.ajax({
@@ -138,6 +142,7 @@ $(document).ready(function () {
         var Adminnotes = $('#Adminnotes').val();
         var photo = document.getElementById('fileLoader').files[0];
         var sign = document.getElementById('sign').files[0];
+        var phyId = $('#phyId').val();
 
         var data = {
             BusinessName: businessName,
@@ -145,6 +150,7 @@ $(document).ready(function () {
             AdminNotes: Adminnotes,
             Photo: photo,
             Signature: sign,
+            PhysicianId: phyId
         };
         console.log(data);
         $.ajax({

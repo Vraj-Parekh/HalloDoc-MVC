@@ -18,10 +18,10 @@
 
     <div class="bg mt-2 mb-3">
         <form asp-action="RequestForSomeoneElse" enctype="multipart/form-data" class="login-form-control">
-            <input asp-for="Email" hidden/>
-            <input asp-for="FirstName" hidden/>
-            <input asp-for="LastName" hidden/>
-            <input asp-for="Phone" hidden/>
+            <input asp-for="Email" hidden />
+            <input asp-for="FirstName" hidden />
+            <input asp-for="LastName" hidden />
+            <input asp-for="Phone" hidden />
             <div class="row">
                 <h4 class="mb-4">Patient Information</h4>
 
@@ -54,6 +54,7 @@
                                placeholder="Last name" />
                         <label for="floatingPassword">Last Name</label>
                     </div>
+                    <span asp-validation-for="PatientLastName" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6">
@@ -80,11 +81,14 @@
                 </div>
 
                 <div class="col-md-6 mb-3 z-3">
-                    <input asp-for="PatientPhone" type="tel"
-                           class="form-control"
-                           id="phone"
-                           placeholder=""
-                           style="height: 58px" />
+                    <div class="form-floating">
+                        <input asp-for="PatientPhone" type="tel"
+                               class="form-control"
+                               id="phone"
+                               placeholder=""
+                               style="height: 58px" />
+                    </div>
+                    <span asp-validation-for="PatientPhone" class="text-danger"></span>
                 </div>
 
                 <h4 class="mb-4 mt-4">Patient Location</h4>
@@ -97,6 +101,7 @@
                                placeholder="name@example.com" />
                         <label for="floatingInput">Street</label>
                     </div>
+                    <span asp-validation-for="Street" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -107,6 +112,7 @@
                                placeholder="name@example.com" />
                         <label for="floatingInput">City</label>
                     </div>
+                    <span asp-validation-for="City" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -117,6 +123,7 @@
                                placeholder="name@example.com" />
                         <label for="floatingInput">State</label>
                     </div>
+                    <span asp-validation-for="State" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -127,6 +134,7 @@
                                placeholder="name@example.com" />
                         <label for="floatingInput">Zip code</label>
                     </div>
+                    <span asp-validation-for="ZipCode" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -152,6 +160,7 @@
                                placeholder="name@example.com" />
                         <label for="floatingInput">Relation with Patient(optional)</label>
                     </div>
+                    <span asp-validation-for="RelationWithPatient" class="text-danger"></span>
                 </div>
 
                 <h4 class="mb-4 mt-4">(Optional) Upload Photo Or Document</h4>
@@ -173,7 +182,7 @@
                 <button class="btn btn-info me-3 text-light">
                     Submit
                 </button>
-                <button class="btn btn-outline-info">
+                <button class="btn btn-outline-info" onclick="history.back()">
                     Cancel
                 </button>
             </div>

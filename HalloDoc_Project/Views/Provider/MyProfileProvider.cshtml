@@ -14,8 +14,8 @@
     </div>
 
     <div class="bg">
-        <form asp-action="" asp-controller="Admin" method="post">
-
+        <form method="post">
+            <input type="text" asp-for="@Model.PhysicianId" id="phyId" hidden/>
             <div class="row justify-content-end">
                 <div class="col-auto">
                     <button class="btn btn-outline-info" onclick="reqToAdminModal()"> Request To Admin </button>
@@ -54,7 +54,7 @@
 
             <div class="row justify-content-end">
                 <div class="col-auto">
-                    <button class="btn btn-outline-info" type="submit" asp-action="ResetPasswordProvider" asp-controller="Provider"> Reset Password </button>
+                    <button class="btn btn-outline-info" type="submit" asp-action="ResetPasswordProvider" asp-controller="Provider" > Reset Password </button>
                 </div>
             </div>
 

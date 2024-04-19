@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication;
 using MimeKit;
 using NuGet.Protocol.Plugins;
 using Repositories.Repository.Implementation;
@@ -19,6 +20,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc_Project.Controllers
 {
+    [Route("[controller]/[action]")]
     [CustomAuthorization("Patient")]
     public class PatientController : Controller
     {
@@ -27,14 +29,18 @@ namespace HalloDoc_Project.Controllers
         private readonly IEmailSender emailSender;
         private readonly IRequestServices requestServices;
         private readonly IAspNetUserService aspNetUserService;
+        private readonly IHttpContextAccessor httpContext;
+        private readonly IRequestWiseFilesServices requestWiseFilesServices;
 
-        public PatientController(HalloDocDbContext context, IWebHostEnvironment env, IEmailSender emailSender, IRequestServices requestServices,IAspNetUserService aspNetUserService)
+        public PatientController(HalloDocDbContext context, IWebHostEnvironment env, IEmailSender emailSender, IRequestServices requestServices,IAspNetUserService aspNetUserService,IHttpContextAccessor httpContext,IRequestWiseFilesServices requestWiseFilesServices)
         {
             _context = context;
             this.env = env;
             this.emailSender = emailSender;
             this.requestServices = requestServices;
             this.aspNetUserService = aspNetUserService;
+            this.httpContext = httpContext;
+            this.requestWiseFilesServices = requestWiseFilesServices;
         }
         public IActionResult Index()
         {
@@ -60,7 +66,7 @@ namespace HalloDoc_Project.Controllers
 
                 CookieOptions cookieOptions = new CookieOptions()
                 {
-                    Expires = DateTime.UtcNow.AddMinutes(20),
+                    Expires = DateTime.UtcNow.AddMinutes(120),
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Strict
@@ -88,6 +94,13 @@ namespace HalloDoc_Project.Controllers
                 ModelState.AddModelError(nameof(data.Password), "Incorrect Password.");
                 return View(data);
             }
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync();
+            Response.Cookies.Delete("Token");
+            return RedirectToAction("PatientLogin", "Patient");
         }
 
         [AllowAnonymous]
@@ -181,7 +194,8 @@ namespace HalloDoc_Project.Controllers
             {
                 Name = name.Firstname,
                 ConfirmationNumber = req.Confirmationnumber,
-                Document = data
+                Document = data,
+                RequestId = requestId
             };
             return View(doc);
         }
@@ -264,7 +278,7 @@ namespace HalloDoc_Project.Controllers
         }
 
 
-        [HttpGet("[controller]/[action]/{requestId:int}")]
+        [HttpGet("{requestId:int}")]
         public IActionResult ReviewAgreement(int requestId)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -298,7 +312,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ReviewAgreement", new { requestId = model.RequestId });
         }
 
-        [HttpGet("[controller]/[action]/{requestId:int}")]
+        [HttpGet("{requestId:int}")]
         public IActionResult CreateAccount(int requestId)
         {
             TempData["requestId"] = requestId;
@@ -578,6 +592,21 @@ namespace HalloDoc_Project.Controllers
                 }
             }
             return View(data);
+        }
+        [HttpPost("{requestId}")]
+        public void Upload(int requestId, List<IFormFile> files)
+        {
+            Request? request = requestServices.GetRequest(requestId);
+            if (request is not null)
+            {
+                requestWiseFilesServices.AddFiles(files, request);
+            }
+        }
+        [HttpPost]
+        public IActionResult DeleteSelectedFiles(List<int> fileIds)
+        {
+            requestWiseFilesServices.DeleteSelectedFiles(fileIds);
+            return Redirect(HttpContext.Request.Headers.Referer!);
         }
     }
 }

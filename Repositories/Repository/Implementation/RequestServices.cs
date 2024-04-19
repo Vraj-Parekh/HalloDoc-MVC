@@ -487,7 +487,7 @@ namespace Repositories.Repository.Implementation
             if (!string.IsNullOrEmpty(patientName))
             {
                 patientName = patientName.ToLower().Trim();
-                query = query.Where(a=>a.Requestclients.Any(rc=>rc.Firstname.ToLower().Contains(patientName)));
+                query = query.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(patientName)));
             }
 
             if (!string.IsNullOrEmpty(email))
@@ -645,7 +645,7 @@ namespace Repositories.Repository.Implementation
                     RequestTypeId = req.Requesttypeid,
                     Status = status,
                     Email = req.Email,
-                    CallType = req.Calltype??0,
+                    CallType = req.Calltype ?? 0,
                 };
                 provider.Add(ProviderDashboard);
             }
@@ -662,7 +662,7 @@ namespace Repositories.Repository.Implementation
                 Requeststatuslog model = new()
                 {
                     Requestid = requestId,
-                    Status = (int)RequestStatus.Pending, 
+                    Status = (int)RequestStatus.Pending,
                     Createddate = DateTime.Now,
                 };
 
@@ -676,7 +676,7 @@ namespace Repositories.Repository.Implementation
                 _context.SaveChanges();
             }
         }
-        public async Task RequestBackToAdmin(int requestId,string note)
+        public async Task RequestBackToAdmin(int requestId, string note)
         {
             Request? request = GetRequest(requestId);
             if (request != null)
@@ -692,7 +692,7 @@ namespace Repositories.Repository.Implementation
                 };
 
 
-                request.Status = 1; 
+                request.Status = 1;
                 request.Physicianid = physicianId;
 
                 _context.Requeststatuslogs.Add(model);
@@ -718,7 +718,7 @@ namespace Repositories.Repository.Implementation
 
 
                 request.Status = (int)RequestStatus.MDOnSite;
-                request.Calltype = (int)CallType.HouseCall; 
+                request.Calltype = (int)CallType.HouseCall;
                 request.Physicianid = physicianId;
 
                 _context.Requeststatuslogs.Add(model);
@@ -737,7 +737,7 @@ namespace Repositories.Repository.Implementation
                 Requeststatuslog model = new()
                 {
                     Requestid = requestId,
-                    Status = (int)RequestStatus.Conclude, 
+                    Status = (int)RequestStatus.Conclude,
                     Createddate = DateTime.Now,
                     Physicianid = physicianId,
                 };
@@ -751,6 +751,27 @@ namespace Repositories.Repository.Implementation
 
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public ConcludeCareDTO ConcludeService(int requestId)
+        {
+            var request = GetRequest(requestId);
+            if(request is not null)
+            {
+                var rc = _context.Requestclients.Where(a => a.Requestid == requestId).FirstOrDefault();
+                ConcludeCareDTO model = new ConcludeCareDTO();
+                model.Name = rc.Firstname;
+                model.RequestID = request.Requestid;
+                model.Files = _context.Requestwisefiles
+                       .Where(u => u.Requestid == requestId && (u.Isdeleted == null))
+                       .Select(a => new ConcludeFile()
+                       {
+                           FileName = a.Filename
+                       })
+                       .ToList();
+                return model;
+            }
+            return new ConcludeCareDTO();
         }
     }
 }

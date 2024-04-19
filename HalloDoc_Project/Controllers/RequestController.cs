@@ -82,6 +82,8 @@ namespace HalloDoc_Project.Controllers
                     City = data.City,
                     State = data.State,
                     Zipcode = data.ZipCode,
+                    Address = data.Street + data.City + data.State,
+                    Notes = data.Symptoms,
                     Request = request,
                 };
 
@@ -202,6 +204,7 @@ namespace HalloDoc_Project.Controllers
                     City = data.City,
                     State = data.State,
                     Zipcode = data.ZipCode,
+                    Notes = data.Symptoms,
                     Request = request
                 };
 
@@ -283,6 +286,7 @@ namespace HalloDoc_Project.Controllers
                     City = data.City,
                     State = data.State,
                     Zipcode = data.ZipCode,
+                    Notes = data.Symptoms,
                     Request = request
                 };
 

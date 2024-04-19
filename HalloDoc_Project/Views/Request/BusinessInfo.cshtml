@@ -44,15 +44,19 @@
                                placeholder="last name" />
                         <label for="floatingPassword">Your Last Name</label>
                     </div>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3 z-3">
+                    <div class="form-floating">
+
                     <input asp-for="Phone" type="tel"
                            class="form-control"
                            id="phone"
-                           placeholder="
-"
+                           placeholder=""
                            style="height: 58px" />
+                    </div>
+                    <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -150,11 +154,15 @@
                 </div>
 
                 <div class="col-md-6 mb-3 z-3">
+                    <div class="form-floating">
+
                     <input asp-for="PatientPhone" type="tel"
                            class="form-control"
                            id="phone1"
                            placeholder=""
                            style="height: 58px" />
+                    </div>
+                    <span asp-validation-for="PatientPhone" class="text-danger"></span>
                 </div>
 
                 <h4 class="mb-4 mt-4">Patient Location</h4>
@@ -167,6 +175,7 @@
                                placeholder="name@example.com" />
                         <label for="floatingInput">Street</label>
                     </div>
+                    <span asp-validation-for="Street" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -177,6 +186,7 @@
                                placeholder="name@example.com" />
                         <label for="floatingInput">City</label>
                     </div>
+                    <span asp-validation-for="City" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -187,6 +197,7 @@
                                placeholder="name@example.com" />
                         <label for="floatingInput">State</label>
                     </div>
+                    <span asp-validation-for="State" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -197,6 +208,7 @@
                                placeholder="name@example.com" />
                         <label for="floatingInput">Zip code</label>
                     </div>
+                    <span asp-validation-for="ZipCode" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -211,7 +223,7 @@
                 <button class="btn btn-info me-3 text-light">
                     Submit
                 </button>
-                <button class="btn btn-outline-info">
+                <button class="btn btn-outline-info" onclick="history.back()">
                     Cancel
                 </button>
             </div>
