@@ -17,7 +17,7 @@ using Twilio.Types;
 namespace HalloDoc_Project.Controllers
 {
     [Route("[controller]/[action]")]
-    [CustomAuthorization("Admin, Provider")]
+    [CustomAuthorization("Provider")]
     public class ProviderController : Controller
     {
         private readonly IRegionService regionService;
@@ -39,6 +39,7 @@ namespace HalloDoc_Project.Controllers
         private readonly IRequestNotesServices requestNotesServices;
         private readonly IOrderDetailsService orderDetailsService;
         private readonly IEncounterFormService encounterFormService;
+        private readonly IRequestWiseFilesServices requestWiseFilesServices;
 
         public ProviderController(IRegionService regionService,
                                   IRoleService roleService,
@@ -58,7 +59,8 @@ namespace HalloDoc_Project.Controllers
                                   IEmailSender emailSender,
                                   IRequestNotesServices requestNotesServices,
                                   IOrderDetailsService orderDetailsService,
-                                  IEncounterFormService encounterFormService)
+                                  IEncounterFormService encounterFormService,
+                                  IRequestWiseFilesServices requestWiseFilesServices)
         {
             this.regionService = regionService;
             this.roleService = roleService;
@@ -79,216 +81,7 @@ namespace HalloDoc_Project.Controllers
             this.requestNotesServices = requestNotesServices;
             this.orderDetailsService = orderDetailsService;
             this.encounterFormService = encounterFormService;
-        }
-
-        [HttpGet]
-        public IActionResult CreateProviderAccount()
-        {
-            CreatePhysicianDTO? model = new CreatePhysicianDTO();
-            model.Regions = regionService.GetRegionList();
-            model.Roles = roleService.GetRoles();
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateProviderAccount(CreatePhysicianDTO model)
-        {
-            await physicianService.CreatePhysician(model);
-            
-            return RedirectToAction("UserAccess", "Admin");
-        }
-
-        [HttpGet("{physicianId}")]
-        public IActionResult EditProviderAccount(int physicianId)
-        {
-            Physician? physician = physicianService.GetPhysicianById(physicianId);
-            if (physician is not null)
-            {
-                EditPhysicianDTO model = physicianService.GetPhysicianInfo(physician);
-                model.Regions = regionService.GetRegionList();
-                model.Roles = roleService.GetRoles();
-
-                return View(model);
-            }
-            return View();
-        }
-
-        public async Task<IActionResult> ResetPasswordProviderAsync(EditPhysicianDTO model)
-        {
-            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
-            if (model.Password is not null && physician is not null)
-            {
-                await physicianService.ChangePassword(physician, model);
-            }
-            return RedirectToAction("MyProfileProvider", "Provider");
-        }
-
-        public async Task<IActionResult> UpdatePhysicianInfoAsync(EditPhysicianDTO model)
-        {
-            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
-            if (physician is not null)
-            {
-                await physicianService.UpdatePhysicianInfo(physician, model);
-            }
-            return RedirectToAction("MyProfileProvider", "Provider");
-        }
-
-        public async Task<IActionResult> UpdatePhysicianBillingInfoAsync(EditPhysicianDTO model)
-        {
-            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
-            if (physician is not null)
-            {
-                await physicianService.UpdateBillingInfo(physician, model);
-            }
-            return RedirectToAction("MyProfileProvider", "Provider");
-        }   
-        
-        public async Task<IActionResult> UpdatePhysicianProfileInfo(EditPhysicianDTO model)
-        {
-            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
-            if (physician is not null)
-            {
-                await physicianService.UpdateProfileInfo(physician, model);
-            }
-            return RedirectToAction("MyProfileProvider", "Provider");
-        }
-        public async Task<IActionResult> Partners()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> VendorsTable(string searchVendor,int professionType, int page = 1, int itemsPerPage = 10)
-        {
-            Pagination<VendorsDTO>? filteredData = await healthProfessionalsService.GetFilteredHealthProfessionals(searchVendor, professionType, page, itemsPerPage);
-            return PartialView("_VendorTable", filteredData);
-        }
-
-        [HttpGet("{vendorId}")]
-        public async Task<IActionResult> EditBusiness(int vendorId)
-        {
-            EditBusinessDTO? model = await healthProfessionalsService.GetHealthProfessionalInfo(vendorId);
-            model.Regions = regionService.GetRegionList();
-            model.ProfessionList = healthProfessionalTypeService.GetProfession();
-
-            return View(model);
-        }
-
-        [HttpPost("{vendorId}")]
-        public async Task<IActionResult> EditBusiness(int vendorId,EditBusinessDTO model)
-        {
-            await healthProfessionalsService.EditProfessional(vendorId, model);
-            return RedirectToAction("Partners","Provider");
-        }
-
-        public async Task<IActionResult> AddBusiness()
-        {
-            EditBusinessDTO? model = new EditBusinessDTO();
-            model.Regions = regionService.GetRegionList();
-            model.ProfessionList = healthProfessionalTypeService.GetProfession();
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddBusiness(EditBusinessDTO model)
-        {
-            //error : duplicate key violates
-            await healthProfessionalsService.AddBusiness(model);
-            return RedirectToAction("Partners", "Provider");
-        }
-
-        public async Task<IActionResult> PatientHistory()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> PatientHistoryTable(string firstName, string lastName, string email, string phoneNumber, int page = 1, int itemsPerPage = 10)
-        {
-            Pagination<PatientHistoryDTO>? filteredData = await userService.GetFilteredUsers(firstName, lastName, email, phoneNumber, page, itemsPerPage);
-            return PartialView("_PatientHistoryTable", filteredData);
-        }
-
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> PatientRecords(int userId)
-        {
-            List<PatientRecordsDTO>? modelList = await requestServices.GetPatientRecord(userId);
-            return View(modelList);
-        }
-
-        public async Task<IActionResult> SearchRecords()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> SearchRecordsTable(string patientName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName, int page = 1, int itemsPerPage = 10)
-        {
-            Pagination<SearchRecordsDTO>? filteredData = await requestServices.GetfilteredSearchRecords(patientName, email, phoneNumber, requestStatus, requestType, fromDateOfService, toDateOfService, providerName,page,itemsPerPage);
-            return PartialView("_SearchRecordsTable",filteredData);
-        }
-
-        public async Task<FileResult> ExportSearchRecords(string patientName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName, int page = 1, int itemsPerPage = 10)
-        {
-            Pagination<SearchRecordsDTO>? records = await requestServices.GetfilteredSearchRecords(patientName, email, phoneNumber, requestStatus, requestType, fromDateOfService, toDateOfService, providerName, page, itemsPerPage);
-            byte[]? file = ExcelHelper.CreateFile(records.Data);
-            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_records.xlsx");
-        }
-        [HttpPost("{requestId}")]
-        public async Task<IActionResult> DeletePatientRecord(int requestId)
-        {
-            await requestServices.DeletePatientRecord(requestId);
-            return RedirectToAction("SearchRecords", "Provider");
-        }
-
-        public async Task<IActionResult> EmailLogs()
-        {
-            LogsDTO? model = new LogsDTO();
-            model.Roles = roleService.GetRoles();
-            return View(model);
-        }
-
-        public async Task<IActionResult> EmailLogsTable(int role, string receiverName, string emailId, DateTime createdDate, DateTime sentDate, int page = 1, int itemsPerPage = 10)
-        {
-            Pagination<LogsDTO>? filteredData = await emailLogService.GetFilteredEmailLogs(role, receiverName, emailId, createdDate, sentDate, page, itemsPerPage);
-            return PartialView("_EmailLogsTable", filteredData);
-        }      
-        
-        public async Task<IActionResult> SmsLogs()
-        {
-            LogsDTO? model = new LogsDTO();
-            model.Roles = roleService.GetRoles();
-            return View(model);
-        }
-
-        public async Task<IActionResult> SmsLogsTable(int role, string receiverName, string phoneNumber, DateTime createdDate, DateTime sentDate, int page=1, int itemsPerPage=10)
-        {
-            Pagination<LogsDTO>? filteredData = await smsLogService.GetFilteredSmsLogs(role, receiverName, phoneNumber, createdDate, sentDate, page, itemsPerPage);
-            return PartialView("_SmsLogsTable", filteredData);
-        }
-
-        public async Task<IActionResult> BlockHistory()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> BlockHistoryTable(string name,DateTime createdDate, string email, string phonenumber, int page = 1, int itemsPerPage = 10)
-        {
-            Pagination<BlockHistoryDTO>? filteredData = await blockRequestService.GetFilteredBlockedHistry(name, createdDate, email, phonenumber, page, itemsPerPage);
-            return PartialView("_BlockHistoryTable",filteredData);
-        }
-
-        [HttpPost("{requestId}")]
-        public async Task<IActionResult> UnblockRequest(int requestId)
-        {
-            await blockRequestService.UnblockRequest(requestId);
-            return RedirectToAction("BlockHistory", "Provider");
-        }
-
-        public IActionResult Logout()
-        {
-            HttpContext.SignOutAsync();
-            Response.Cookies.Delete("Token");
-            return RedirectToAction("ProviderLogin", "Provider");
+            this.requestWiseFilesServices = requestWiseFilesServices;
         }
 
         public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize, string searchQuery)
@@ -335,6 +128,7 @@ namespace HalloDoc_Project.Controllers
             }
             return View(data);
         }
+
         public IActionResult CreateRequest()
         {
             return View();
@@ -436,6 +230,7 @@ namespace HalloDoc_Project.Controllers
             await encounterFormService.FinalizeRequest(requestId);
             return RedirectToAction("ProviderDashboard", "Provider");
         }
+
         [HttpPost("{requestId}")]
         public async Task<IActionResult> TransferCase(int requestId,string notes)
         {
@@ -467,9 +262,17 @@ namespace HalloDoc_Project.Controllers
         [HttpGet("{requestId}")]
         public IActionResult ConcludeCare(int requestId)
         {
-            var model = requestServices.ConcludeService(requestId);
+            ViewDocumentList? model = requestServices.GetDocumentData(requestId);
             return View(model);
         }
+        
+        [HttpPost("{requestId}")]
+        public IActionResult ConcludeCare(int requestId, ViewDocumentList model)
+        {
+            requestServices.ConcludeService(requestId,model);
+            return RedirectToAction("ProviderDashboard","Provider");
+        }
+
         public IActionResult Scheduling()
         {
             return View();
@@ -482,7 +285,6 @@ namespace HalloDoc_Project.Controllers
             if (physician is not null)
             {
                 EditPhysicianDTO model = physicianService.GetPhysicianInfo(physician);
-                //model.Regions = regionService.GetRegionList();
                 model.Roles = roleService.GetRoles();
 
                 return View(model);
@@ -494,6 +296,25 @@ namespace HalloDoc_Project.Controllers
         {
             bool finalize = await encounterFormService.isFinalize(requestId);
             return Ok(finalize);
+        }
+
+        public async Task<IActionResult> RequestToAdmin()
+        {
+            string email = "v@gmail.com";
+            string subject = "Request from provider";
+            string message = $"Tap the link to submit request: <a href=\"https://localhost:44396/Request/SubmitRequest\">Open</a>";
+
+            bool isEmailSent = false;
+            try
+            {
+                await emailSender.SendEmailAsync(email, subject, message);
+                isEmailSent = true;
+            }
+            catch (Exception ex)
+            {
+            }
+            await emailLogService.AddEmailLog(email, message, subject, isEmailSent);
+            return RedirectToAction("ProviderDashboard", "Provider");
         }
     }
 }

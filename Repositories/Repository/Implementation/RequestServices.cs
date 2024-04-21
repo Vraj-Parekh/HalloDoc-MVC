@@ -753,25 +753,37 @@ namespace Repositories.Repository.Implementation
             }
         }
 
-        public ConcludeCareDTO ConcludeService(int requestId)
+        public void ConcludeService(int requestId,ViewDocumentList data)
         {
             var request = GetRequest(requestId);
-            if(request is not null)
+            if (request is not null)
             {
-                var rc = _context.Requestclients.Where(a => a.Requestid == requestId).FirstOrDefault();
-                ConcludeCareDTO model = new ConcludeCareDTO();
-                model.Name = rc.Firstname;
-                model.RequestID = request.Requestid;
-                model.Files = _context.Requestwisefiles
-                       .Where(u => u.Requestid == requestId && (u.Isdeleted == null))
-                       .Select(a => new ConcludeFile()
-                       {
-                           FileName = a.Filename
-                       })
-                       .ToList();
-                return model;
+                int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+                Requeststatuslog model = new()
+                {
+                    Requestid = requestId,
+                    Status = (int)RequestStatus.Closed,
+                    Createddate = DateTime.Now,
+                    Physicianid = physicianId,
+                };
+
+                Requestnote requestnote = new()
+                {
+                    Physiciannotes = data.ProviderNotes,
+                    Requestid = requestId,
+                    Createddate = DateTime.Now,
+                    Createdby = aspNetUserService.GetAspNetUserId(),
+                };
+
+                request.Status = (int)RequestStatus.Closed;
+                request.Physicianid = physicianId;
+
+                _context.Requeststatuslogs.Add(model);
+                _context.Requestnotes.Add(requestnote);
+                _context.Requests.Update(request);
+
+                _context.SaveChanges();
             }
-            return new ConcludeCareDTO();
         }
     }
 }

@@ -20,11 +20,5 @@ namespace HalloDoc_Project.Controllers
         {
             return View();
         }
-
-        public IActionResult Back()
-        {
-            HttpRequest? path = HttpContext.Request;
-            return Redirect(HttpContext.Request.Headers.Referer!);
-        }
     }
 }

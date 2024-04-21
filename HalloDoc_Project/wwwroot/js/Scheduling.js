@@ -99,8 +99,8 @@ $(document).ready(function () {
                 url: '/Admin/CreateShift',
                 type: 'POST',
                 data: createShiftDTO,
-                async: false,
-                dataType: 'json',
+                //async: false,
+                dataType: 'text',
                 success: function (response) {
                     $('#createShiftModal').modal('show');
                     console.log(response);
@@ -111,9 +111,15 @@ $(document).ready(function () {
                     //e.stopImmediatePropagation();
                     //getPhysicianShift(createShiftDTO.RegionId);
                 },
-                error: function (xhr, status, error) {
+                error: function (error) {
                     $('#createShiftModal').modal('hide');
-                    toastr.success("Shift created successfully");
+                    console.log(error);
+                    if (error.status === 400) {
+                        toastr.error("Shift not created");
+                    }
+                    else {
+                        toastr.success("Shift created successfully");
+                    }
                     //getPhysicianShift(createShiftDTO.RegionId);
                     //toastr.error("Error Loading Reasonssdfvsdff");
 

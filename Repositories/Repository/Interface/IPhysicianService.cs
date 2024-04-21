@@ -14,7 +14,7 @@ namespace Repositories.Repository.Interface
         int GetPhysicianIdByAspNetUserId(string aspNetUserId);
         EditPhysicianDTO GetPhysicianInfo(Physician physician);
         string GetPhysicianPhone(int physicianId);
-        List<ProviderMenuDTO> GetProviderMenu();
+        Task<Pagination<ProviderMenuDTO>> GetProviderMenu(int regionId, int page, int itemsPerPage);
         Task UpdateBillingInfo(Physician physician, EditPhysicianDTO model);
         Task UpdatePhysicianInfo(Physician physician, EditPhysicianDTO model);
         Task UpdateProfileInfo(Physician physician, EditPhysicianDTO model);

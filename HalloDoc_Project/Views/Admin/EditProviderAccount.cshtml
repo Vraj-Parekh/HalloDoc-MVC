@@ -1,49 +1,67 @@
-﻿@model CreatePhysicianDTO
+﻿@using Entities.Enum;
+    @model EditPhysicianDTO
 @{
-    ViewData["Title"] = "CreateProviderAccount";
+    ViewData["Title"] = "EditProviderAccount";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     string active = "#access";
 }
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
-        <h4>Create Physician Account</h4>
+        <h4>Edit Physician Account</h4>
 
-        <a class="btn btn-outline-info bg-white text-info" onclick="history.back()"> &lt; Back </a>
+        <a class="btn btn-outline-info" onclick="history.back()"> < Back </a>
     </div>
 
-    <div class="bg-white rounded shadow p-3">
-        <h5 class="mb-4">Account Information</h5>
-
-        <form asp-action="CreateProviderAccount" asp-controller="Provider" method="post" enctype="multipart/form-data">
+    <div class="bg">
+        <form asp-action="" asp-controller="Admin" method="post" enctype="multipart/form-data">
+            <input type="text" asp-for="PhysicianId" id="phyId"/>
+            <h5 class="mb-4">Account Information</h5>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="form-floating mb-3">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
                         <input type="text"
                                asp-for="UserName"
                                class="form-control"
-                               id="Username"
-                               placeholder="username" />
-                        <label for="Username">Username (Email)</label>
-                        <span asp-validation-for="UserName" class="text-danger"></span>
+                               id="username"
+                               placeholder="username"
+                               readonly />
+                        <label for="floatingPassword">User Name</label>
                     </div>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-floating flex-grow-1">
-                        <input asp-for="Password"
-                               type="password"
-                               class="form-control input"
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="Password"
+                               class="form-control "
                                id="password"
-                               placeholder="" />
-                        <label for="password" class="no-bg-label">Password</label>
+                               placeholder="password" />
+                        <label for="password">Password</label>
                     </div>
                     <span asp-validation-for="Password" class="text-danger"></span>
-
                 </div>
-                <div class="col-md-4">
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select" id="role" asp-for="Role">
-                            <option selected value="">Select Role</option>
+                        <select class="form-select" id="status" asp-for="Status" disabled>
+                            @* <option selected value="0">Status</option> *@
+                            @foreach (var status in Enum.GetValues(typeof(UserStatus)))
+                            {
+                                <option value="@((int)status)">@status.ToString()</option>
+                            }
+                        </select>
+                        <label for="status" class="form-label">Status</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="role" asp-for="Role" disabled>
+                            <option selected value="0">Select Role</option>
                             @foreach (var item in Model.Roles)
                             {
                                 <option value="@item.Roleid">@item.Name</option>
@@ -55,16 +73,23 @@
                 </div>
             </div>
 
-            <h5 class="mb-4">Administrator Information</h5>
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button class="btn btn-outline-info" type="submit" asp-action="ResetPasswordProvider" asp-controller="Admin"> Reset Password </button>
+                </div>
+            </div>
+
+            <h5 class="mb-4">Physician Information</h5>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
                         <input type="text"
                                asp-for="FirstName"
-                               class="form-control"
+                               class="form-control dis-admin-field"
                                id="firstname"
-                               placeholder="firstname" />
+                               placeholder="firstname"
+                               disabled />
                         <label for="firstname">First Name</label>
                     </div>
                     <span asp-validation-for="FirstName" class="text-danger"></span>
@@ -74,9 +99,10 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="LastName"
-                               class="form-control"
+                               class="form-control dis-admin-field"
                                id="lastname"
-                               placeholder="lastname" />
+                               placeholder="lastname"
+                               disabled />
                         <label for="firstname">Last Name</label>
                     </div>
                     <span asp-validation-for="LastName" class="text-danger"></span>
@@ -88,9 +114,10 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Email"
-                               class="form-control "
+                               class="form-control dis-admin-field"
                                id="email"
-                               placeholder="email" />
+                               placeholder="email"
+                               disabled />
                         <label for="firstname">Email</label>
                     </div>
                     <span asp-validation-for="Email" class="text-danger"></span>
@@ -100,10 +127,11 @@
                     <div class="form-floating">
                         <input type="tel"
                                asp-for="PhoneNumber"
-                               class="form-control "
+                               class="form-control dis-admin-field"
                                id="phone"
                                placeholder=""
-                               style="height: 58px" />
+                               style="height: 58px"
+                               disabled />
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                 </div>
@@ -114,7 +142,7 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="MedicalLicense"
-                               class="form-control"
+                               class="form-control dis-admin-field"
                                id="medicalLicense"
                                placeholder="medicalLicense" />
                         <label for="medicalLicense">Medical License #</label>
@@ -126,7 +154,7 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="NPINumber"
-                               class="form-control"
+                               class="form-control dis-admin-field"
                                id="npiNumber"
                                placeholder="npiNumber" />
                         <label for="npiNumber">NPI Number</label>
@@ -137,14 +165,35 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    @for (int i = 0; i < Model.Regions.Count; i++)
+                    <div class="form-floating">
+                        <input type="text"
+                               asp-for="SyncEmail"
+                               class="form-control dis-admin-field"
+                               id="syncEmail"
+                               placeholder="syncEmail"
+                               disabled />
+                        <label for="syncEmail">Synchronization Email Address</label>
+                    </div>
+                    <span asp-validation-for="SyncEmail" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    @foreach (var item in Model.Regions)
                     {
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input me-2" type="checkbox" asp-for="@Model.Regions[i].IsPresent">
-                            <label class="form-check-label text6" asp-for="@Model.Regions[i].IsPresent">@Model.Regions[i].RegionName</label>
-                            <input hidden asp-for="@Model.Regions[i].RegionId" />
+                        <div class="form-check form-check-inline me-2">
+                            <input class="form-check-input addministrator checkedregion" name="checkedregion" type="checkbox" value="" id="@item.RegionId" @(item.IsPresent ? "checked" : "")>
+                            <label class="form-check-label" for="@item.RegionId">
+                                @item.RegionName
+                            </label>
                         </div>
                     }
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-info text-white btn-edit-admin"> Edit </button>
+                    <button type="button" class="btn btn-info text-white btn-phy-save" id="saveBtn">Save</button>
                 </div>
             </div>
 
@@ -155,9 +204,10 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Address1"
-                               class="form-control "
+                               class="form-control  dis-billing-field"
                                id="address1"
-                               placeholder="address" />
+                               placeholder="address"
+                               disabled />
                         <label for="address1">Address 1</label>
                     </div>
                     <span asp-validation-for="Address1" class="text-danger"></span>
@@ -167,9 +217,10 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Address2"
-                               class="form-control "
+                               class="form-control  dis-billing-field"
                                id="address2"
-                               placeholder="address" />
+                               placeholder="address"
+                               disabled />
                         <label for="address2">Address 2</label>
                     </div>
                     <span asp-validation-for="Address2" class="text-danger"></span>
@@ -181,9 +232,10 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="City"
-                               class="form-control"
+                               class="form-control dis-billing-field"
                                id="city"
-                               placeholder="city" />
+                               placeholder="city"
+                               disabled />
                         <label for="city">City</label>
                     </div>
                     <span asp-validation-for="City" class="text-danger"></span>
@@ -191,8 +243,8 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select" id="state" asp-for="State">
-                            <option selected value="">Select State</option>
+                        <select class="form-select dis-billing-field" id="state" asp-for="State">
+                            <option selected value="0">Select State</option>
                             @foreach (var item in Model.Regions)
                             {
                                 <option value="@item.RegionId">@item.RegionName</option>
@@ -209,9 +261,10 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Zip"
-                               class="form-control"
+                               class="form-control dis-billing-field"
                                id="zip"
-                               placeholder="zip" />
+                               placeholder="zip"
+                               disabled />
                         <label for="address1">Zip</label>
                     </div>
                     <span asp-validation-for="Zip" class="text-danger"></span>
@@ -221,11 +274,20 @@
                     <div class="form-floating">
                         <input type="tel"
                                asp-for="AltPhoneNumber"
-                               class="form-control"
+                               class="form-control dis-billing-field"
                                id="phone1"
                                placeholder=""
-                               style="height: 58px" />
+                               style="height: 58px"
+                               disabled />
+                        <span asp-validation-for="AltPhoneNumber" class="text-danger"></span>
                     </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-info text-white btn-edit-billing"> Edit </button>
+                    <button type="button" class="btn btn-info text-white btn-save-billing" id="saveBtn">Save</button>
                 </div>
             </div>
 
@@ -236,7 +298,7 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="BusinessName"
-                               class="form-control"
+                               class="form-control dis-provider-field"
                                id="businessName"
                                placeholder="businessName" />
                         <label for="businessName">Business Name</label>
@@ -248,7 +310,7 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="BusinessWebsite"
-                               class="form-control"
+                               class="form-control dis-provider-field"
                                id="businessWebsite"
                                placeholder="businessWebsite" />
                         <label for="businessWebsite">Business Website</label>
@@ -292,15 +354,36 @@
                         <img src="" id="sign_img" class="w-100 mt-4" />
                     </div>
                 </div>
-
             </div>
 
             <div class="row">
+                <div class="col-md-6">
+                    @if (Model.PhotoImg != null)
+                    {
+                        <img src="/uploads/@Model.PhotoImg" alt="Image not Found" height="100px" class="my-4" />
+                    }
+                </div>
+
+                <div class="col-md-6">
+                    @if (Model.SignImg != null)
+                    {
+                        <img src="/uploads/@Model.SignImg" alt="Image not Found" height="100px" class="my-4" />
+                    }
+                </div>
+            </div>
+             <div class="row">
                 <div class="col-12 mb-3">
                     <div class="form-floating">
-                        <textarea class="form-control" placeholder="Adminnotes" id="Adminnotes" style="height: 100px" asp-for="AdminNotes"></textarea>
+                        <textarea class="form-control dis-provider-field" placeholder="Adminnotes" id="Adminnotes" style="height: 100px" asp-for="AdminNotes"></textarea>
                         <label for="Adminnotes">Admin Notes</label>
                     </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-info text-white btn-profile"> Edit </button>
+                    <button type="submit" class="btn btn-info text-white btn-save-provider-profile" id="saveBtn" asp-action="UpdatePhysicianProfileInfo" asp-controller="Admin">Save</button>
                 </div>
             </div>
 
@@ -374,13 +457,13 @@
             <hr />
             <div class="row justify-content-end">
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-success text-white">Create Account</button>
+                    <button type="button" class="btn btn-info text-white btn-edit-billing"> Edit </button>
+                    <button type="button" class="btn btn-info text-white btn-save-billing" id="saveBtn">Save</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
-
 <partial name="_ActiveTabPartial" model=active />
-<script src="/js/CreateProvider.js" asp-append-version="true"></script>
+<script src="/js/EditPhysician.js" asp-append-version="true"></script>

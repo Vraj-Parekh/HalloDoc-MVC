@@ -25,6 +25,15 @@
         @await Html.PartialAsync("_HeaderTabsPartial")
     </header>
 
+    @if (TempData["Error"] is not null)
+    {
+        <partial name="_ErrorToast" model="@TempData["Error"]" />
+    }
+    @if (TempData["Success"] is not null)
+    {
+        <partial name="_SuccessToast" model="@TempData["Success"]" />
+    }
+
     @RenderBody()
 
     <footer>
@@ -39,7 +48,7 @@
     <script src="~/js/intel_input.js" asp-append-version="true"></script>
     <script src="~/js/toggle_btn.js" asp-append-version="true"></script>
     <script src="~/js/datetime.js" asp-append-version="true"></script>
-    <script src="~/js/multi_files.js" asp-append-version="true"></script>
+    @* <script src="~/js/multi_files.js" asp-append-version="true"></script> *@
     <script src="~/js/check_mail.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial" />
     @await RenderSectionAsync("Scripts", required: false)

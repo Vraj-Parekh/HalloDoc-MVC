@@ -79,8 +79,8 @@ $(document).ready(function () {
         $('#ConfirmAssign').click(function () {
 
             var createShiftDTO = {
-                RegionId: parseInt($('#floatingSelect').val()),
-                PhysicianId: $('.physicianDropDown').val(),
+                //RegionId: parseInt($('#floatingSelect').val()),
+                //PhysicianId: $('.physicianDropDown').val(),
                 ShiftDate: $('#StartDate').val(),
                 StartTime: $('#StartTime').val(),
                 EndTime: $('#EndTime').val(),

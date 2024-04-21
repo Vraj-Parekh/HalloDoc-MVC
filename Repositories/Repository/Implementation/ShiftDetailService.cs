@@ -39,7 +39,18 @@ namespace Repositories.Repository.Implementation
             return physicians;
         }
 
-        public async Task<Shiftdetail> AddShiftDetails(Shift shift, CreateShiftDTO model)
+        public async Task<bool> IsShiftValidAsync(Shiftdetail shiftdetail, int physicianId)
+        {
+            return !await _context.Shiftdetails.Where(a => !a.Isdeleted
+                                                           && a.Shiftdetailid != shiftdetail.Shiftdetailid
+                                                           && a.Shift.Physicianid == physicianId
+                                                           && a.Regionid == shiftdetail.Regionid
+                                                           && a.Shiftdate.Date == shiftdetail.Shiftdate.Date
+                                                           && a.Starttime < shiftdetail.Endtime
+                                                           && shiftdetail.Starttime < a.Endtime).AnyAsync();
+        }
+
+        public async Task<Shiftdetail?> AddShiftDetails(Shift shift, CreateShiftDTO model)
         {
             Shiftdetail shiftdetail = new Shiftdetail()
             {
@@ -52,9 +63,14 @@ namespace Repositories.Repository.Implementation
                 Modifiedby = aspNetUserService.GetAspNetUserId(),
                 Shiftdate = model.ShiftDate,
             };
-            _context.Add(shiftdetail);
-            await _context.SaveChangesAsync();
-            return shiftdetail;
+
+            if (await IsShiftValidAsync(shiftdetail, model.PhysicianId))
+            {
+                _context.Add(shiftdetail);
+                await _context.SaveChangesAsync();
+                return shiftdetail;
+            }
+            return null;
         }
 
         public async Task ChangeShiftStatus(int shiftDetailId)

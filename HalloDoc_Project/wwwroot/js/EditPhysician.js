@@ -4,7 +4,7 @@ $(document).ready(function () {
     // Disable all input fields initially
     $('.checkedregion').prop('disabled', true);
     $('.dis-admin-field').prop('disabled', true);
-    $('.btn-save').hide();
+    $('.btn-phy-save').hide();
 
     // Handle click event for the Edit button
     $('.btn-edit-admin').click(function () {
@@ -12,7 +12,7 @@ $(document).ready(function () {
         $('.dis-admin-field').prop('disabled', false);
         $('.checkedregion').prop('disabled', false);
 
-        $('.btn-save').show();
+        $('.btn-phy-save').show();
     });
 
 
@@ -85,7 +85,7 @@ $(document).ready(function () {
         };
         console.log(data);
         $.ajax({
-            url: '/Provider/UpdatePhysicianInfo',
+            url: '/Admin/UpdatePhysicianInfo',
             method: 'post',
             data: data,
             async: false,
@@ -121,7 +121,7 @@ $(document).ready(function () {
         };
 
         $.ajax({
-            url: '/Provider/UpdatePhysicianBillingInfo',
+            url: '/Admin/UpdatePhysicianBillingInfo',
             method: 'POST',
             data: data,
             async: false,
@@ -135,38 +135,38 @@ $(document).ready(function () {
         });
     });
 
-    $('.btn-save-provider-profile').on('click', function () {
+    //$('.btn-save-provider-profile').on('click', function () {
 
-        var businessName = $('#businessName').val();
-        var businessWebsite = $('#businessWebsite').val();
-        var Adminnotes = $('#Adminnotes').val();
-        var photo = document.getElementById('fileLoader').files[0];
-        var sign = document.getElementById('sign').files[0];
-        var phyId = $('#phyId').val();
+    //    var businessName = $('#businessName').val();
+    //    var businessWebsite = $('#businessWebsite').val();
+    //    var Adminnotes = $('#Adminnotes').val();
+    //    var photo = document.getElementById('fileLoader').files[0];
+    //    var sign = document.getElementById('sign').files[0];
+    //    var phyId = $('#phyId').val();
 
-        var data = {
-            BusinessName: businessName,
-            BusinessWebsite: businessWebsite,
-            AdminNotes: Adminnotes,
-            Photo: photo,
-            Signature: sign,
-            PhysicianId: phyId
-        };
-        console.log(data);
-        $.ajax({
-            url: '/Provider/UpdatePhysicianProfileInfo',
-            method: 'POST',
-            data: data,
-            async: false,
-            success: function (response) {
-                console.log('successfully');
-                window.location.reload();
-            },
-            error: function (xhr, status, error) {
-                console.log('Error');
-            }
-        });
-    });
+    //    var data = {
+    //        BusinessName: businessName,
+    //        BusinessWebsite: businessWebsite,
+    //        AdminNotes: Adminnotes,
+    //        Photo: photo,
+    //        Signature: sign,
+    //        PhysicianId: phyId
+    //    };
+    //    console.log(data);
+    //    $.ajax({
+    //        url: '/Admin/UpdatePhysicianProfileInfo',
+    //        method: 'POST',
+    //        data: data,
+    //        async: false,
+    //        success: function (response) {
+    //            console.log('successfully');
+    //            window.location.reload();
+    //        },
+    //        error: function (xhr, status, error) {
+    //            console.log('Error');
+    //        }
+    //    });
+    //});
 });
 function photo_validation() {
     var val = $('#fileLoader').val().toLowerCase(),

@@ -13,7 +13,7 @@ function loadFilteredData(page) {
     console.log(phoneNumber);
 
     $.ajax({
-        url: '/Provider/PatientHistoryTable',
+        url: '/Admin/PatientHistoryTable',
         type: 'GET',
         data: {
             firstName: firstName,

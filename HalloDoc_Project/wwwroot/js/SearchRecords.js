@@ -12,7 +12,7 @@ function loadFilteredData(page) {
     var phoneNumber = $('#phonenumber').val();
 
     $.ajax({
-        url: '/Provider/SearchRecordsTable',
+        url: '/Admin/SearchRecordsTable',
         type: 'GET',
         data: {
             patientName: patientName,

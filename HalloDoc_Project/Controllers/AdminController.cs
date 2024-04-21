@@ -20,11 +20,13 @@ using MailKit.Search;
 using System.Xml.Schema;
 using System.Security.Cryptography.X509Certificates;
 using System.IdentityModel.Tokens.Jwt;
+using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HalloDoc_Project.Controllers
 {
     [Route("[controller]/[action]")]
-    [CustomAuthorization("Admin, Provider")]
+
 
     public class AdminController : Controller
     {
@@ -56,6 +58,8 @@ namespace HalloDoc_Project.Controllers
         private readonly IPhysicianLocationService physicianLocationService;
         private readonly IHttpContextAccessor httpContext;
         private readonly IHelperService helperService;
+        private readonly IUserService userService;
+        private readonly IHandleShiftService handleShiftService;
 
         public AdminController(IRequestClientServices requestClientServices,
                                IRequestServices requestServices,
@@ -84,7 +88,9 @@ namespace HalloDoc_Project.Controllers
                                ISmsLogService smsLogService,
                                IPhysicianLocationService physicianLocationService,
                                IHttpContextAccessor httpContext,
-                               IHelperService helperService)
+                               IHelperService helperService,
+                               IUserService userService,
+                               IHandleShiftService handleShiftService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -114,6 +120,8 @@ namespace HalloDoc_Project.Controllers
             this.physicianLocationService = physicianLocationService;
             this.httpContext = httpContext;
             this.helperService = helperService;
+            this.userService = userService;
+            this.handleShiftService = handleShiftService;
         }
         public IActionResult Index()
         {
@@ -148,18 +156,21 @@ namespace HalloDoc_Project.Controllers
                 var roleClaim = jwtSecurityToken.Claims.Where(claims => claims.Type == ClaimTypes.Role).Select(a => a.Value).ToList();
                 if (roleClaim.Contains("Admin"))
                 {
+                    TempData["Success"] = "Login successful";
                     return RedirectToAction("AdminDashboard", "Admin");
                 }
-
+                TempData["Success"] = "Login successful";
                 return RedirectToAction("ProviderDashboard", "Provider");
             }
             else
             {
+                TempData["Error"] = "Invalid credentials";
                 ModelState.AddModelError(nameof(data.Password), "Incorrect Email or Password.");
                 return View(data);
             }
         }
 
+        [CustomAuthorization("Admin,Provider")]
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync();
@@ -210,6 +221,7 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult ChangePassword(LoginDTO data)
         {
@@ -225,6 +237,7 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
+        [CustomAuthorization("Admin")]
         public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize, string searchQuery, int regionId)
         {
             int totalCount;
@@ -238,6 +251,7 @@ namespace HalloDoc_Project.Controllers
             return PartialView("_TablePartial", data);
         }
 
+        [CustomAuthorization("Admin")]
         public IActionResult AdminDashboard()
         {
             object? count = requestServices.GetCount();
@@ -245,6 +259,7 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Admin,Provider")]
         public async Task<IActionResult> SendLink(SendLinkDTO model)
         {
             var subject = "Admin sent you link";
@@ -262,6 +277,8 @@ namespace HalloDoc_Project.Controllers
             await emailLogService.AddEmailLog(model.Email, message, subject, isEmailSent);
             return RedirectToAction("AdminDashboard", "Admin");
         }
+
+        [CustomAuthorization("Admin")]
         [HttpGet("{requestId}")]
         public IActionResult ViewCase(int requestId)
         {
@@ -269,6 +286,7 @@ namespace HalloDoc_Project.Controllers
             return View(request);
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{requestId}")]
         public IActionResult ViewCase(ViewCaseDTO data)
         {
@@ -280,6 +298,7 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
+        [CustomAuthorization("Admin")]
         [HttpGet("{requestId}")]
         public IActionResult ViewNotes(int requestId)
         {
@@ -288,6 +307,7 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{requestId}")]
         public IActionResult ViewNotes(ViewNotesDTO data, int requestId)
         {
@@ -298,6 +318,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ViewNotes", new { requestId = requestId });
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{requestId}")]
         public IActionResult CancelCase([FromRoute] int requestId, [FromForm] string reason, [FromForm] string notes)
         {
@@ -305,6 +326,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{requestId}")]
         public IActionResult AssignCase(int requestId, string phyRegion, string phyId, string notes)
         {
@@ -313,6 +335,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{requestId}")]
         public IActionResult BlockCase([FromRoute] int requestId, [FromForm] string blockReason)
         {
@@ -320,12 +343,14 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
+        [CustomAuthorization("Admin,Provider")]
         public List<Region> FetchRegions()
         {
             List<Region>? regions = regionService.GetRegion();
             return regions;
         }
 
+        [CustomAuthorization("Admin,Provider")]
         [HttpGet("{regionId}")]
         public List<Physician> FetchPhysicianByRegion(int regionId)
         {
@@ -333,6 +358,7 @@ namespace HalloDoc_Project.Controllers
             return physician;
         }
 
+        [CustomAuthorization("Admin")]
         [HttpGet("{requestId}")]
         public IActionResult ViewUploads(int requestId)
         {
@@ -340,6 +366,7 @@ namespace HalloDoc_Project.Controllers
             return View(doc);
         }
 
+        [CustomAuthorization("Admin,Provider,Patient")]
         public IActionResult Download(int docId)
         {
             string filePath = requestWiseFilesServices.GetPath(docId);
@@ -347,6 +374,7 @@ namespace HalloDoc_Project.Controllers
             return PhysicalFile(filePath, MimeTypes.GetMimeType(filePath), Path.GetFileName(filePath));
         }
 
+        [CustomAuthorization("Admin,Provider,Patient")]
         [HttpPost("{requestId}")]
         public void Upload(int requestId, List<IFormFile> files)
         {
@@ -357,6 +385,7 @@ namespace HalloDoc_Project.Controllers
             }
         }
 
+        [CustomAuthorization("Admin,Provider,Patient")]
         public IActionResult Delete(int docId)
         {
             HttpContext? path = HttpContext;
@@ -364,6 +393,7 @@ namespace HalloDoc_Project.Controllers
             return Redirect(HttpContext.Request.Headers.Referer!);
         }
 
+        [CustomAuthorization("Admin,Provider,Patient")]
         [HttpPost]
         public IActionResult DeleteSelectedFiles(List<int> fileIds)
         {
@@ -371,11 +401,14 @@ namespace HalloDoc_Project.Controllers
             return Redirect(HttpContext.Request.Headers.Referer!);
         }
 
+        [CustomAuthorization("Admin,Provider,Patient")]
         [HttpPost]
         public async Task SendAttachment(int request_id, int[] files_jx, string mail)
         {
             await helperService.SendAttachment(request_id, files_jx, mail);
         }
+
+        [CustomAuthorization("Admin")]
         [HttpGet("{requestId}")]
         public IActionResult SendOrder(int requestId)
         {
@@ -383,17 +416,20 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Admin,Provider")]
         public List<Healthprofessionaltype> FetchProfession()
         {
             return healthProfessionalTypeService.GetProfession();
         }
 
+        [CustomAuthorization("Admin,Provider")]
         [HttpGet("{professionId}")]
         public List<Healthprofessional> FetchBusiness(int professionId)
         {
             return healthProfessionalsService.GetBusiness(professionId);
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{requestId}")]
         public IActionResult SendOrder(SendOrderDTO data, int requestId)
         {
@@ -404,6 +440,7 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{requestId}")]
         public IActionResult ClearCase(int requestId)
         {
@@ -411,6 +448,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{requestId}")]
         public IActionResult SendAgreement(int requestId, [FromForm] string phoneNumber, [FromForm] string email)
         {
@@ -418,6 +456,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
+        [CustomAuthorization("Admin")]
         [HttpGet("{requestId}")]
         public IActionResult Encounter(int requestId)
         {
@@ -426,6 +465,7 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{requestId}")]
         public IActionResult Encounter(int requestId, EncounterDTO model)
         {
@@ -433,6 +473,7 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Admin")]
         [HttpGet("{requestId}")]
         public IActionResult CloseCase(int requestId)
         {
@@ -441,6 +482,7 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{requestId}")]
         public IActionResult CaseClose(int requestId)
         {
@@ -448,6 +490,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
+        [CustomAuthorization("Admin,Provider")]
         [HttpPost("{requestId}")]
         public IActionResult UpdateRequestClientMobEmail(int requestId, string email, string phoneNumber)
         {
@@ -455,11 +498,14 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Admin,Provider")]
         private DateTime GenerateDateOfBirth(int? year, string? month, int? date)
         {
             DateTime finalDate = new DateTime(year ?? 1900, DateTime.ParseExact(month ?? "January", "MMMM", CultureInfo.CurrentCulture).Month, date ?? 01);
             return finalDate;
         }
+
+        [CustomAuthorization("Admin")]
         public FileResult ExportFiltered(int requestTypeId, int status, int pageIndex, int pageSize, string searchQuery, int regionId)
         {
             int totalCount;
@@ -468,6 +514,7 @@ namespace HalloDoc_Project.Controllers
             return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_list.xlsx");
         }
 
+        [CustomAuthorization("Admin")]
         public async Task<FileResult> ExportAll(int status)
         {
             List<Request>? requests = await requestServices.GetAllRequests(status);
@@ -475,11 +522,13 @@ namespace HalloDoc_Project.Controllers
             return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "all_patient_list.xlsx");
         }
 
+        [CustomAuthorization("Admin")]
         public IActionResult CreateRequest()
         {
             return View();
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateRequest(CreateRequestDTO model)
         {
@@ -505,7 +554,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard", "Admin");
         }
 
-       
+        [CustomAuthorization("Admin")]
         public IActionResult MyProfile()
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -520,6 +569,7 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Admin")]
         [HttpGet("{id}")]
         public IActionResult EditAdmin(int id)
         {
@@ -534,6 +584,8 @@ namespace HalloDoc_Project.Controllers
             }
             return View();
         }
+
+        [CustomAuthorization("Admin")]
         public async Task<IActionResult> ResetPasswordAsync(AdminProfileDTO model)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -544,6 +596,8 @@ namespace HalloDoc_Project.Controllers
             }
             return RedirectToAction("MyProfile");
         }
+
+        [CustomAuthorization("Admin")]
         public async Task<IActionResult> UpdateAdminInfoAsync(AdminProfileDTO model)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -555,6 +609,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("MyProfile");
         }
 
+        [CustomAuthorization("Admin")]
         public async Task<IActionResult> UpdateBillingInfoAsync(AdminProfileDTO model)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -566,13 +621,20 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("MyProfile");
         }
 
+        [CustomAuthorization("Admin")]
         public IActionResult Providers()
         {
-            List<ProviderMenuDTO>? model = physicianService.GetProviderMenu();
-            model.First().Regions = regionService.GetRegionList();
-            return View(model);
+            return View();
         }
 
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> ProvidersTable(int regionId, int page = 1, int itemsPerPage = 5)
+        {
+            Pagination<ProviderMenuDTO>? filteredData = await physicianService.GetProviderMenu(regionId, page, itemsPerPage);
+            return PartialView("_ProvidersTable", filteredData);
+        }
+
+        [CustomAuthorization("Admin")]
         public async Task SendMessage(int mode, string message, int physicianId)
         {
             string email = physicianService.GetPhysicianEmail(physicianId);
@@ -633,11 +695,13 @@ namespace HalloDoc_Project.Controllers
             }
         }
 
+        [CustomAuthorization("Admin")]
         public IActionResult CreateRole()
         {
             return View();
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateRole(CreateRoleDTO model)
         {
@@ -652,6 +716,7 @@ namespace HalloDoc_Project.Controllers
             }
         }
 
+        [CustomAuthorization("Admin")]
         [HttpGet("{roleId}")]
         public IActionResult EditRole(int roleId)
         {
@@ -659,6 +724,7 @@ namespace HalloDoc_Project.Controllers
             return View(role);
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{roleId}")]
         public async Task<IActionResult> EditRole(int roleId, CreateRoleDTO model)
         {
@@ -666,34 +732,42 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AccountAccess");
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost("{roleId}")]
         public async Task<IActionResult> DeleteRole(int roleId)
         {
             await roleService.DeleteRole(roleId);
             return RedirectToAction("AccountAccess");
         }
+
+        [CustomAuthorization("Admin,Provider")]
         public List<Menu> FetchMenus(int accountType)
         {
             List<Menu>? menus = menuService.GetMenus(accountType);
             return menus;
         }
 
+        [CustomAuthorization("Admin")]
         public IActionResult AccountAccess()
         {
             List<AccountAccessDTO>? data = roleService.GetAllRoles();
             return View(data);
         }
 
+        [CustomAuthorization("Admin")]
         public async Task<IActionResult> UserAccess()
         {
             return View();
         }
 
+        [CustomAuthorization("Admin")]
         public async Task<IActionResult> UserAccessTable(int accountType, int page = 1, int itemsPerPage = 5)
         {
             Pagination<UserAccessDTO>? filteredData = await adminService.GetFilteredUserAccessData(accountType, page, itemsPerPage);
             return PartialView("_UserAccessTable", filteredData);
         }
+
+        [CustomAuthorization("Admin")]
         public IActionResult CreateAdminAccount()
         {
             CreateAdminDTO model = new CreateAdminDTO();
@@ -703,6 +777,7 @@ namespace HalloDoc_Project.Controllers
             return View(model);
         }
 
+        [CustomAuthorization("Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateAdminAccount(CreateAdminDTO model)
         {
@@ -711,12 +786,14 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("UserAccess", "Admin");
         }
 
+        [CustomAuthorization("Admin,Provider")]
         public IActionResult FetchPhysician(int regionId = 0)
         {
             List<Physician>? physician = physicianService.GetPhysicianByRegionId(regionId);
             return Json(physician);
         }
 
+        [CustomAuthorization("Admin,Provider")]
         private async Task<List<Shiftdetail>> GetAndPrepareShiftDetails()
         {
             var shiftDetails = await shiftDetailService.GetShiftDetails();
@@ -728,30 +805,35 @@ namespace HalloDoc_Project.Controllers
             return shiftDetails;
         }
 
+        [CustomAuthorization("Admin,Provider")]
         public async Task<IActionResult> FetchShiftDetails()
         {
             var shiftDetails = await GetAndPrepareShiftDetails();
             return Json(shiftDetails);
         }
 
+        [CustomAuthorization("Admin,Provider")]
         public async Task<IActionResult> ReturnShift(int shiftDetailId)
         {
             await shiftDetailService.ChangeShiftStatus(shiftDetailId);
             return await FetchShiftDetails();
         }
 
+        [CustomAuthorization("Admin,Provider")]
         public async Task<IActionResult> DeleteShift(int shiftDetailId)
         {
             await shiftDetailService.DeleteShift(shiftDetailId);
             return await FetchShiftDetails();
-        }    
-        
+        }
+
+        [CustomAuthorization("Admin,Provider")]
         public async Task<IActionResult> DeleteSelectedShift(List<int> Ids)
         {
             await shiftDetailService.DeleteSelectedShift(Ids);
             return RedirectToAction("RequestedShift", "Admin");
         }
 
+        [CustomAuthorization("Admin,Provider")]
         public async Task<IActionResult> SaveShift(ScheduleDTO model)
         {
             await shiftDetailService.EditShift(model);
@@ -759,30 +841,36 @@ namespace HalloDoc_Project.Controllers
             return res;
         }
 
+        [CustomAuthorization("Admin,Provider")]
         public async Task<IActionResult> ApproveSelected(List<int> Ids)
         {
             await shiftDetailService.ApproveShift(Ids);
-            return RedirectToAction("RequestedShift","Admin");
-        }
-        public async Task<IActionResult> CreateShift(CreateShiftDTO model)
-        {
-            Physician? physician = physicianService.GetPhysicianById(model.PhysicianId);
-            if (physician is not null)
-            {
-                Shift? shift = await shiftService.AddShift(physician, model);
-                Shiftdetail? shiftDetail = await shiftDetailService.AddShiftDetails(shift, model);
-                await shiftDetailRegionService.AddShiftDetailRegion(shiftDetail, model);
-                var res = await FetchShiftDetails();
-                return res;
-            }
-            return BadRequest("Physician not found");
+            return RedirectToAction("RequestedShift", "Admin");
         }
 
+        [CustomAuthorization("Admin,Provider")]
+        public async Task<IActionResult> CreateShift(CreateShiftDTO model)
+        {
+            try
+            {
+                await handleShiftService.AddShiftDetails(model);
+                var res = await FetchShiftDetails();
+                return Ok(res);
+            }
+            catch(Exception ex)
+            {
+                TempData["Error"] = "Shift already present";
+            }
+            return BadRequest("Shift not created");
+        }
+
+        [CustomAuthorization("Admin")]
         public IActionResult Scheduling()
         {
             return View();
         }
 
+        [CustomAuthorization("Admin")]
         public IActionResult ProviderOnCall()
         {
             ScheduleDTO model = new ScheduleDTO();
@@ -790,11 +878,14 @@ namespace HalloDoc_Project.Controllers
             return View(model);
         }
 
+        [CustomAuthorization("Admin")]
         public async Task<IActionResult> MdOnCallDiv(int regionId)
         {
             MdOncallDTO? filteredData = await shiftDetailService.GetOnCallData(regionId);
             return PartialView("_mdOnCall", filteredData);
         }
+
+        [CustomAuthorization("Admin")]
         public async Task<IActionResult> RequestedShift()
         {
             ScheduleDTO model = new ScheduleDTO();
@@ -802,15 +893,317 @@ namespace HalloDoc_Project.Controllers
             return View(model);
         }
 
+        [CustomAuthorization("Admin")]
         public async Task<IActionResult> RequestedShiftTable(int regionId, bool isDateFilter, int page = 1, int itemsPerPage = 10)
         {
             Pagination<RequestedShiftDTO>? filteredData = await shiftService.GetFilteredRequestedShifts(regionId, isDateFilter, page, itemsPerPage);
             return PartialView("_RequestedShiftTable", filteredData);
         }
+
+        [CustomAuthorization("Admin")]
         public IActionResult ProviderLocation()
         {
             List<Physicianlocation>? location = physicianLocationService.GetLocation();
             return View(location);
+        }
+
+        [CustomAuthorization("Admin")]
+        [HttpGet]
+        public IActionResult CreateProviderAccount()
+        {
+            CreatePhysicianDTO? model = new CreatePhysicianDTO();
+            model.Regions = regionService.GetRegionList();
+            model.Roles = roleService.GetRoles();
+
+            return View(model);
+        }
+
+        [CustomAuthorization("Admin")]
+        [HttpPost]
+        public async Task<IActionResult> CreateProviderAccount(CreatePhysicianDTO model)
+        {
+            await physicianService.CreatePhysician(model);
+
+            return RedirectToAction("UserAccess", "Admin");
+        }
+
+        [CustomAuthorization("Admin")]
+        [HttpGet("{physicianId}")]
+        public IActionResult EditProviderAccount(int physicianId)
+        {
+            Physician? physician = physicianService.GetPhysicianById(physicianId);
+            if (physician is not null)
+            {
+                EditPhysicianDTO model = physicianService.GetPhysicianInfo(physician);
+                model.Roles = roleService.GetRoles();
+                return View(model);
+            }
+            return View();
+        }
+
+        [CustomAuthorization("Admin,Provider")]
+        public async Task<IActionResult> ResetPasswordProviderAsync(EditPhysicianDTO model)
+        {
+            Physician? physician;
+            bool flag = false;
+            if (helperService.IsPhysician())
+            {
+                int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+                physician = physicianService.GetPhysicianById(physicianId);
+                flag = true;
+            }
+            else
+            {
+                physician = physicianService.GetPhysicianById(model.PhysicianId);
+            }
+
+            if (model.Password is not null && physician is not null)
+            {
+                await physicianService.ChangePassword(physician, model);
+            }
+
+            if (flag)
+            {
+                return RedirectToAction("MyProfileProvider", "Provider");
+            }
+
+            return RedirectToAction("EditProviderAccount", new { physicianId = model.PhysicianId });
+        }
+
+        [CustomAuthorization("Admin,Provider")]
+        public async Task<IActionResult> UpdatePhysicianInfoAsync(EditPhysicianDTO model)
+        {
+            Physician? physician;
+            bool flag = false;
+            if (helperService.IsPhysician())
+            {
+                int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+                physician = physicianService.GetPhysicianById(physicianId);
+                flag = true;
+            }
+            else
+            {
+                physician = physicianService.GetPhysicianById(model.PhysicianId);
+            }
+
+            if (physician is not null)
+            {
+                await physicianService.UpdatePhysicianInfo(physician, model);
+            }
+            if (flag)
+            {
+                return RedirectToAction("MyProfileProvider", "Provider");
+            }
+
+            return RedirectToAction("EditProviderAccount", new { physicianId = model.PhysicianId });
+        }
+
+        [CustomAuthorization("Admin,Provider")]
+        public async Task<IActionResult> UpdatePhysicianBillingInfoAsync(EditPhysicianDTO model)
+        {
+            Physician? physician;
+            bool flag = false;
+            if (helperService.IsPhysician())
+            {
+                int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+                physician = physicianService.GetPhysicianById(physicianId);
+                flag = true;
+            }
+            else
+            {
+                physician = physicianService.GetPhysicianById(model.PhysicianId);
+            }
+
+            if (physician is not null)
+            {
+                await physicianService.UpdateBillingInfo(physician, model);
+            }
+            if (flag)
+            {
+                return RedirectToAction("MyProfileProvider", "Provider");
+            }
+
+            return RedirectToAction("EditProviderAccount", new { physicianId = model.PhysicianId });
+        }
+
+        [CustomAuthorization("Admin,Provider")]
+        public async Task<IActionResult> UpdatePhysicianProfileInfo(EditPhysicianDTO model)
+        {
+            Physician? physician;
+            bool flag = false;
+            if (helperService.IsPhysician())
+            {
+                int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
+                physician = physicianService.GetPhysicianById(physicianId);
+                flag = true;
+            }
+            else
+            {
+                physician = physicianService.GetPhysicianById(model.PhysicianId);
+            }
+
+            if (physician is not null)
+            {
+                await physicianService.UpdateProfileInfo(physician, model);
+            }
+            if (flag)
+            {
+                return RedirectToAction("MyProfileProvider", "Provider");
+            }
+
+            return RedirectToAction("EditProviderAccount", new { physicianId = model.PhysicianId });
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> Partners()
+        {
+            return View();
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> VendorsTable(string searchVendor, int professionType, int page = 1, int itemsPerPage = 10)
+        {
+            Pagination<VendorsDTO>? filteredData = await healthProfessionalsService.GetFilteredHealthProfessionals(searchVendor, professionType, page, itemsPerPage);
+            return PartialView("_VendorTable", filteredData);
+        }
+
+        [CustomAuthorization("Admin")]
+        [HttpGet("{vendorId}")]
+        public async Task<IActionResult> EditBusiness(int vendorId)
+        {
+            EditBusinessDTO? model = await healthProfessionalsService.GetHealthProfessionalInfo(vendorId);
+            model.Regions = regionService.GetRegionList();
+            model.ProfessionList = healthProfessionalTypeService.GetProfession();
+
+            return View(model);
+        }
+
+        [CustomAuthorization("Admin")]
+        [HttpPost("{vendorId}")]
+        public async Task<IActionResult> EditBusiness(int vendorId, EditBusinessDTO model)
+        {
+            await healthProfessionalsService.EditProfessional(vendorId, model);
+            return RedirectToAction("Partners", "Provider");
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> AddBusiness()
+        {
+            EditBusinessDTO? model = new EditBusinessDTO();
+            model.Regions = regionService.GetRegionList();
+            model.ProfessionList = healthProfessionalTypeService.GetProfession();
+
+            return View(model);
+        }
+
+        [CustomAuthorization("Admin")]
+        [HttpPost]
+        public async Task<IActionResult> AddBusiness(EditBusinessDTO model)
+        {
+            //error : duplicate key violates
+            await healthProfessionalsService.AddBusiness(model);
+            return RedirectToAction("Partners", "Provider");
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> PatientHistory()
+        {
+            return View();
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> PatientHistoryTable(string firstName, string lastName, string email, string phoneNumber, int page = 1, int itemsPerPage = 10)
+        {
+            Pagination<PatientHistoryDTO>? filteredData = await userService.GetFilteredUsers(firstName, lastName, email, phoneNumber, page, itemsPerPage);
+            return PartialView("_PatientHistoryTable", filteredData);
+        }
+
+        [CustomAuthorization("Admin")]
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> PatientRecords(int userId)
+        {
+            List<PatientRecordsDTO>? modelList = await requestServices.GetPatientRecord(userId);
+            return View(modelList);
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> SearchRecords()
+        {
+            return View();
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> SearchRecordsTable(string patientName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName, int page = 1, int itemsPerPage = 10)
+        {
+            Pagination<SearchRecordsDTO>? filteredData = await requestServices.GetfilteredSearchRecords(patientName, email, phoneNumber, requestStatus, requestType, fromDateOfService, toDateOfService, providerName, page, itemsPerPage);
+            return PartialView("_SearchRecordsTable", filteredData);
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<FileResult> ExportSearchRecords(string patientName, string email, string phoneNumber, int requestStatus, int requestType, DateTime fromDateOfService, DateTime toDateOfService, string providerName, int page = 1, int itemsPerPage = 10)
+        {
+            Pagination<SearchRecordsDTO>? records = await requestServices.GetfilteredSearchRecords(patientName, email, phoneNumber, requestStatus, requestType, fromDateOfService, toDateOfService, providerName, page, itemsPerPage);
+            byte[]? file = ExcelHelper.CreateFile(records.Data);
+            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "patient_records.xlsx");
+        }
+
+        [CustomAuthorization("Admin")]
+        [HttpPost("{requestId}")]
+        public async Task<IActionResult> DeletePatientRecord(int requestId)
+        {
+            await requestServices.DeletePatientRecord(requestId);
+            return RedirectToAction("SearchRecords", "Provider");
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> EmailLogs()
+        {
+            LogsDTO? model = new LogsDTO();
+            model.Roles = roleService.GetRoles();
+            return View(model);
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> EmailLogsTable(int role, string receiverName, string emailId, DateTime createdDate, DateTime sentDate, int page = 1, int itemsPerPage = 10)
+        {
+            Pagination<LogsDTO>? filteredData = await emailLogService.GetFilteredEmailLogs(role, receiverName, emailId, createdDate, sentDate, page, itemsPerPage);
+            return PartialView("_EmailLogsTable", filteredData);
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> SmsLogs()
+        {
+            LogsDTO? model = new LogsDTO();
+            model.Roles = roleService.GetRoles();
+            return View(model);
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> SmsLogsTable(int role, string receiverName, string phoneNumber, DateTime createdDate, DateTime sentDate, int page = 1, int itemsPerPage = 10)
+        {
+            Pagination<LogsDTO>? filteredData = await smsLogService.GetFilteredSmsLogs(role, receiverName, phoneNumber, createdDate, sentDate, page, itemsPerPage);
+            return PartialView("_SmsLogsTable", filteredData);
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> BlockHistory()
+        {
+            return View();
+        }
+
+        [CustomAuthorization("Admin")]
+        public async Task<IActionResult> BlockHistoryTable(string name, DateTime createdDate, string email, string phonenumber, int page = 1, int itemsPerPage = 10)
+        {
+            Pagination<BlockHistoryDTO>? filteredData = await blockRequestService.GetFilteredBlockedHistry(name, createdDate, email, phonenumber, page, itemsPerPage);
+            return PartialView("_BlockHistoryTable", filteredData);
+        }
+
+        [CustomAuthorization("Admin")]
+        [HttpPost("{requestId}")]
+        public async Task<IActionResult> UnblockRequest(int requestId)
+        {
+            await blockRequestService.UnblockRequest(requestId);
+            return RedirectToAction("BlockHistory", "Provider");
         }
     }
 }

@@ -173,7 +173,8 @@
 
             <div class="row justify-content-end">
                 <div class="col-auto">
-                    <a class="btn btn-info text-white" href="@Url.Action("ViewNotes", "Admin", new { requestId = Model.RequestId})"> View Notes </a>
+                    <button type="button" class="btn btn-info text-white"> Assign </button>
+                    <a class="btn btn-info text-white" href="@Url.Action("ViewNotes", "Provider", new { requestId = Model.RequestId})"> View Notes </a>
                     <button type="button" class="btn btn-danger text-white"> Cancel </button>
                 </div>
             </div>

@@ -23,7 +23,7 @@ function loadFilteredData(page) {
     console.log(professionType);
 
     $.ajax({
-        url: '/Provider/VendorsTable',
+        url: '/Admin/VendorsTable',
         type: 'GET',
         data: {
             searchVendor: searchVendor,

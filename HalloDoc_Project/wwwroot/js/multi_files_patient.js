@@ -1,4 +1,22 @@
-﻿//script for cross and list of selected files
+﻿toastr.options = {
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-bottom-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+}
+
+//script for cross and list of selected files
 let allFiles = [];
 let input = document.getElementById("choose-file");
 var button = document.getElementsByClassName("toggle-button")[0];
@@ -65,7 +83,7 @@ function submitFile(id) {
     console.log(formData);
     $.ajax({
         type: 'POST',
-        url: "/Patient/Upload/" + id,
+        url: "/Admin/Upload/" + id,
         data: (formData),
         processData: false,
         contentType: false,
@@ -74,9 +92,11 @@ function submitFile(id) {
             console.log(response)
             removeAll();
             window.location.reload();
+            toastr.success("files uploaded successfully");
         },
         error: function (xhr, status, error) {
             console.error("Error:", status, error);
+            toastr.error('error loading reasons');
         }
     });
 }
@@ -136,18 +156,53 @@ function deleteSelectedFiles() {
     if (fileIds.length > 0) {
 
         $.ajax({
-            url: '/Patient/DeleteSelectedFiles',
+            url: '/Admin/DeleteSelectedFiles',
             type: 'POST',
             data: { fileIds: fileIds },
             success: function (response) {
-                console.log('Files deleted successfully');
                 location.reload();
+                toastr.success("file deleted successfully");
             },
             error: function (xhr, status, error) {
                 console.error('Error deleting files:', error);
+                toastr.error('Error loading reasons');
             }
         });
     } else {
         console.log('No files selected to delete');
+    }
+}
+
+function sendemail(id, mail) {
+
+    var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
+    var fileIds = [];
+
+    console.log(selectedFiles);
+
+    selectedFiles.forEach(function (checkbox) {
+        let docId = checkbox.getAttribute('data-docId');
+        console.log(docId);
+        fileIds.push(docId);
+    });
+    console.log(fileIds);
+    console.log(id);
+    console.log(mail);
+    if (fileIds.length > 0) {
+        $.ajax({
+            type: "POST",
+            url: '/Admin/SendAttachment',
+            data: { request_id: id, files_jx: fileIds, mail: mail },
+            async: false,
+            success: function () {
+                console.log("Email sent successfully");
+                toastr.success("Mail sent successfully");
+            },
+            error: function (xhr, status, error) {
+                toastr.error("Error Loading Reasons");
+            }
+        });
+    } else {
+        toastr.error("Select the files");
     }
 }

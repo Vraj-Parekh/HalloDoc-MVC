@@ -29,7 +29,7 @@ namespace Repositories.Repository.Implementation
         {
             Shift shift = new Shift();
 
-            shift.Physicianid = model.PhysicianId;
+            shift.Physicianid = physician.Physicianid;
             shift.Startdate = DateOnly.FromDateTime(model.ShiftDate);
             shift.Isrepeat = model.Repeat;
             shift.Repeatupto = model.RepeatUpto;
@@ -45,7 +45,7 @@ namespace Repositories.Repository.Implementation
         {
             IQueryable<Shift>? query = _context.Shifts
                     .Include(a => a.Shiftdetails)
-                    .Where(a=>a.Shiftdetails.Any(a=>!a.Isdeleted && a.Status == 1))
+                    .Where(a=>a.Shiftdetails.Any(a=>!a.Isdeleted && a.Status == 1))//1 means pending
                     .Include(a => a.Physician)
                     .AsQueryable();
 

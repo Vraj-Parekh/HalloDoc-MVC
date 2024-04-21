@@ -61,15 +61,30 @@ function nextPage(totalPages) {
     }
 }
 
-
 $(document).ready(function () {
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
 
+    // Check or uncheck all checkboxes when the headCheck checkbox is clicked
     $('thead input[name="headCheck"]').change(function () {
         const isChecked = $(this).prop('checked');
-     
         $('tbody input[type="checkbox"]').prop('checked', isChecked);
     });
-
 
     $('#approveSelected').click(function () {
         var selectedIds = [];
@@ -82,19 +97,22 @@ $(document).ready(function () {
         $.ajax({
             url: '/Admin/ApproveSelected',
             type: 'post',
-            async:false,
+            async: false,
             data: {
-                Ids: selectedIds ,
+                Ids: selectedIds,
             },
             success: function (data) {
                 console.log("success");
                 window.location.reload();
+                toastr.success('Shifts approve successfully');
             },
             error: function (xhr, status, error) {
                 console.log("error");
+                toastr.error('error loading reasons');
             }
         });
     });
+
     $('#deleteSelected').click(function () {
         var selectedIds = [];
         $('input[name="checkedshift"]:checked').each(function () {
@@ -106,18 +124,21 @@ $(document).ready(function () {
         $.ajax({
             url: '/Admin/DeleteSelectedShift',
             type: 'post',
-            async:false,
+            async: false,
             data: {
-                Ids: selectedIds ,
+                Ids: selectedIds,
             },
             success: function (data) {
                 console.log("success");
                 window.location.reload();
+                toastr.success('Shifts deleted successfully');
             },
             error: function (xhr, status, error) {
                 console.log("error");
+                toastr.error('error loading reasons');
             }
         });
     });
 
 });
+

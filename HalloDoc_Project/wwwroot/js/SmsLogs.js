@@ -9,7 +9,7 @@ function loadFilteredData(page) {
     var sentDate = $('#sentDate').val();
 
     $.ajax({
-        url: '/Provider/SmsLogsTable',
+        url: '/Admin/SmsLogsTable',
         type: 'GET',
         data: {
             role: role,

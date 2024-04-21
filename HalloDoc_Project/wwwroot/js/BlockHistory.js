@@ -8,7 +8,7 @@ function loadFilteredData(page) {
     var phonenumber = $('#phonenumber').val();
 
     $.ajax({
-        url: '/Provider/BlockHistoryTable',
+        url: '/Admin/BlockHistoryTable',
         type: 'GET',
         data: {
             name: name,

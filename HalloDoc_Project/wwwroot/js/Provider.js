@@ -49,3 +49,60 @@ function SendMessage(id)
     });
 }
 
+var page = 1;
+var itemsPerPage = 5;
+
+function loadFilteredData(page) {
+    var region = $('.regionDropDown').val();
+
+    console.log(region);
+
+    $.ajax({
+        url: '/Admin/ProvidersTable',
+        type: 'GET',
+        data: {
+            regionId: region,
+            page: page,
+            itemsPerPage: itemsPerPage
+        },
+        success: function (data) {
+            $('#providersTableDiv').html(data);
+            console.log("success");
+        },
+        error: function (xhr, status, error) {
+            console.log("error");
+        }
+    });
+}
+
+$(".regionDropDown").on('change', function () {
+    page = 1;
+
+    loadFilteredData(page);
+});
+
+// Initial loading of table data
+loadFilteredData(1);
+
+function previousPage() {
+    if (page > 1) {
+        page--;
+        loadFilteredData(page);
+    }
+    else {
+        console.log('else')
+        $('#prevBtn').prop('disabled', true);
+    }
+}
+function changePage(pageNumber) {
+    page = pageNumber;
+    loadFilteredData(page);
+}
+function nextPage(totalPages) {
+    //console.log(totalPages)
+    if (page < totalPages) {
+        page++;
+        loadFilteredData(page);
+    }
+}
+

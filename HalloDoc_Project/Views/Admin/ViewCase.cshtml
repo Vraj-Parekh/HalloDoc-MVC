@@ -173,9 +173,9 @@
 
             <div class="row justify-content-end">
                 <div class="col-auto">
-                    <button type="button" class="btn btn-info text-white"> Assign </button>
+                    @* <button type="button" class="btn btn-info text-white"> Assign </button> *@
                     <a class="btn btn-info text-white" href="@Url.Action("ViewNotes", "Admin", new { requestId = Model.RequestId})"> View Notes </a>
-                    <button type="button" class="btn btn-danger text-white"> Cancel </button>
+                    <button type="button" class="btn btn-danger text-white" onclick="history.back()"> Cancel </button>
                 </div>
             </div>
         </form>

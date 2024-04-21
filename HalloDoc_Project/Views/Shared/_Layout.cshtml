@@ -8,6 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
     <link href="~/css/header_footer_layout.css" rel="stylesheet" asp-append-version="true" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
     @await RenderSectionAsync("style", required: false)
@@ -72,7 +74,7 @@
     <script src="~/js/intel_input.js" asp-append-version="true"></script>
     <script src="~/js/toggle_btn.js" asp-append-version="true"></script>
     <script src="~/js/datetime.js" asp-append-version="true"></script>
-    <script src="~/js/multi_files.js" asp-append-version="true"></script>
+    @* <script src="~/js/multi_files.js" asp-append-version="true"></script> *@
     <script src="~/js/check_mail.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial" />
 

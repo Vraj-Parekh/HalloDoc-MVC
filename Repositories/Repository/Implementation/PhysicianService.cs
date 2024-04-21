@@ -59,31 +59,53 @@ namespace Repositories.Repository.Implementation
 
         public int GetPhysicianIdByAspNetUserId(string aspNetUserId)
         {
-            return _context.Physicians.Where(a => a.Aspnetuserid == aspNetUserId).Select(a=>a.Physicianid).FirstOrDefault();
+            return _context.Physicians.Where(a => a.Aspnetuserid == aspNetUserId).Select(a => a.Physicianid).FirstOrDefault();
         }
-        public List<ProviderMenuDTO> GetProviderMenu()
+        public async Task<Pagination<ProviderMenuDTO>> GetProviderMenu(int regionId, int page, int itemsPerPage)
         {
-            List<Physician>? providerList = _context.Physicians
+            IQueryable<Physician>? query = _context.Physicians
                 .Include(a => a.Physiciannotifications)
-                .ToList();
+                .AsQueryable();
 
-            List<ProviderMenuDTO> model = new List<ProviderMenuDTO>();
 
-            if (providerList is not null)
+            if (regionId > 0)
             {
-                foreach (Physician physician in providerList)
-                {
-                    ProviderMenuDTO providerMenuData = new ProviderMenuDTO()
-                    {
-                        ProviderName = physician.Firstname,
-                        PhysicianId = physician.Physicianid,
-                        Status = physician.Status,
-                    };
-                    model.Add(providerMenuData);
-                }
-
+                query = query.Where(a => a.Regionid == regionId);
             }
-            return model;
+
+            int totalItems = await query.CountAsync();
+
+
+            if (page < 1) page = 1;
+
+            int skip = (page - 1) * itemsPerPage;
+            int totalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+
+            List<Physician>? pysicianList = await query
+                .Skip(skip)
+                .Take(itemsPerPage)
+                .ToListAsync();
+
+            List<ProviderMenuDTO> modelList = new List<ProviderMenuDTO>();
+
+
+            foreach (Physician physician in pysicianList)
+            {
+                ProviderMenuDTO providerMenuData = new ProviderMenuDTO()
+                {
+                    ProviderName = physician.Firstname,
+                    PhysicianId = physician.Physicianid,
+                    Status = physician.Status,
+                };
+                modelList.Add(providerMenuData);
+            }
+
+            return new Pagination<ProviderMenuDTO>
+            {
+                Data = modelList,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
         }
 
         public string GetPhysicianEmail(int physicianId)
@@ -258,7 +280,7 @@ namespace Repositories.Repository.Implementation
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task UpdatePhysicianInfo(Physician physician,EditPhysicianDTO model)
+        public async Task UpdatePhysicianInfo(Physician physician, EditPhysicianDTO model)
         {
             physician.Firstname = model.FirstName;
             physician.Lastname = model.LastName;
@@ -273,7 +295,7 @@ namespace Repositories.Repository.Implementation
             await physicianRegionService.AddOrRemovePhysicianRegion(physician, model.Regions);
         }
 
-        public async Task UpdateBillingInfo(Physician physician,EditPhysicianDTO model)
+        public async Task UpdateBillingInfo(Physician physician, EditPhysicianDTO model)
         {
             physician.Address1 = model.Address1;
             physician.Address2 = model.Address2;
@@ -284,15 +306,21 @@ namespace Repositories.Repository.Implementation
 
             _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();
-        }     
-        
-        public async Task UpdateProfileInfo(Physician physician,EditPhysicianDTO model)
+        }
+
+        public async Task UpdateProfileInfo(Physician physician, EditPhysicianDTO model)
         {
             physician.Businessname = model.BusinessName;
             physician.Businesswebsite = model.BusinessWebsite;
             physician.Adminnotes = model.AdminNotes;
             physician.Photo = model.Photo.FileName;
             physician.Signature = model.Signature.FileName;
+
+            var file = model.Photo;
+            var uniqueFileName = Path.GetFileName(file.FileName);
+            var uploads = Path.Combine("wwwroot", "uploads");
+            var filespath = Path.Combine(uploads, uniqueFileName);
+            file.CopyTo(new FileStream(filespath, FileMode.Create));
 
             _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();

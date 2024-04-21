@@ -10,11 +10,6 @@ namespace Entities.ViewModels
     {
         public string Name { get; set; }
         public int RequestID { get; set; }
-        public List<ConcludeFile> Files { get; set; }
-
-    }
-    public class ConcludeFile
-    {
-        public string FileName { get; set; }
+        public List<FileData> Document { get; set; }
     }
 }

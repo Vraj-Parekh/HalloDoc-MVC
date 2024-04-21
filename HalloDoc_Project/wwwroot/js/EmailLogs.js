@@ -15,7 +15,7 @@ function loadFilteredData(page) {
     console.log(sentDate);
 
     $.ajax({
-        url: '/Provider/EmailLogsTable',
+        url: '/Admin/EmailLogsTable',
         type: 'GET',
         data: {
             role: role,

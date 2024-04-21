@@ -38,6 +38,7 @@ namespace Repositories.Repository.Implementation
                 Emailtemplate = message,
                 Subjectname = subject,
                 Senttries = 1,
+                Isemailsent = isEmailSent
             };
 
             if (helperService.IsAdmin())

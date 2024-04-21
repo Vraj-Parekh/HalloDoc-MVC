@@ -18,7 +18,7 @@ $('#accountType').change(function () {
             // If "Provider" is selected, set the button text to "Create Provider Account"
             $('#create-acc-btn').text('Create Provider Account');
             $('#create-acc-btn').off('click').on('click', function () {
-                window.location.href = '/Provider/CreateProviderAccount';
+                window.location.href = '/Admin/CreateProviderAccount';
             });
         }
     }

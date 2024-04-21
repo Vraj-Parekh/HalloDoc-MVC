@@ -593,20 +593,5 @@ namespace HalloDoc_Project.Controllers
             }
             return View(data);
         }
-        [HttpPost("{requestId}")]
-        public void Upload(int requestId, List<IFormFile> files)
-        {
-            Request? request = requestServices.GetRequest(requestId);
-            if (request is not null)
-            {
-                requestWiseFilesServices.AddFiles(files, request);
-            }
-        }
-        [HttpPost]
-        public IActionResult DeleteSelectedFiles(List<int> fileIds)
-        {
-            requestWiseFilesServices.DeleteSelectedFiles(fileIds);
-            return Redirect(HttpContext.Request.Headers.Referer!);
-        }
     }
 }
