@@ -10,8 +10,8 @@ namespace HalloDoc.Utility
         public Task SendEmailAsync(string email, string subject, string message, List<string>? attachments = null)
         {
             MimeMessage? emailToSend = new MimeMessage();
-            emailToSend.From.Add(MailboxAddress.Parse("vraj.parekh@etatvasoft.com"));
-            emailToSend.To.Add(MailboxAddress.Parse(email));
+            emailToSend.From.Add(MailboxAddress.Parse("tatva.dotnet.vrajparekh@outlook.com"));
+            emailToSend.To.Add(MailboxAddress.Parse("vrajparekh58@gmail.com"));
             emailToSend.Subject = subject;
 
             BodyBuilder builder = new BodyBuilder();
@@ -29,8 +29,8 @@ namespace HalloDoc.Utility
           
             using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
             {
-                emailClient.Connect("mail.etatvasoft.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                emailClient.Authenticate("vraj.parekh@etatvasoft.com", "9WQPH4a!f0ew");
+                emailClient.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                emailClient.Authenticate("tatva.dotnet.vrajparekh@outlook.com", "Vp20@#$%");
                 emailClient.Send(emailToSend);
                 emailClient.Disconnect(true);
                 return Task.CompletedTask;

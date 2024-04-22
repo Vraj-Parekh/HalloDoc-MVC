@@ -17,7 +17,7 @@ using Twilio.Types;
 namespace HalloDoc_Project.Controllers
 {
     [Route("[controller]/[action]")]
-    [CustomAuthorization("Provider")]
+  
     public class ProviderController : Controller
     {
         private readonly IRegionService regionService;
@@ -84,6 +84,7 @@ namespace HalloDoc_Project.Controllers
             this.requestWiseFilesServices = requestWiseFilesServices;
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize, string searchQuery)
         {
             int totalCount;
@@ -97,6 +98,7 @@ namespace HalloDoc_Project.Controllers
             return PartialView("_TablePartial", data);
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         public IActionResult ProviderDashboard()
         {
             object? count = requestServices.GetCountProvider();
@@ -104,6 +106,7 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         [HttpGet("{requestId}")]
         public async Task<IActionResult> AcceptRequest(int requestId)
         {
@@ -111,6 +114,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
+        [CustomAuthorization("Provider RequestData")]
         [HttpGet("{requestId}")]
         public IActionResult ViewCase(int requestId)
         {
@@ -118,6 +122,7 @@ namespace HalloDoc_Project.Controllers
             return View(request);
         }
 
+        [CustomAuthorization("Provider RequestData")]
         [HttpPost("{requestId}")]
         public IActionResult ViewCase(ViewCaseDTO data)
         {
@@ -129,11 +134,13 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
+        [CustomAuthorization("Provider RequestData")]
         public IActionResult CreateRequest()
         {
             return View();
         }
 
+        [CustomAuthorization("Provider RequestData")]
         [HttpPost]
         public async Task<IActionResult> CreateRequest(CreateRequestDTO model)
         {
@@ -159,6 +166,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
+        [CustomAuthorization("Provider RequestData")]
         [HttpGet("{requestId}")]
         public IActionResult ViewNotes(int requestId)
         {
@@ -167,6 +175,7 @@ namespace HalloDoc_Project.Controllers
             return View(data);
         }
 
+        [CustomAuthorization("Provider RequestData")]
         [HttpPost("{requestId}")]
         public IActionResult ViewNotes(ViewNotesDTO data, int requestId)
         {
@@ -177,6 +186,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ViewNotes", new { requestId = requestId });
         }
 
+        [CustomAuthorization("Provider RequestData")]
         [HttpGet("{requestId}")]
         public IActionResult ViewUploads(int requestId)
         {
@@ -184,6 +194,7 @@ namespace HalloDoc_Project.Controllers
             return View(doc);
         }
 
+        [CustomAuthorization("Provider SendOrder")]
         [HttpGet("{requestId}")]
         public IActionResult SendOrder(int requestId)
         {
@@ -191,6 +202,7 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Provider SendOrder")]
         [HttpPost("{requestId}")]
         public IActionResult SendOrder(SendOrderDTO data, int requestId)
         {
@@ -201,14 +213,16 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Provider RequestData")]
         [HttpGet("{requestId}")]
         public IActionResult Encounter(int requestId)
         {
             ViewBag.requestId = requestId;
             EncounterDTO? data = encounterFormService.GetEncounterInfo(requestId);
             return View(data);
-        }     
-        
+        }
+
+        [CustomAuthorization("Provider RequestData")]
         [HttpGet("{requestId}")]
         public IActionResult EncounterDownload(int requestId)
         {
@@ -217,6 +231,7 @@ namespace HalloDoc_Project.Controllers
             return PartialView("Encounter",data);
         }
 
+        [CustomAuthorization("Provider RequestData")]
         [HttpPost("{requestId}")]
         public IActionResult Encounter(int requestId, EncounterDTO model)
         {
@@ -224,6 +239,7 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         [HttpGet("{requestId}")]
         public async Task<IActionResult> FinalizeRequest(int requestId)
         {
@@ -231,6 +247,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         [HttpPost("{requestId}")]
         public async Task<IActionResult> TransferCase(int requestId,string notes)
         {
@@ -238,6 +255,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         [HttpPost("{requestId}")]
         public IActionResult SendAgreement(int requestId, [FromForm] string phoneNumber, [FromForm] string email)
         {
@@ -245,6 +263,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         [HttpGet("{requestId}")]
         public async Task<IActionResult> HouseCall(int requestId)
         {
@@ -252,6 +271,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         [HttpGet("{requestId}")]
         public async Task<IActionResult> Consult(int requestId)
         {
@@ -259,13 +279,15 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         [HttpGet("{requestId}")]
         public IActionResult ConcludeCare(int requestId)
         {
             ViewDocumentList? model = requestServices.GetDocumentData(requestId);
             return View(model);
         }
-        
+
+        [CustomAuthorization("Provider Dashboard")]
         [HttpPost("{requestId}")]
         public IActionResult ConcludeCare(int requestId, ViewDocumentList model)
         {
@@ -273,11 +295,13 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ProviderDashboard","Provider");
         }
 
+        [CustomAuthorization("Provider MySchedule")]
         public IActionResult Scheduling()
         {
             return View();
         }
 
+        [CustomAuthorization("ProviderProfile")]
         public IActionResult MyProfileProvider()
         {
             int physicianId = physicianService.GetPhysicianIdByAspNetUserId(aspNetUserService.GetAspNetUserId());
@@ -292,15 +316,17 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         public async Task<IActionResult> CheckIsFinalize(int requestId)
         {
             bool finalize = await encounterFormService.isFinalize(requestId);
             return Ok(finalize);
         }
 
+        [CustomAuthorization("Provider Dashboard")]
         public async Task<IActionResult> RequestToAdmin()
         {
-            string email = "v@gmail.com";
+            string email = "vrajparekh58@gmail.com";
             string subject = "Request from provider";
             string message = $"Tap the link to submit request: <a href=\"https://localhost:44396/Request/SubmitRequest\">Open</a>";
 

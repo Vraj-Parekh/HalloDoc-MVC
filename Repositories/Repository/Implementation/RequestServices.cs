@@ -174,7 +174,7 @@ namespace Repositories.Repository.Implementation
         {
             RequestCount? count = new RequestCount
             {
-                NewCount = _context.Requests.Where(r => r.Status == 1).Count(),
+                NewCount = _context.Requests.Where(r => r.Status == 1 || r.Status == 23).Count(),
                 PendingCount = _context.Requests.Where(r => r.Status == 16).Count(),
                 ActiveCount = _context.Requests.Where(r => r.Status == 2 || r.Status == 5 || r.Status == 6).Count(),
                 ConcludeCount = _context.Requests.Where(r => r.Status == 18).Count(),
@@ -245,10 +245,13 @@ namespace Repositories.Repository.Implementation
             if (!string.IsNullOrEmpty(searchQuery))
             {
                 searchQuery = searchQuery.Trim().ToLower();
-                query = query.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchQuery)
-                                                                || rc.Lastname.ToLower().Contains(searchQuery))
-                                       || a.Firstname.ToLower().Contains(searchQuery)
-                                       || a.Lastname.ToLower().Contains(searchQuery));
+                //query = query.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchQuery)
+                //                                           || rc.Lastname.ToLower().Contains(searchQuery))
+                //                       || a.Firstname.ToLower().Contains(searchQuery)
+                //                       || a.Lastname.ToLower().Contains(searchQuery));
+                query = query.Where(x => x.Firstname.ToLower().Contains(searchQuery) || x.Firstname.ToLower().Contains(searchQuery)
+                                || x.Requestclients.Any(y => y.Firstname.ToLower().Contains(searchQuery) || y.Firstname.ToLower().Contains(searchQuery))
+                       );
             }
 
             if (regionId > 0)
@@ -753,7 +756,7 @@ namespace Repositories.Repository.Implementation
             }
         }
 
-        public void ConcludeService(int requestId,ViewDocumentList data)
+        public void ConcludeService(int requestId, ViewDocumentList data)
         {
             var request = GetRequest(requestId);
             if (request is not null)

@@ -21,17 +21,21 @@ namespace Repositories.Repository.Implementation
                     new Claim("userName", user.Username),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),//unique identifier for the JWT token
-                    new Claim("userId", user.Aspnetuserid),
+                    new Claim("userId", user.Aspnetuserid)
             };
             if (user.Roles.Any(a => a.Name == "Admin"))
             {
+                var admin = user.AdminAspnetusers.FirstOrDefault();
                 authClaims.Add(new Claim("firstname", user.AdminAspnetusers.FirstOrDefault()?.Firstname ?? ""));
                 authClaims.Add(new Claim("lastname", user.AdminAspnetusers.FirstOrDefault()?.Lastname ?? ""));
+                authClaims.Add(new Claim("roleId", admin.Roleid.ToString()));
             }
             if (user.Roles.Any(a => a.Name == "Provider"))
             {
+                var physician = user.PhysicianAspnetusers.FirstOrDefault();
                 authClaims.Add(new Claim("firstname", user.PhysicianAspnetusers.FirstOrDefault()?.Firstname ?? ""));
                 authClaims.Add(new Claim("lastname", user.PhysicianAspnetusers.FirstOrDefault()?.Lastname ?? ""));
+                authClaims.Add(new Claim("roleId", physician.Roleid.ToString()));
             }
             if (user.Roles.Any(a => a.Name == "Patient"))
             {
@@ -47,7 +51,7 @@ namespace Repositories.Repository.Implementation
             //Get key from configuration
             SymmetricSecurityKey? key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("7b5e8fb32a9c046b1e4f8dcf02014a307d2f3fe3d820d1f70f9df2f4c6a8b9e5"));
 
-            DateTime expires = DateTime.UtcNow.AddMinutes(60);
+            DateTime expires = DateTime.UtcNow.AddMinutes(120);
             SigningCredentials? creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
             //Brought this things from configuration

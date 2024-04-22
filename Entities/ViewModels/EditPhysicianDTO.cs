@@ -69,7 +69,6 @@ namespace Entities.ViewModels
 
         public string BusinessWebsite { get; set; }
 
-        [Required(ErrorMessage = "Photo is required")]
         public IFormFile Photo { get; set; }
         public IFormFile Signature { get; set; }
 

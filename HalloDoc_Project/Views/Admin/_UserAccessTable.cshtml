@@ -17,9 +17,9 @@
             <th class="col text-center">
                 Status
             </th>
-            <th class="col text-center">
+       @*      <th class="col text-center">
                 Open Requests
-            </th>
+            </th> *@
             <th class="col text-center">
                 Actions
             </th>
@@ -41,9 +41,9 @@
                 <td class="text-center">
                     @((RequestStatus)item.Status)
                 </td>
-                <td class="text-center">
+            @*     <td class="text-center">
                     @item.OpenRequests
-                </td>
+                </td> *@
                 <td class="text-center">
                     @if (item.AccountType == "Admin")
                     {

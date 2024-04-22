@@ -10,6 +10,7 @@ namespace Entities.ViewModels
 {
     public class AdminProfileDTO
     {
+        public int AdminId {  get; set; }
         [Required(ErrorMessage = "User Name is required")]
         public string UserName { get; set; }
 

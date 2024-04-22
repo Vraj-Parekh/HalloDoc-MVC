@@ -508,3 +508,53 @@
         $(".sendAgreementForm").attr("action", "/Admin/SendAgreement/" + requestId);
     }
 </script>
+
+
+
+<!-- Modal request dty-->
+<div class="modal fade" id="requestDtyModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form class="requestForm" method="post">
+                <div class="modal-header bg-info text-white ">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Request Support</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col text-muted">
+                            To all unscheduled physicians: we are short an coverage and needs additional support on call to respond to requests.
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="desc" id="floatingTextarea2" name="msg" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">Message</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info text-white" id="assignCaseSubmit">Send</button>
+                    <button type="button" class="btn btn-white border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- For transfer case-->
+<script>
+
+    $(document).ready(function () {
+        // Handle button click event
+        $("#requestDty").click(function () {
+            // Show the modal
+            $('#requestDtyModal').modal('show');
+        });
+
+        $(".requestForm").attr("action", "/Admin/RequestSupport");
+    });
+</script>

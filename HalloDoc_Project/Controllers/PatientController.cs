@@ -57,7 +57,9 @@ namespace HalloDoc_Project.Controllers
         [AllowAnonymous]
         public IActionResult PatientLogin(LoginDTO data)
         {
-            Aspnetuser? user = _context.Aspnetusers.Where(u => u.Email == data.Email).Include(a => a.Roles).FirstOrDefault();
+            Aspnetuser? user  = _context.Aspnetusers.Where(u => u.Email == data.Email)
+                                                    .Include(a=>a.Users)
+                                                    .Include(a => a.Roles).FirstOrDefault();
 
             if (user != null && user.Passwordhash == data.Password)
             {

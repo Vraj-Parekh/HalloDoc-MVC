@@ -71,6 +71,7 @@ namespace Repositories.Repository.Implementation
             model.State = (int)admin.Regionid;
             model.Zip = admin.Zip;
             model.AltPhoneNumber = admin.Altphone;
+            model.AdminId = admin.Adminid;
 
 
             List<Adminregion>? adminRegions = adminRegionService.GetAdminRegions(admin);
