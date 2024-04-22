@@ -129,26 +129,31 @@ namespace Repositories.Repository.Implementation
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task EditShift(ScheduleDTO model)
+        public async Task<bool> EditShift(ScheduleDTO model)
         {
             Shiftdetail? shift = await _context.Shiftdetails
                 .Where(a => a.Shiftdetailid == model.ShiftDetailId)
                 .Include(s => s.Shift)
                 .FirstOrDefaultAsync();
+
             if (shift != null)
             {
                 shift.Shiftdate = new DateTime(model.Startdate.Year, model.Startdate.Month, model.Startdate.Day);
                 shift.Starttime = model.Starttime;
                 shift.Endtime = model.Endtime;
-                _context.Update(shift);
 
-                if (shift.Shift != null)
+                if (await IsShiftValidAsync(shift, shift.Shift.Physicianid))
                 {
+                    _context.Update(shift);
+
                     shift.Shift.Startdate = model.Startdate;
                     _context.Update(shift.Shift);
+
+                    await _context.SaveChangesAsync();
+                    return true;
                 }
-                await _context.SaveChangesAsync();
             }
+            return false;
         }
 
         public async Task<List<Shiftdetail>> GetShiftsOnDate(DateTime date, int physicianId = 0)

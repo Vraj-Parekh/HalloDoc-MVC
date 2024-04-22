@@ -18,11 +18,11 @@
 
 $(document).ready(function () {
     // Handle click event on the Add New Shift button
-    console.log("clalled bhai");
+
     $('#openShiftModalBtn').click(function () {
-        // Trigger the display of the modal
+
         $('#createShiftModal').modal('show');
-        console.log("ander hu me");
+
     });
     var regionsFetched = false;
 
@@ -78,53 +78,110 @@ $(document).ready(function () {
     $(document).ready(function () {
         $('#ConfirmAssign').click(function () {
 
-            var createShiftDTO = {
-                RegionId: parseInt($('#floatingSelect').val()),
-                PhysicianId: $('.physicianDropDown').val(),
-                ShiftDate: $('#StartDate').val(),
-                StartTime: $('#StartTime').val(),
-                EndTime: $('#EndTime').val(),
-                Repeat: $('#flexSwitchCheckChecked').is(':checked'),
-                Repeat_Days: [],
-                RepeatUpto: parseInt($('#RepeatUpto').val())
-            };
+            var isValid = true;
 
-            $('input[name="Repeat_Days"]:checked').each(function () {
-                createShiftDTO.Repeat_Days.push(parseInt($(this).val()));
-            });
+            // Validate region selection
+            if ($('#floatingSelect').val() == null) {
+                $('#addShiftRegionError').text('Please select a region.');
+                isValid = false;
+            } else {
+                $('#addShiftRegionError').text('');
+            }
 
-            console.log(createShiftDTO);
+            // Validate physician selection
+            if ($('#p-id').val() == null) {
+                $('#addShiftPhysicianError').text('Please select a physician.');
+                isValid = false;
+            } else {
+                $('#addShiftPhysicianError').text('');
+            }
 
-            $.ajax({
-                url: '/Admin/CreateShift',
-                type: 'POST',
-                data: createShiftDTO,
-                //async: false,
-                dataType: 'text',
-                success: function (response) {
-                    $('#createShiftModal').modal('show');
-                    console.log(response);
-                    toastr.success("Shift created successfully");
-                    //calendar.removeAllEvents(); // Remove existing events
-                    //calendar.addEventSource(events); // Add updated events
-                    //calendar.refetchEvents(); // Refetch events from the event sources
-                    //e.stopImmediatePropagation();
-                    //getPhysicianShift(createShiftDTO.RegionId);
-                },
-                error: function (error) {
-                    $('#createShiftModal').modal('hide');
-                    console.log(error);
-                    if (error.status === 400) {
-                        toastr.error("Shift not created");
-                    }
-                    else {
+            // Validate start date
+            if ($('#StartDate').val() == '') {
+                $('#StartDate').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('#StartDate').removeClass('is-invalid');
+            }
+
+            // Validate start time
+            if ($('#StartTime').val() == '') {
+                $('#startTimeError').text('Please enter a start time.');
+                isValid = false;
+            } else {
+                $('#startTimeError').text('');
+            }
+
+            // Validate end time
+            if ($('#EndTime').val() == '') {
+                $('#endTimeError').text('Please enter an end time.');
+                isValid = false;
+            } else {
+                $('#endTimeError').text('');
+            }
+
+            // Validate repeat end selection
+            //if ($('#RepeatUpto').val() == null) {
+            //    $('#RepeatUpto').addClass('is-invalid');
+            //    isValid = false;
+            //} else {
+            //    $('#RepeatUpto').removeClass('is-invalid');
+            //}
+
+            if (isValid) {
+                var createShiftDTO = {
+                    RegionId: parseInt($('#floatingSelect').val()),
+                    PhysicianId: $('.physicianDropDown').val(),
+                    ShiftDate: $('#StartDate').val(),
+                    StartTime: $('#StartTime').val(),
+                    EndTime: $('#EndTime').val(),
+                    Repeat: $('#flexSwitchCheckChecked').is(':checked'),
+                    Repeat_Days: [],
+                    RepeatUpto: parseInt($('#RepeatUpto').val())
+                };
+
+                $('input[name="Repeat_Days"]:checked').each(function () {
+                    createShiftDTO.Repeat_Days.push(parseInt($(this).val()));
+                });
+
+                console.log(createShiftDTO);
+
+                $.ajax({
+                    url: '/Admin/CreateShift',
+                    type: 'POST',
+                    data: createShiftDTO,
+                    //async: false,
+                    dataType: 'text',
+                    success: function (response) {
+                        $('#createShiftModal').modal('show');
+                        console.log(response);
                         toastr.success("Shift created successfully");
-                    }
-                    //getPhysicianShift(createShiftDTO.RegionId);
-                    //toastr.error("Error Loading Reasonssdfvsdff");
+                        //calendar.removeAllEvents(); // Remove existing events
+                        //calendar.addEventSource(events); // Add updated events
+                        //calendar.refetchEvents(); // Refetch events from the event sources
+                        //e.stopImmediatePropagation();
+                        //getPhysicianShift(createShiftDTO.RegionId);
+                    },
+                    error: function (error) {
+                        $('#createShiftModal').modal('hide');
+                        console.log(error);
+                        if (error.status === 400) {
+                            toastr.error("Shift not created");
+                            window.location.reload();
+                        }
+                        else {
+                            toastr.success("Shift created successfully");
+                            window.location.reload();
+                        }
+                        //getPhysicianShift(createShiftDTO.RegionId);
+                        //toastr.error("Error Loading Reasonssdfvsdff");
 
-                }
-            });
+                    }
+                });
+            } else {
+
+            }
+
         });
     });
 });
@@ -286,6 +343,7 @@ $(document).ready(function () {
                             calendar.addEventSource(events); // Add updated events
                             calendar.refetchEvents(); // Refetch events from the event sources
                             e.stopImmediatePropagation();
+                            toastr.success("Shift returned successfully");
                         },
                         error: function (xhr, status, error) {
                             toastr.error("Something Went Wrong");
@@ -378,13 +436,14 @@ $(document).ready(function () {
                             calendar.removeAllEvents(); // Remove existing events
                             calendar.addEventSource(events); // Add updated events
                             calendar.refetchEvents(); // Refetch events from the event sources
-
+                            toastr.success('Shift edited');
                             // Hide the save button and show the edit button
                             $('#savebtn').addClass('d-none');
                             $('#editbtn').removeClass('d-none');
                         },
                         error: function (xhr, status, error) {
-                            // Handle error
+                            toastr.error("Shift can't be edited");
+                            $('#eventModal').modal('hide');
                         }
                     });
                     function formatTime(time) {

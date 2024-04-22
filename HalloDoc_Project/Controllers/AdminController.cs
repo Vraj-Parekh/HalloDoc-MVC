@@ -588,7 +588,7 @@ namespace HalloDoc_Project.Controllers
         }
 
         [CustomAuthorization("MyProfile")]
-        public async Task<IActionResult> ResetPasswordAsync(AdminProfileDTO model) 
+        public async Task<IActionResult> ResetPasswordAsync(AdminProfileDTO model)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             Admin? admin = adminService.GetAdmin(email);
@@ -631,7 +631,7 @@ namespace HalloDoc_Project.Controllers
             {
                 await adminService.ChangePassword(admin, model);
             }
-            return RedirectToAction("EditAdmin" , new { id = model.AdminId });
+            return RedirectToAction("EditAdmin", new { id = model.AdminId });
         }
 
         [CustomAuthorization("Accounts")]
@@ -871,9 +871,12 @@ namespace HalloDoc_Project.Controllers
         [CustomAuthorization("Scheduling,Provider MySchedule")]
         public async Task<IActionResult> SaveShift(ScheduleDTO model)
         {
-            await shiftDetailService.EditShift(model);
-            var res = await FetchShiftDetails();
-            return res;
+            if (await shiftDetailService.EditShift(model))
+            {
+                var res = await FetchShiftDetails();
+                return res;
+            }
+            return BadRequest("Can't edit shift");
         }
 
         [CustomAuthorization("Scheduling")]
@@ -892,7 +895,7 @@ namespace HalloDoc_Project.Controllers
                 var res = await FetchShiftDetails();
                 return Ok(res);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 TempData["Error"] = "Shift already present";
             }
