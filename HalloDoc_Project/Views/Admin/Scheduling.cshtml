@@ -9,7 +9,9 @@
     <style>
         /*Calender Styles*/
 
-
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            display: none;
+        }
         .fc-toolbar {
             display: grid !important;
             grid-template-columns: 1fr !important;
@@ -235,7 +237,7 @@
             <input type="date" id="date-title" style="width:40px;border:none">
 
             <a type="button" id="next-button">
-                <i class="fa-solid fa-greater-than text-white p-2 me-2" style="background-color:#1ad1ff;border-radius:20px;"></i>
+                <i class="fa-solid fa-greater-than text-white p-2 ms-2" style="background-color:#1ad1ff;border-radius:20px;"></i>
             </a>
         </div>
         <div class="d-flex justify-content-end">

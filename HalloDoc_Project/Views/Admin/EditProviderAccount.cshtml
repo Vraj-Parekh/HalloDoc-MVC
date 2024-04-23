@@ -1,5 +1,5 @@
 ﻿@using Entities.Enum;
-    @model EditPhysicianDTO
+@model EditPhysicianDTO
 @{
     ViewData["Title"] = "EditProviderAccount";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -14,8 +14,8 @@
     </div>
 
     <div class="bg">
-        <form asp-action="" asp-controller="Admin" method="post" enctype="multipart/form-data">
-            <input type="text" asp-for="PhysicianId" id="phyId" hidden/>
+        <form asp-action="ResetPasswordProvider" asp-controller="Admin" method="post" enctype="multipart/form-data">
+            <input type="text" asp-for="PhysicianId" id="phyId" hidden />
             <h5 class="mb-4">Account Information</h5>
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -35,7 +35,7 @@
                     <div class="form-floating">
                         <input type="text"
                                asp-for="Password"
-                               class="form-control "
+                               class="form-control dis-pass"
                                id="password"
                                placeholder="password" />
                         <label for="password">Password</label>
@@ -47,7 +47,7 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select" id="status" asp-for="Status" disabled>
+                        <select class="form-select dis-pass" id="status" asp-for="Status">
                             @* <option selected value="0">Status</option> *@
                             @foreach (var status in Enum.GetValues(typeof(UserStatus)))
                             {
@@ -60,7 +60,7 @@
 
                 <div class="col-md-6 mb-3">
                     <div class="form-floating">
-                        <select class="form-select" id="role" asp-for="Role" disabled>
+                        <select class="form-select dis-pass" id="role" asp-for="Role">
                             <option selected value="0">Select Role</option>
                             @foreach (var item in Model.Roles)
                             {
@@ -75,128 +75,133 @@
 
             <div class="row justify-content-end">
                 <div class="col-auto">
-                    <button class="btn btn-outline-info" type="submit" asp-action="ResetPasswordProvider" asp-controller="Admin"> Reset Password </button>
+                    <button type="button" class="btn btn-info text-white btn-edit-pass"> Edit </button>
+                    <button class="btn btn-outline-info btn-save-pass" type="submit"> Reset Password </button>
                 </div>
             </div>
+        </form>
 
-            <h5 class="mb-4">Physician Information</h5>
+        <h5 class="mb-4">Physician Information</h5>
+        <input type="text" asp-for="PhysicianId" id="phyId" hidden />
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <input type="text"
-                               asp-for="FirstName"
-                               class="form-control dis-admin-field"
-                               id="firstname"
-                               placeholder="firstname"
-                               disabled />
-                        <label for="firstname">First Name</label>
-                    </div>
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           asp-for="FirstName"
+                           class="form-control dis-admin-field"
+                           id="firstname"
+                           placeholder="firstname"
+                           disabled />
+                    <label for="firstname">First Name</label>
                 </div>
-
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <input type="text"
-                               asp-for="LastName"
-                               class="form-control dis-admin-field"
-                               id="lastname"
-                               placeholder="lastname"
-                               disabled />
-                        <label for="firstname">Last Name</label>
-                    </div>
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
+                <span asp-validation-for="FirstName" id="f-name" class="text-danger"></span>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <input type="text"
-                               asp-for="Email"
-                               class="form-control dis-admin-field"
-                               id="email"
-                               placeholder="email"
-                               disabled />
-                        <label for="firstname">Email</label>
-                    </div>
-                    <span asp-validation-for="Email" class="text-danger"></span>
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           asp-for="LastName"
+                           class="form-control dis-admin-field"
+                           id="lastname"
+                           placeholder="lastname"
+                           disabled />
+                    <label for="firstname">Last Name</label>
                 </div>
+                <span asp-validation-for="LastName" id="l-name" class="text-danger"></span>
+            </div>
+        </div>
 
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <input type="tel"
-                               asp-for="PhoneNumber"
-                               class="form-control dis-admin-field"
-                               id="phone"
-                               placeholder=""
-                               style="height: 58px"
-                               disabled />
-                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                    </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           asp-for="Email"
+                           class="form-control dis-admin-field"
+                           id="email1"
+                           placeholder="email"
+                           disabled />
+                    <label for="firstname">Email</label>
                 </div>
+                <span asp-validation-for="Email" id="email-text" class="text-danger"></span>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <input type="text"
-                               asp-for="MedicalLicense"
-                               class="form-control dis-admin-field"
-                               id="medicalLicense"
-                               placeholder="medicalLicense" />
-                        <label for="medicalLicense">Medical License #</label>
-                    </div>
-                    <span asp-validation-for="MedicalLicense" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <input type="text"
-                               asp-for="NPINumber"
-                               class="form-control dis-admin-field"
-                               id="npiNumber"
-                               placeholder="npiNumber" />
-                        <label for="npiNumber">NPI Number</label>
-                    </div>
-                    <span asp-validation-for="NPINumber" class="text-danger"></span>
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="tel"
+                           asp-for="PhoneNumber"
+                           class="form-control dis-admin-field phn"
+                           id="phone"
+                           placeholder=""
+                           style="height: 58px"
+                           disabled />
+                    <span asp-validation-for="PhoneNumber" id="phonenum" class="text-danger"></span>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <input type="text"
-                               asp-for="SyncEmail"
-                               class="form-control dis-admin-field"
-                               id="syncEmail"
-                               placeholder="syncEmail"
-                               disabled />
-                        <label for="syncEmail">Synchronization Email Address</label>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           asp-for="MedicalLicense"
+                           class="form-control dis-admin-field"
+                           id="medicalLicense"
+                           placeholder="medicalLicense" />
+                    <label for="medicalLicense">Medical License #</label>
+                </div>
+                <span asp-validation-for="MedicalLicense" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           asp-for="NPINumber"
+                           class="form-control dis-admin-field"
+                           id="npiNumber"
+                           placeholder="npiNumber" />
+                    <label for="npiNumber">NPI Number</label>
+                </div>
+                <span asp-validation-for="NPINumber" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input type="text"
+                           asp-for="SyncEmail"
+                           class="form-control dis-admin-field"
+                           id="syncEmail"
+                           placeholder="syncEmail"
+                           disabled />
+                    <label for="syncEmail">Synchronization Email Address</label>
+                </div>
+                <span asp-validation-for="SyncEmail" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                @foreach (var item in Model.Regions)
+                {
+                    <div class="form-check form-check-inline me-2">
+                        <input class="form-check-input addministrator checkedregion" name="checkedregion" type="checkbox" value="" id="@item.RegionId" @(item.IsPresent ? "checked" : "")>
+                        <label class="form-check-label" for="@item.RegionId">
+                            @item.RegionName
+                        </label>
                     </div>
-                    <span asp-validation-for="SyncEmail" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    @foreach (var item in Model.Regions)
-                    {
-                        <div class="form-check form-check-inline me-2">
-                            <input class="form-check-input addministrator checkedregion" name="checkedregion" type="checkbox" value="" id="@item.RegionId" @(item.IsPresent ? "checked" : "")>
-                            <label class="form-check-label" for="@item.RegionId">
-                                @item.RegionName
-                            </label>
-                        </div>
-                    }
-                </div>
+                }
             </div>
+        </div>
 
-            <div class="row justify-content-end">
-                <div class="col-auto">
-                    <button type="button" class="btn btn-info text-white btn-edit-admin"> Edit </button>
-                    <button type="button" class="btn btn-info text-white btn-phy-save" id="saveBtn">Save</button>
-                </div>
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <button type="button" class="btn btn-info text-white btn-edit-admin"> Edit </button>
+                <button type="button" class="btn btn-info text-white btn-phy-save" id="saveBtn">Save</button>
             </div>
+        </div>
 
+        <form asp-action="UpdatePhysicianBillingInfo" asp-controller="Admin" method="post">
+            <input type="text" asp-for="PhysicianId" id="phyId" hidden />
             <h5 class="mb-4">Mailing & Billing Information</h5>
 
             <div class="row">
@@ -287,10 +292,14 @@
             <div class="row justify-content-end">
                 <div class="col-auto">
                     <button type="button" class="btn btn-info text-white btn-edit-billing"> Edit </button>
-                    <button type="button" class="btn btn-info text-white btn-save-billing" id="saveBtn">Save</button>
+                    <button type="submit" class="btn btn-info text-white btn-save-billing" id="saveBtn">Save</button>
                 </div>
             </div>
+        </form>
 
+
+        <form asp-action="UpdatePhysicianProfileInfo" asp-controller="Admin" method="post" enctype="multipart/form-data">
+            <input type="text" asp-for="PhysicianId" id="phyId" hidden />
             <h5 class="mb-4">Provider Profile</h5>
 
             <div class="row">
@@ -348,7 +357,7 @@
                                     <i class="bi bi-cloud-upload text-white"></i>
                                     <label for="sign" class="h-100 p-2 text-white" style="cursor: pointer;">Upload</label>
                                 </label>
-                                <input asp-for="Signature" type="file" id="sign" >
+                                <input asp-for="Signature" type="file" id="sign">
                             </div>
                         </div>
                         <img src="" id="sign_img" class="w-100 mt-4" />
@@ -371,7 +380,7 @@
                     }
                 </div>
             </div>
-             <div class="row">
+            <div class="row">
                 <div class="col-12 mb-3">
                     <div class="form-floating">
                         <textarea class="form-control dis-provider-field" placeholder="Adminnotes" id="Adminnotes" style="height: 100px" asp-for="AdminNotes"></textarea>
@@ -383,85 +392,85 @@
             <div class="row justify-content-end">
                 <div class="col-auto">
                     <button type="button" class="btn btn-info text-white btn-profile"> Edit </button>
-                    <button type="submit" class="btn btn-info text-white btn-save-provider-profile" id="saveBtn" asp-action="UpdatePhysicianProfileInfo" asp-controller="Admin">Save</button>
-                </div>
-            </div>
-
-            <hr />
-
-            <h5 class="mb-4">Onboarding</h5>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input Subcheckbox me-5" id="contractorAgreement">
-                        <label class="form-check-label" for="contractorAgreement">
-                            Independent Contractor Agreement
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <input type="file" class="d-none" id="agreement" asp-for="IsAgreementDoc" onchange="selectcheckbox('contractorAgreement','btn1')">
-                    <label for="agreement" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
-                    <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn1" onclick="viewDocument('agreement')">View</button>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input Subcheckbox me-5" id="bgCheck">
-                        <label class="form-check-label" for="bgCheck">
-                            Background Check
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <input type="file" class="d-none" id="backgroundCheck" asp-for="IsBackgroundDoc" onchange="selectcheckbox('bgCheck','btn2')">
-                    <label for="backgroundCheck" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
-                    <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn2" onclick="viewDocument('backgroundCheck')">View</button>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input Subcheckbox me-5" id="compliance">
-                        <label class="form-check-label" for="compliance">
-                            HIPAA Compilance
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <input type="file" class="d-none" id="hippa" asp-for="IsTrainingDoc" onchange="selectcheckbox('compliance','btn3')">
-                    <label for="hippa" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
-                    <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn3" onclick="viewDocument('hippa')">View</button>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input Subcheckbox me-5" id="nonDisclosure">
-                        <label class="form-check-label" for="nonDisclosure">
-                            Non-Disclosure Agreement
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <input type="file" class="d-none" id="nda" asp-for="IsNonDisclosureDoc" onchange="selectcheckbox('nonDisclosure','btn4')">
-                    <label for="nda" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
-                    <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn4" onclick="viewDocument('nda')">View</button>
-                </div>
-            </div>
-            <hr />
-            <div class="row justify-content-end">
-                <div class="col-auto">
-                    <button type="button" class="btn btn-info text-white btn-edit-billing"> Edit </button>
-                    <button type="button" class="btn btn-info text-white btn-save-billing" id="saveBtn">Save</button>
+                    <button type="submit" class="btn btn-info text-white btn-save-provider-profile" id="saveBtn">Save</button>
                 </div>
             </div>
         </form>
+        <hr />
+
+        <h5 class="mb-4">Onboarding</h5>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input Subcheckbox me-5" id="contractorAgreement">
+                    <label class="form-check-label" for="contractorAgreement">
+                        Independent Contractor Agreement
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <input type="file" class="d-none" id="agreement" asp-for="IsAgreementDoc" onchange="selectcheckbox('contractorAgreement','btn1')">
+                <label for="agreement" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
+                <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn1" onclick="viewDocument('agreement')">View</button>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input Subcheckbox me-5" id="bgCheck">
+                    <label class="form-check-label" for="bgCheck">
+                        Background Check
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <input type="file" class="d-none" id="backgroundCheck" asp-for="IsBackgroundDoc" onchange="selectcheckbox('bgCheck','btn2')">
+                <label for="backgroundCheck" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
+                <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn2" onclick="viewDocument('backgroundCheck')">View</button>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input Subcheckbox me-5" id="compliance">
+                    <label class="form-check-label" for="compliance">
+                        HIPAA Compilance
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <input type="file" class="d-none" id="hippa" asp-for="IsTrainingDoc" onchange="selectcheckbox('compliance','btn3')">
+                <label for="hippa" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
+                <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn3" onclick="viewDocument('hippa')">View</button>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input Subcheckbox me-5" id="nonDisclosure">
+                    <label class="form-check-label" for="nonDisclosure">
+                        Non-Disclosure Agreement
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <input type="file" class="d-none" id="nda" asp-for="IsNonDisclosureDoc" onchange="selectcheckbox('nonDisclosure','btn4')">
+                <label for="nda" class="rounded bg-info btn text-light"><i class="bi bi-cloud-arrow-up me-2 "></i>Upload</label>
+                <button class="btn btn-info text-light ms-2 view-btn d-none" id="btn4" onclick="viewDocument('nda')">View</button>
+            </div>
+        </div>
+        <hr />
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <button type="button" class="btn btn-info text-white btn-edit-billing"> Edit </button>
+                <button type="button" class="btn btn-info text-white btn-save-billing" id="saveBtn">Save</button>
+            </div>
+        </div>
+
     </div>
 </div>
 

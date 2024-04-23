@@ -21,7 +21,7 @@ namespace Repositories.Repository.Implementation
         public List<Menu> GetMenus(int accountType)
         {
             List<Menu>? menus = _context.Menus 
-                .Where(a=>a.Accounttype == accountType)
+                .Where(a=>a.Accounttype == accountType || accountType == 1)
                 .Select(a=> new Menu { Menuid = a.Menuid, Name = a.Name})
                 .ToList();
 

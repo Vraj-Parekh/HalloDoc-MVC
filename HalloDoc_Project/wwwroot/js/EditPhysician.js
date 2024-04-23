@@ -1,5 +1,17 @@
 $(document).ready(function () {
 
+    $('.dis-pass').prop('disabled', true);
+    $('.btn-save-pass').hide();
+
+    // Handle click event for the Edit button
+    $('.btn-edit-pass').click(function () {
+        // Enable all input fields
+        $('.dis-pass').prop('disabled', false);
+
+        $('.btn-save-pass').show();
+    });
+
+
     //-------------for provider info-------------
     // Disable all input fields initially
     $('.checkedregion').prop('disabled', true);
@@ -55,10 +67,42 @@ $(document).ready(function () {
     });
 
     $('.btn-phy-save').on('click', function () {
+        let isValid = true;
+
+        if ($('#firstname').val() == '') {
+            $('#f-name').text('Firstname is required');
+            isValid = false;
+        } else {
+            $('#f-name').text('');
+        }
+        if ($('#lastname').val() == '') {
+            $('#l-name').text('Lastname is required');
+            isValid = false;
+        } else {
+            $('#l-name').text('');
+        }
+
+        if ($('#email1').val() == '') {
+            $('#email-text').text('Email is required');
+            isValid = false;
+        } else {
+            $('#email-text').text('');
+        }
+
+        if ($('.phn').val() == '') {
+            $('#phonenum').text('Phone number is required');
+            isValid = false;
+        } else {
+            $('#phonenum').text('');
+        }
+
+        if (!isValid) {
+            return;
+        }
 
         var firstname = $('#firstname').val();
         var lastname = $('#lastname').val();
-        var email = $('#email').val();
+        var email = $('#email1').val();
         var phonenumber = $('#phone').val();
         var medicalLicense = $('#medicalLicense').val();
         var npiNumber = $('#npiNumber').val();
@@ -99,108 +143,40 @@ $(document).ready(function () {
         });
     });
 
-    //-------------for updating billing info-------------
-    $('.btn-save-billing').on('click', function () {
-
-        var address1 = $('#address1').val();
-        var address2 = $('#address2').val();
-        var city = $('#city').val();
-        var state = $('#state').val();
-        var zip = $('#zip').val();
-        var altPhoneNumber = $('#phone1').val();
-        var phyId = $('#phyId').val();
-
-        var data = {
-            Address1: address1,
-            Address2: address2,
-            City: city,
-            State: state,
-            Zip: zip,
-            AltPhoneNumber: altPhoneNumber,
-            PhysicianId: phyId
-        };
-
-        $.ajax({
-            url: '/Admin/UpdatePhysicianBillingInfo',
-            method: 'POST',
-            data: data,
-            async: false,
-            success: function (response) {
-                console.log('billing updated successfully');
-                window.location.reload();
-            },
-            error: function (xhr, status, error) {
-                console.log('Error');
-            }
-        });
-    });
-
-    //$('.btn-save-provider-profile').on('click', function () {
-
-    //    var businessName = $('#businessName').val();
-    //    var businessWebsite = $('#businessWebsite').val();
-    //    var Adminnotes = $('#Adminnotes').val();
-    //    var photo = document.getElementById('fileLoader').files[0];
-    //    var sign = document.getElementById('sign').files[0];
-    //    var phyId = $('#phyId').val();
-
-    //    var data = {
-    //        BusinessName: businessName,
-    //        BusinessWebsite: businessWebsite,
-    //        AdminNotes: Adminnotes,
-    //        Photo: photo,
-    //        Signature: sign,
-    //        PhysicianId: phyId
-    //    };
-    //    console.log(data);
-    //    $.ajax({
-    //        url: '/Admin/UpdatePhysicianProfileInfo',
-    //        method: 'POST',
-    //        data: data,
-    //        async: false,
-    //        success: function (response) {
-    //            console.log('successfully');
-    //            window.location.reload();
-    //        },
-    //        error: function (xhr, status, error) {
-    //            console.log('Error');
-    //        }
-    //    });
-    //});
 });
-function photo_validation() {
-    var val = $('#fileLoader').val().toLowerCase(),
-        regex = new RegExp("(.*?)\.(jpg|png)$");
-    if (val == null || val == "") {
-        return true;
-    }
-    if (!(regex.test(val))) {
-        $('#photo_validation').html('Please select only jpg or png type photo');
-        $('#photo_img').attr("src", "");
-        return false;
-    }
-    $('#photo_validation').html('');
-    var file = document.getElementById('fileLoader').files[0];
-    if (file) {
-        $('#photo_img').attr("src", URL.createObjectURL(file))
-    }
-    return true;
-};
-function signature_validation() {
-    var val = $('#sign').val().toLowerCase(),
-        regex = new RegExp("(.*?)\.(jpg|png)$");
-    if (val == null || val == "") {
-        return true;
-    }
-    if (!(regex.test(val))) {
-        $('#filename').html('Please select only jpg or png type signature');
-        $('#sign_img').attr("src", "");
-        return false;
-    }
-    $('#filename').html('');
-    var file = document.getElementById('sign').files[0];
-    if (file) {
-        $('#sign_img').attr("src", URL.createObjectURL(file))
-    }
-    return true;
-};
+//function photo_validation() {
+//    var val = $('#fileLoader').val().toLowerCase(),
+//        regex = new RegExp("(.*?)\.(jpg|png)$");
+//    if (val == null || val == "") {
+//        return true;
+//    }
+//    if (!(regex.test(val))) {
+//        $('#photo_validation').html('Please select only jpg or png type photo');
+//        $('#photo_img').attr("src", "");
+//        return false;
+//    }
+//    $('#photo_validation').html('');
+//    var file = document.getElementById('fileLoader').files[0];
+//    if (file) {
+//        $('#photo_img').attr("src", URL.createObjectURL(file))
+//    }
+//    return true;
+//};
+//function signature_validation() {
+//    var val = $('#sign').val().toLowerCase(),
+//        regex = new RegExp("(.*?)\.(jpg|png)$");
+//    if (val == null || val == "") {
+//        return true;
+//    }
+//    if (!(regex.test(val))) {
+//        $('#filename').html('Please select only jpg or png type signature');
+//        $('#sign_img').attr("src", "");
+//        return false;
+//    }
+//    $('#filename').html('');
+//    var file = document.getElementById('sign').files[0];
+//    if (file) {
+//        $('#sign_img').attr("src", URL.createObjectURL(file))
+//    }
+//    return true;
+//};

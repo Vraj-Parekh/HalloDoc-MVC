@@ -49,7 +49,7 @@ namespace HalloDoc_Project.Attributes
             }
 
             var role = jwtSecurityToken.Claims.Where(a => a.Type == ClaimTypes.Role).ToList();
-            if (role.Any(a => a.Value == "User") && _menus.Contains("Patient"))
+            if (role.Any(a => a.Value == "Patient") && _menus.Contains("Patient"))
             {
                 IEnumerable<Claim>? jwtClaim = jwtSecurityToken.Claims;
 

@@ -59,6 +59,14 @@
         </div>
     </header>
 
+    @if (TempData["Error"] is not null)
+    {
+        <partial name="_ErrorToast" model="@TempData["Error"]" />
+    }
+    @if (TempData["Success"] is not null)
+    {
+        <partial name="_SuccessToast" model="@TempData["Success"]" />
+    }
     @RenderBody()
 
     <footer>

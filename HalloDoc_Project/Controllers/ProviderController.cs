@@ -17,7 +17,7 @@ using Twilio.Types;
 namespace HalloDoc_Project.Controllers
 {
     [Route("[controller]/[action]")]
-  
+
     public class ProviderController : Controller
     {
         private readonly IRegionService regionService;
@@ -111,6 +111,7 @@ namespace HalloDoc_Project.Controllers
         public async Task<IActionResult> AcceptRequest(int requestId)
         {
             await requestServices.AcceptRequest(requestId);
+            TempData["Success"] = "Request Accepted";
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
@@ -210,6 +211,7 @@ namespace HalloDoc_Project.Controllers
             {
                 orderDetailsService.AddOrderDetails(data, requestId);
             }
+            TempData["Success"] = "Order sent successfully";
             return View();
         }
 
@@ -228,7 +230,8 @@ namespace HalloDoc_Project.Controllers
         {
             ViewBag.requestId = requestId;
             EncounterDTO? data = encounterFormService.GetEncounterInfo(requestId);
-            return PartialView("Encounter",data);
+            TempData["Success"] = "Form Downloaded successfully";
+            return PartialView("Encounter", data);
         }
 
         [CustomAuthorization("Provider RequestData")]
@@ -249,9 +252,10 @@ namespace HalloDoc_Project.Controllers
 
         [CustomAuthorization("Provider Dashboard")]
         [HttpPost("{requestId}")]
-        public async Task<IActionResult> TransferCase(int requestId,string notes)
+        public async Task<IActionResult> TransferCase(int requestId, string notes)
         {
             await requestServices.RequestBackToAdmin(requestId, notes);
+            TempData["Success"] = "Case transfered back to admin";
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
@@ -260,6 +264,7 @@ namespace HalloDoc_Project.Controllers
         public IActionResult SendAgreement(int requestId, [FromForm] string phoneNumber, [FromForm] string email)
         {
             requestClientServices.SendAgreement(requestId, phoneNumber, email);
+            TempData["Success"] = "Agreement sent to the patient";
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
@@ -268,6 +273,7 @@ namespace HalloDoc_Project.Controllers
         public async Task<IActionResult> HouseCall(int requestId)
         {
             await requestServices.HouseCallStatusChange(requestId);
+            TempData["Success"] = "Calltype HouseCall selected";
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
@@ -276,6 +282,7 @@ namespace HalloDoc_Project.Controllers
         public async Task<IActionResult> Consult(int requestId)
         {
             await requestServices.ConsultStatusChange(requestId);
+            TempData["Success"] = "Calltype Consult selected";
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
@@ -291,8 +298,9 @@ namespace HalloDoc_Project.Controllers
         [HttpPost("{requestId}")]
         public IActionResult ConcludeCare(int requestId, ViewDocumentList model)
         {
-            requestServices.ConcludeService(requestId,model);
-            return RedirectToAction("ProviderDashboard","Provider");
+            requestServices.ConcludeService(requestId, model);
+            TempData["Success"] = "Request Concluded";
+            return RedirectToAction("ProviderDashboard", "Provider");
         }
 
         [CustomAuthorization("Provider MySchedule")]
@@ -340,6 +348,12 @@ namespace HalloDoc_Project.Controllers
             {
             }
             await emailLogService.AddEmailLog(email, message, subject, isEmailSent);
+            if (isEmailSent)
+            {
+                TempData["Success"] = "Mail sent to admin";
+                return RedirectToAction("ProviderDashboard", "Provider");
+            }
+            TempData["Error"] = "Mail sending fail";
             return RedirectToAction("ProviderDashboard", "Provider");
         }
     }

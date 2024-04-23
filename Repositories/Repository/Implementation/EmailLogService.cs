@@ -38,7 +38,7 @@ namespace Repositories.Repository.Implementation
                 Emailtemplate = message,
                 Subjectname = subject,
                 Senttries = 1,
-                Isemailsent = isEmailSent
+                Isemailsent = isEmailSent,
             };
 
             if (helperService.IsAdmin())
@@ -119,7 +119,7 @@ namespace Repositories.Repository.Implementation
                     SentDate = item.Sentdate?.ToString("MMM dd,yyy"),
                     Sent = (item.Isemailsent == true) ? "Yes" : "No",
                     SentTries = (int)item.Senttries,
-                    ConfirmationNumber = item.Confirmationnumber ?? "-",
+                    ConfirmationNumber = item.Confirmationnumber ?? "-", 
                 };
                 if (item.Requestid is not null)
                 {

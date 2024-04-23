@@ -1,5 +1,19 @@
 ﻿$(document).ready(function () {
 
+    //-------------for pass info-------------
+    // Disable all input fields initially
+    $('.dis-pass').prop('disabled', true);
+    $('.btn-save-pass').hide();
+
+    // Handle click event for the Edit button
+    $('.btn-edit-pass').click(function () {
+        // Enable all input fields
+        $('.dis-pass').prop('disabled', false);
+
+        $('.btn-save-pass').show();
+    });
+
+
     //-------------for admin info-------------
     // Disable all input fields initially
     $('.checkedregion').prop('disabled', true);
@@ -32,10 +46,58 @@
 
     //-------------for updating admin info-------------
     $('.btn-save').on('click', function () {
+        let isValid = true;
+
+        if ($('#firstname').val() == '') {
+            $('#f-name').text('Firstname is required');
+            isValid = false;
+        } else {
+            $('#f-name').text('');
+        }
+        if ($('#lastname').val() == '') {
+            $('#l-name').text('Lastname is required');
+            isValid = false;
+        } else {
+            $('#l-name').text('');
+        }
+
+        if ($('#email1').val() == '') {
+            $('#email-text').text('Email is required');
+            isValid = false;
+        } else {
+            $('#email-text').text('');
+        }
+
+        if ($('#confirmEmail').val() == '') {
+            $('#conf-email').text('Confirm email is required');
+            isValid = false;
+        } else {
+            $('#conf-email').text('');
+        }
+
+        if ($('#email1').val() !== $('#confirmEmail').val()) {
+            $('#conf-email').text('Email not matching');
+            isValid = false;
+        }
+        else {
+            $('#conf-email').text('');
+        }
+
+        if ($('.phn').val() == '') {
+            $('#phonenum').text('Phone number is required');
+            isValid = false;
+        } else {
+            $('#phonenum').text('');
+        }
+
+
+        if (!isValid) {
+            return;
+        }
 
         var firstname = $('#firstname').val();
         var lastname = $('#lastname').val();
-        var email = $('#email').val();
+        var email = $('#email1').val();
         var phonenumber = $('#phone').val();
         var adminId = $('#adminId').val();
 
@@ -68,43 +130,6 @@
             },
             error: function (xhr, status, error) {
                 console.log('error');
-            }
-        });
-    });
-
-
-    //-------------for updating billing info-------------
-    $('.btn-save-billing').on('click', function () {
-
-        var address1 = $('#address1').val();
-        var address2 = $('#address2').val();
-        var city = $('#city').val();
-        var state = $('#state').val();
-        var zip = $('#zip').val();
-        var altPhoneNumber = $('#phone1').val();
-        var adminId = $('#adminId').val();
-
-        var data = {
-            Address1: address1,
-            Address2: address2,
-            City: city,
-            State: state,
-            Zip: zip,
-            AltPhoneNumber: altPhoneNumber,
-            AdminId: adminId
-        };
-
-        $.ajax({
-            url: '/Admin/UpdateBillingInfoEdit',
-            method: 'POST',
-            data: data,
-            async: false,
-            success: function (response) {
-                console.log('billing updated successfully');
-                window.location.reload();
-            },
-            error: function (xhr, status, error) {
-                console.log('Error');
             }
         });
     });

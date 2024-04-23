@@ -69,8 +69,8 @@ namespace Entities.ViewModels
 
         public string BusinessWebsite { get; set; }
 
-        public IFormFile Photo { get; set; }
-        public IFormFile Signature { get; set; }
+        public IFormFile? Photo { get; set; }
+        public IFormFile? Signature { get; set; }
 
         public string PhotoImg { get; set; }
         public string SignImg { get; set; }

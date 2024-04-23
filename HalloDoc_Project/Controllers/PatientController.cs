@@ -83,16 +83,19 @@ namespace HalloDoc_Project.Controllers
                 }
                 else
                 {
+                    TempData["Success"] = "Successfully Logged in";
                     return RedirectToAction("PatientDashboard", "Patient");
                 }
             }
             else if (user == null)
             {
+                TempData["Error"] = "Account does not exist";
                 ModelState.AddModelError(nameof(data.Email), "An account with this email does not exists.");
                 return View(data);
             }
             else
             {
+                TempData["Error"] = "Incorrect Password";
                 ModelState.AddModelError(nameof(data.Password), "Incorrect Password.");
                 return View(data);
             }
@@ -102,6 +105,7 @@ namespace HalloDoc_Project.Controllers
         {
             HttpContext.SignOutAsync();
             Response.Cookies.Delete("Token");
+            TempData["Success"] = "Logged out";
             return RedirectToAction("PatientLogin", "Patient");
         }
 
@@ -207,9 +211,8 @@ namespace HalloDoc_Project.Controllers
             string filePath = getPath(download);
 
             return PhysicalFile(filePath, MimeTypes.GetMimeType(filePath), Path.GetFileName(filePath));
-
-
         }
+
         public string getPath(int download)
         {
             var file = _context.Requestwisefiles.Where(a => a.Requestwisefileid == download).FirstOrDefault();
@@ -219,6 +222,7 @@ namespace HalloDoc_Project.Controllers
 
             return filePath;
         }
+
         private DateTime GenerateDateOfBirth(int? year, string? month, int? date)
         {
 
@@ -274,11 +278,11 @@ namespace HalloDoc_Project.Controllers
                 _context.Users.Update(patientData);
                 _context.SaveChanges();
 
+                TempData["Success"] = "Data Updated";
                 return RedirectToAction("Profile");
             }
             return View(data);
         }
-
 
         [HttpGet("{requestId:int}")]
         public IActionResult ReviewAgreement(int requestId)
@@ -390,7 +394,6 @@ namespace HalloDoc_Project.Controllers
             }
         }
 
-
         private string GetUniqueFileName(string fileName)
         {
             fileName = Path.GetFileName(fileName);
@@ -399,6 +402,7 @@ namespace HalloDoc_Project.Controllers
                       + Guid.NewGuid().ToString().Substring(0, 6)
                       + Path.GetExtension(fileName);
         }
+
         private string GetConfirmationNumber(string city, string lastname, string firstname, string count)
         {
             string regionAbr = city.Substring(0, 2).ToUpper();

@@ -37,9 +37,9 @@
                         <th class="col text-center">
                             Status
                         </th>
-                        <th class="col text-center">
+                     @*    <th class="col text-center">
                             Final Report
-                        </th>
+                        </th> *@
                         <th class="col text-center">
                             Actions
                         </th>
@@ -67,9 +67,9 @@
                             <td class="text-center">
                                 @((RequestStatus)item.Status)
                             </td>
-                            <td class="text-center">
+                   @*          <td class="text-center">
                                 <a class="btn btn-outline-info" asp-route-requestId="@item.RequestId">View</a>
-                            </td>  
+                            </td>   *@
                             <td class="text-center">
                                 <div class="dropdown">
                                     <button class="btn btn-outline-info dropdown-toggle bg-white text-info" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="actions">
@@ -77,7 +77,7 @@
                                     </button>
                                     <ul class="dropdown-menu shadow">
                                         <li><a class="dropdown-item" asp-action="ViewCase" asp-controller="Admin" asp-route-requestId="@item.RequestId">View Case</a></li>
-                                        <li><a class="dropdown-item" asp-action="" asp-controller="">Chat</a></li>
+                                        @* <li><a class="dropdown-item" asp-action="" asp-controller="">Chat</a></li> *@
                                         <li><a class="dropdown-item" asp-action="ViewUploads" asp-controller="Admin" asp-route-requestId="@item.RequestId">Documents</a></li>
                                     </ul>
                                 </div>

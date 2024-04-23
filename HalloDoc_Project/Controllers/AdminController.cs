@@ -22,6 +22,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.IdentityModel.Tokens.Jwt;
 using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HalloDoc_Project.Controllers
 {
@@ -272,11 +273,13 @@ namespace HalloDoc_Project.Controllers
             {
                 await emailSender.SendEmailAsync(model.Email, subject, message);
                 isEmailSent = true;
+                TempData["Error"] = "Error in sending mail";
             }
             catch (Exception e)
             {
 
             }
+            TempData["Success"] = "Mail sent successful";
             await emailLogService.AddEmailLog(model.Email, message, subject, isEmailSent);
             return RedirectToAction("AdminDashboard", "Admin");
         }
@@ -572,27 +575,12 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
-        [CustomAuthorization("Accounts")]
-        [HttpGet("{id}")]
-        public IActionResult EditAdmin(int id)
-        {
-            Admin? admin = adminService.GetAdminById(id);
-            if (admin is not null)
-            {
-                AdminProfileDTO? model = adminService.GetAdminInfo(admin);
-                model.Roles = roleService.GetRoles();
-
-                return View(model);
-            }
-            return View();
-        }
-
         [CustomAuthorization("MyProfile")]
         public async Task<IActionResult> ResetPasswordAsync(AdminProfileDTO model)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             Admin? admin = adminService.GetAdmin(email);
-            if (model.Password is not null && admin is not null && admin.Aspnetuser is not null)
+            if (admin is not null && admin.Aspnetuser is not null)
             {
                 await adminService.ChangePassword(admin, model);
             }
@@ -604,9 +592,21 @@ namespace HalloDoc_Project.Controllers
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             Admin? admin = adminService.GetAdmin(email);
+
             if (admin is not null)
             {
-                await adminService.UpdateAdminInfo(admin, model);
+                try
+                {
+                    await adminService.UpdateAdminInfo(admin, model);
+                    if (admin.Email != model.Email)
+                    {
+                        return RedirectToAction("Logout");
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
             }
             return RedirectToAction("MyProfile");
         }
@@ -623,11 +623,27 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("MyProfile");
         }
 
+
+        [CustomAuthorization("Accounts")]
+        [HttpGet("{id}")]
+        public IActionResult EditAdmin(int id)
+        {
+            Admin? admin = adminService.GetAdminById(id);
+            if (admin is not null)
+            {
+                AdminProfileDTO? model = adminService.GetAdminInfo(admin);
+                model.Roles = roleService.GetRoles();
+
+                return View(model);
+            }
+            return View();
+        }
+
         [CustomAuthorization("Accounts")]
         public async Task<IActionResult> ResetPasswordEditAsync(AdminProfileDTO model)
         {
             Admin? admin = adminService.GetAdminById(model.AdminId);
-            if (model.Password is not null && admin is not null)
+            if (admin is not null)
             {
                 await adminService.ChangePassword(admin, model);
             }
@@ -640,7 +656,14 @@ namespace HalloDoc_Project.Controllers
             Admin? admin = adminService.GetAdminById(model.AdminId);
             if (admin is not null)
             {
-                await adminService.UpdateAdminInfo(admin, model);
+                try
+                {
+                    await adminService.UpdateAdminInfo(admin, model);
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
             }
             return RedirectToAction("EditAdmin", new { id = model.AdminId });
         }
@@ -965,7 +988,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("UserAccess", "Admin");
         }
 
-        [CustomAuthorization("Provider")]
+        [CustomAuthorization("Provider,ProviderProfile")]
         [HttpGet("{physicianId}")]
         public IActionResult EditProviderAccount(int physicianId)
         {
@@ -979,7 +1002,7 @@ namespace HalloDoc_Project.Controllers
             return View();
         }
 
-        [CustomAuthorization("Provider")]
+        [CustomAuthorization("Provider,ProviderProfile")]
         public async Task<IActionResult> ResetPasswordProviderAsync(EditPhysicianDTO model)
         {
             Physician? physician;
@@ -995,20 +1018,21 @@ namespace HalloDoc_Project.Controllers
                 physician = physicianService.GetPhysicianById(model.PhysicianId);
             }
 
-            if (model.Password is not null && physician is not null)
+            if (physician is not null)
             {
                 await physicianService.ChangePassword(physician, model);
             }
 
             if (flag)
             {
+                TempData["Success"] = "Data Updated";
                 return RedirectToAction("MyProfileProvider", "Provider");
             }
-
+            TempData["Success"] = "Data Updated";
             return RedirectToAction("EditProviderAccount", new { physicianId = model.PhysicianId });
         }
 
-        [CustomAuthorization("Provider")]
+        [CustomAuthorization("Provider,ProviderProfile")]
         public async Task<IActionResult> UpdatePhysicianInfoAsync(EditPhysicianDTO model)
         {
             Physician? physician;
@@ -1024,19 +1048,27 @@ namespace HalloDoc_Project.Controllers
                 physician = physicianService.GetPhysicianById(model.PhysicianId);
             }
 
+            if (flag && physician.Email != model.Email && physician is not null)
+            {
+                await physicianService.UpdatePhysicianInfo(physician, model);
+                return RedirectToAction("Logout");
+            }
+
             if (physician is not null)
             {
                 await physicianService.UpdatePhysicianInfo(physician, model);
             }
-            if (flag)
+
+            if(flag)
             {
+                TempData["Success"] = "Data Updated";
                 return RedirectToAction("MyProfileProvider", "Provider");
             }
-
+            TempData["Success"] = "Data Updated";
             return RedirectToAction("EditProviderAccount", new { physicianId = model.PhysicianId });
         }
 
-        [CustomAuthorization("Provider")]
+        [CustomAuthorization("Provider,ProviderProfile")]
         public async Task<IActionResult> UpdatePhysicianBillingInfoAsync(EditPhysicianDTO model)
         {
             Physician? physician;
@@ -1058,13 +1090,14 @@ namespace HalloDoc_Project.Controllers
             }
             if (flag)
             {
+                TempData["Success"] = "Data Updated";
                 return RedirectToAction("MyProfileProvider", "Provider");
             }
-
+            TempData["Success"] = "Data Updated";
             return RedirectToAction("EditProviderAccount", new { physicianId = model.PhysicianId });
         }
 
-        [CustomAuthorization("Provider")]
+        [CustomAuthorization("Provider,ProviderProfile")]
         public async Task<IActionResult> UpdatePhysicianProfileInfo(EditPhysicianDTO model)
         {
             Physician? physician;
@@ -1086,9 +1119,10 @@ namespace HalloDoc_Project.Controllers
             }
             if (flag)
             {
+                TempData["Success"] = "Data Updated";
                 return RedirectToAction("MyProfileProvider", "Provider");
             }
-
+            TempData["Success"] = "Data Updated";
             return RedirectToAction("EditProviderAccount", new { physicianId = model.PhysicianId });
         }
 

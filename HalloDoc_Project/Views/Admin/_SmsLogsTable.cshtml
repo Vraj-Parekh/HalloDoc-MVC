@@ -4,15 +4,15 @@
 <table class="table mt-3">
     <thead class="table-light">
         <tr>
-            <th class="col">
+            @* <th class="col">
                 Recipient
-            </th>
+            </th> *@
             <th class="col text-center">
                 Active
             </th>
-            <th class="col text-center">
+           @*  <th class="col text-center">
                 Role Name
-            </th>
+            </th> *@
             <th class="col text-center">
                 Phone Number
             </th>
@@ -37,15 +37,15 @@
         @foreach (var item in Model.Data)
         {
             <tr>
-                <td>
+              @*   <td>
                     @item.Recipient
-                </td>
+                </td> *@
                 <td class="text-center">
                     @item.Active
                 </td>
-                <td class="text-center">
+               @*  <td class="text-center">
                     @item.Role
-                </td>
+                </td> *@
                 <td class="text-center">
                     @item.PhoneNumber
                 </td>

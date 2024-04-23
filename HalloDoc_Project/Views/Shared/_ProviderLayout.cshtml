@@ -25,15 +25,23 @@
         @await Html.PartialAsync("_HeaderTabsProviderPartial")
     </header>
 
+    @if (TempData["Error"] is not null)
+    {
+        <partial name="_ErrorToast" model="@TempData["Error"]" />
+    }
+    @if (TempData["Success"] is not null)
+    {
+        <partial name="_SuccessToast" model="@TempData["Success"]" />
+    }
     @RenderBody()
 
-    <footer>
+  @*   <footer>
         <div class="footer d-flex justify-content-end align-items-center gap-2 pe-2">
             <a href="#">Terms and condition</a>
             |
             <a href="#">Privacy policy</a>
         </div>
-    </footer>
+    </footer> *@
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/intel_input.js" asp-append-version="true"></script>

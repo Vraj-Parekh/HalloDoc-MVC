@@ -9,6 +9,7 @@ using Entities.Models;
 using Entities.ViewModels;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Repositories.Repository.Interface;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -92,6 +93,10 @@ namespace Repositories.Repository.Implementation
             if (aspNetUser is not null)
             {
                 aspNetUser.Passwordhash = model.Password;
+                admin.Status = (short)model.Status;
+                admin.Roleid = model.Role;
+
+                _context.Admins.Update(admin);
                 _context.Aspnetusers.Update(aspNetUser);
                 await _context.SaveChangesAsync();
             }
@@ -99,15 +104,23 @@ namespace Repositories.Repository.Implementation
 
         public async Task UpdateAdminInfo(Admin admin, AdminProfileDTO model)
         {
-            admin.Firstname = model.FirstName;
-            admin.Lastname = model.LastName;
-            admin.Email = model.Email;
-            admin.Mobile = model.PhoneNumber;
+            Aspnetuser? aspNetUser = await _context.Aspnetusers.FirstOrDefaultAsync(a => a.Aspnetuserid == admin.Aspnetuserid);
 
-            _context.Admins.Update(admin);
-            await _context.SaveChangesAsync();
+            if (aspNetUser is not null)
+            {
+                admin.Firstname = model.FirstName;
+                admin.Lastname = model.LastName;
+                admin.Email = model.Email;
+                admin.Mobile = model.PhoneNumber;
 
-            await adminRegionService.AddOrRemoveRegion(admin, model.Regions);
+                aspNetUser.Email = model.Email;
+
+                _context.Admins.Update(admin);
+                _context.Aspnetusers.Update(aspNetUser);
+                await _context.SaveChangesAsync();
+
+                await adminRegionService.AddOrRemoveRegion(admin, model.Regions);
+            }
         }
 
         public async Task UpdateBillingInfo(Admin admin, AdminProfileDTO model)
@@ -168,8 +181,8 @@ namespace Repositories.Repository.Implementation
 
             if (accountType == 0)
             {
-                var admins = await _context.Admins.ToListAsync();
-                var physicians = await _context.Physicians.ToListAsync();
+                var admins = await _context.Admins.Where(a => a.Isdeleted == false || a.Isdeleted == null).ToListAsync();
+                var physicians = await _context.Physicians.Where(a => a.Isdeleted == false || a.Isdeleted == null).ToListAsync();
 
                 foreach (var item in admins)
                 {
