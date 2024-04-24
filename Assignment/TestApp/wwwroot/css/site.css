@@ -25,3 +25,37 @@ body {
     background-color:mediumpurple;
     height:50px;
 }
+.add-btn-section {
+    background-color: lightpink;
+    height: 50px;
+}
+.pagination ul {
+    display: flex;
+    list-style: none;
+}
+
+.page-item.active .page-link {
+    z-index: 0;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+    .pagination li a {
+        text-decoration: none;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        color: #333;
+    }
+
+    .pagination li.active a {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .pagination li.disabled a {
+        pointer-events: none;
+        color: #777;
+    }

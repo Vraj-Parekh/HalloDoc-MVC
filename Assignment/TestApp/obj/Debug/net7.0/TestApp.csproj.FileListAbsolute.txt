@@ -1,3 +1,11 @@
+C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.csproj.AssemblyReference.cache
+C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.AssemblyInfoInputs.cache
+C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.AssemblyInfo.cs
+C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.csproj.CoreCompileInputs.cache
+C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.RazorAssemblyInfo.cache
+C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.RazorAssemblyInfo.cs
 C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\bin\Debug\net7.0\appsettings.Development.json
 C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\bin\Debug\net7.0\appsettings.json
 C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\bin\Debug\net7.0\TestApp.staticwebassets.runtime.json
@@ -20,14 +28,6 @@ C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\bin\Debug\net7.0\Ent
 C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\bin\Debug\net7.0\Repositories.dll
 C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\bin\Debug\net7.0\Repositories.pdb
 C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\bin\Debug\net7.0\Entities.pdb
-C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.csproj.AssemblyReference.cache
-C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.AssemblyInfoInputs.cache
-C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.AssemblyInfo.cs
-C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.csproj.CoreCompileInputs.cache
-C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.RazorAssemblyInfo.cache
-C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\TestApp.RazorAssemblyInfo.cs
 C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\staticwebassets\msbuild.TestApp.Microsoft.AspNetCore.StaticWebAssets.props
 C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\staticwebassets\msbuild.build.TestApp.props
 C:\Users\pce162\Desktop\PROJECT_HalloDoc\Assignment\TestApp\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.TestApp.props

@@ -1,7 +1,17 @@
+using Entities.DataContext;
+using Repositories.Repository.Implementation;
+using Repositories.Repository.Interface;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<TestDbContext>();
+
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<ICityService, CityService>();
+
 
 var app = builder.Build();
 
