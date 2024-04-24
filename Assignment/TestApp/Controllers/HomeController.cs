@@ -45,8 +45,7 @@ namespace TestApp.Controllers
 
         public async Task<IActionResult> GetUserDetails(int userId)
         {
-            AddUserViewModel? data = await userService.GetUserInfo(userId);
-            return Json(data);
+            return Json(await userService.GetUserInfo(userId));
         }
 
         public async Task<IActionResult> EditUser(int userId,AddUserViewModel model)
