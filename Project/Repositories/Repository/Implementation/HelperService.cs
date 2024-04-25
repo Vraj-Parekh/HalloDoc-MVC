@@ -1,4 +1,5 @@
 ﻿using Entities.DataContext;
+using Entities.Models;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,17 +19,15 @@ namespace Repositories.Repository.Implementation
     {
         private readonly HalloDocDbContext _context;
         private readonly IAdminService adminService;
-        private readonly IPhysicianService physicianService;
         private readonly IHttpContextAccessor httpContext;
         private readonly IEmailSender emailSender;
         private readonly IWebHostEnvironment env;
         private readonly IEmailLogService emailLogService;
 
-        public HelperService(HalloDocDbContext _context, IAdminService adminService, IPhysicianService physicianService, IHttpContextAccessor httpContext, IEmailSender emailSender, IWebHostEnvironment env)
+        public HelperService(HalloDocDbContext _context, IAdminService adminService, IHttpContextAccessor httpContext, IEmailSender emailSender, IWebHostEnvironment env)
         {
             this._context = _context;
             this.adminService = adminService;
-            this.physicianService = physicianService;
             this.httpContext = httpContext;
             this.emailSender = emailSender;
             this.env = env;
@@ -81,5 +80,11 @@ namespace Repositories.Repository.Implementation
             return filePath;
         }
 
-    }
+        public string GetAspNetUserId() => httpContext.HttpContext?.User.FindFirst("userId")?.Value!;
+
+        public Physician GetPhysician()
+        {
+            return _context.Physicians.Where(a => a.Aspnetuserid == GetAspNetUserId()).FirstOrDefault();
+        }
+     }
 }

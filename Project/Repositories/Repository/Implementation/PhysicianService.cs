@@ -94,11 +94,14 @@ namespace Repositories.Repository.Implementation
 
             foreach (Physician physician in pysicianList)
             {
+                var rolename = _context.Roles.Where(a => a.Roleid == physician.Roleid).Select(a=>a.Name).FirstOrDefault();
+
                 ProviderMenuDTO providerMenuData = new ProviderMenuDTO()
                 {
                     ProviderName = physician.Firstname,
                     PhysicianId = physician.Physicianid,
                     Status = physician.Status,
+                    Role = rolename
                 };
                 modelList.Add(providerMenuData);
             }

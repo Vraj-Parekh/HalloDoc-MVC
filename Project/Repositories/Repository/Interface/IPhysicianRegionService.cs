@@ -7,5 +7,6 @@ namespace Repositories.Repository.Interface
     {
         Task AddOrRemovePhysicianRegion(Physician physician, List<RegionList> regions);
         List<Physicianregion> GetPhysicianRegions(Physician physician);
+        List<PhysicianRegionsDTO> GetRegions();
     }
 }

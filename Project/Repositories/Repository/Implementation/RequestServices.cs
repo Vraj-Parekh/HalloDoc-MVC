@@ -64,7 +64,7 @@ namespace Repositories.Repository.Implementation
             Request? request = new Request()
             {
                 Requesttypeid = (int)RequestTypeId.Patient,
-
+                Requestid = _context.Requests.OrderBy(a => a.Requestid).LastOrDefault().Requestid + 1,
                 Firstname = model.FirstName,
                 Lastname = model.LastName,
                 Phonenumber = model.PhoneNumber,

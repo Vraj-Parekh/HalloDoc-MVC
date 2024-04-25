@@ -40,6 +40,7 @@ namespace HalloDoc_Project.Controllers
         private readonly IOrderDetailsService orderDetailsService;
         private readonly IEncounterFormService encounterFormService;
         private readonly IRequestWiseFilesServices requestWiseFilesServices;
+        private readonly IPhysicianRegionService physicianRegionService;
 
         public ProviderController(IRegionService regionService,
                                   IRoleService roleService,
@@ -60,7 +61,8 @@ namespace HalloDoc_Project.Controllers
                                   IRequestNotesServices requestNotesServices,
                                   IOrderDetailsService orderDetailsService,
                                   IEncounterFormService encounterFormService,
-                                  IRequestWiseFilesServices requestWiseFilesServices)
+                                  IRequestWiseFilesServices requestWiseFilesServices,
+                                  IPhysicianRegionService physicianRegionService)
         {
             this.regionService = regionService;
             this.roleService = roleService;
@@ -82,6 +84,7 @@ namespace HalloDoc_Project.Controllers
             this.orderDetailsService = orderDetailsService;
             this.encounterFormService = encounterFormService;
             this.requestWiseFilesServices = requestWiseFilesServices;
+            this.physicianRegionService = physicianRegionService;
         }
 
         [CustomAuthorization("Provider Dashboard")]
@@ -303,6 +306,12 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("ProviderDashboard", "Provider");
         }
 
+        [CustomAuthorization("Provider MySchedule")]
+        public List<PhysicianRegionsDTO> FetchRegions()
+        {
+            List<PhysicianRegionsDTO>? regions = physicianRegionService.GetRegions();
+            return regions;
+        }
         [CustomAuthorization("Provider MySchedule")]
         public IActionResult Scheduling()
         {

@@ -10,5 +10,6 @@ namespace Repositories.Repository.Interface
         List<Healthprofessional> GetBusiness(int professionId);
         Task<EditBusinessDTO> GetHealthProfessionalInfo(int vendorId);
         Task<Pagination<VendorsDTO>> GetFilteredHealthProfessionals(string searchVendor, int profesionType, int page, int itemsPerPage);
+        Task DeleteVendor(int vendorId);
     }
 }

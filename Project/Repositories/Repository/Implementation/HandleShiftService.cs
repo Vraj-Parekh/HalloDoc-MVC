@@ -50,14 +50,34 @@ namespace Repositories.Repository.Implementation
             {
                 try
                 {
+                    bool shiftCreated = false;
                     Shift? shift = await shiftService.AddShift(physician, model);
                     Shiftdetail? shiftDetail = await shiftDetailService.AddShiftDetails(shift, model);
-
-                    if (shiftDetail == null)
+                    if (shiftDetail is not null)
+                    {
+                        shiftCreated = true;
+                        await shiftDetailRegionService.AddShiftDetailRegion(shiftDetail, model);
+                    }
+                    if (model.Repeat && model.Repeat_Days is not null)
+                    {
+                        for (int i = 0; i < model.RepeatUpto; i++)
+                        {
+                            foreach (var item in model.Repeat_Days)
+                            {
+                                int start = (int)model.ShiftDate.DayOfWeek;                                int target = item;                                if (target <= start)                                    target += 7;                                model.ShiftDate = model.ShiftDate.AddDays(target - start);                                shiftDetail = await shiftDetailService.AddShiftDetails(shift, model);
+                                if(shiftDetail is not null)
+                                {
+                                    shiftCreated = true;
+                                    await shiftDetailRegionService.AddShiftDetailRegion(shiftDetail, model);
+                                }
+                            }
+                        }
+                    }
+                    if (!shiftCreated)
                     {
                         throw new Exception("Shift is already present");
                     }
-                    await shiftDetailRegionService.AddShiftDetailRegion(shiftDetail, model);
+                    
                     await transaction.CommitAsync();
                 }
                 catch

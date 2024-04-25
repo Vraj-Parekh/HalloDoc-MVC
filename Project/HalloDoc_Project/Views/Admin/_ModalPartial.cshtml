@@ -55,29 +55,27 @@
 
 <!-- For assign case-->
 <script>
-    $(document).ready(function () {
-        var regionsFetched = false;
 
-        $('#assignModal').on('show.bs.modal', function (e) {
-            if (!regionsFetched) {
-                // Trigger the AJAX call for fetching regions
-                $.ajax({
-                    url: './FetchRegions',
-                    method: 'GET',
-                    success: function (response) {
-                        response.forEach(function (res) {
-                            console.log("calls region");
-                            $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
-                        });
-                        regionsFetched = true;
-                    }
+    function SetAssignId(id) {
+        console.log("start");
+        console.log(id);
+        const myModal = new bootstrap.Modal("#assignModal", {});
+        myModal.show();
+
+        $.ajax({
+            url: './FetchRegions',
+            method: 'GET',
+            success: function (response) {
+                response.forEach(function (res) {
+                    $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
                 });
             }
-
-            // Add the "Select Physician" option every time the modal is shown
-            $('.physicianDropDown').empty();
-            $('.physicianDropDown').append("<option value='' selected>Select Physician</option>");
         });
+
+
+        $('.physicianDropDown').empty();
+        $('.physicianDropDown').append("<option value='' selected>Select Physician</option>");
+
 
         $('.regionDropDown').on('change', function () {
             var regionId = $(this).val();
@@ -94,13 +92,7 @@
                 }
             });
         })
-    });
 
-    function SetAssignId(id) {
-        console.log("start");
-        console.log(id);
-        const myModal = new bootstrap.Modal("#assignModal", {});
-        myModal.show();
         $(".assignCaseForm").attr("action", "/Admin/AssignCase/" + id);
     }
 
@@ -121,11 +113,11 @@
         }
 
         $('.regionDropDown').on('change', function () {
-            checkFields(); 
+            checkFields();
         });
 
         $('.physicianDropDown').on('change', function () {
-            checkFields(); 
+            checkFields();
         });
 
         $('#description').on('input', function () {
@@ -287,40 +279,6 @@
         $("#cancelForm").attr("action", "/Admin/CancelCase/" + id);
     }
 
-    $(document).ready(function () {
-        // Function to check if all fields are filled
-        function checkFields() {
-            var reason = $('.reason').val();
-            var note = $('.note').val();
-            console.log(reason)
-            console.log(note)
-
-            // Check if all fields are filled
-            if (reason !== 'Reasons For Cancellation' && note.trim() !== '') {
-                $('#confirmbtn').prop('disabled', false); // Enable the button
-            } else {
-                $('#confirmbtn').prop('disabled', true); // Disable the button
-                $('#confirmbtn').attr('class','disabled')
-            }
-        }
-
-        $('.reason, .note').on('change input', function () {
-            checkFields();
-        });
-
-        // Function to reset form and disable button when modal is hidden
-        $('#cancelModal').on('hidden.bs.modal', function () {
-            $('.reason').val('Reasons For Cancellation');
-            $('.note').val('');
-            $('#confirmbtn').prop('disabled', true); 
-        });
-
-        // Initial check on modal show
-        $('#cancelModal').on('show.bs.modal', function (e) {
-            console.log("initial")
-            checkFields();
-        });
-    });
 </script>
 
 <!-- Modal For Transfer Case-->

@@ -1,4 +1,5 @@
 ﻿@model Pagination<ProviderMenuDTO>
+@{int i=0;}
 
 <div class="d-lg-block d-none ps-0 pe-0">
     <table class="table">
@@ -12,9 +13,6 @@
                 </th>
                 <th>
                     Role
-                </th>
-                <th>
-                    On Call Status
                 </th>
                 <th>
                     Status
@@ -43,11 +41,8 @@
                         }
                         else
                         {
-                            item.Role.ToString();
+                            @item.Role;
                         }
-                    </td>
-                    <td>
-                        @item.OnCallStatus
                     </td>
                     <td>
                         @if (item.Status == null)
@@ -62,12 +57,60 @@
                     <td class="text-center">
                         <button class="btn btn-outline-info" onclick="SendMessageModal(@item.PhysicianId)">Contact</button>
                         <a asp-action="EditProviderAccount" asp-controller="Admin" asp-route-physicianId="@item.PhysicianId" class="btn btn-outline-info">Edit</a>
-                        <a id="changenotify-@item.PhysicianId" onclick="ChangeNotficationState(@item.PhysicianId)" class="btn btn-outline-info px-4" style="display:none;">Save</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+</div>
+<div class="d-lg-none" id="accordianData">
+    <div class="accordion accordion-flush " id="accordionFlushExample">
+        @foreach (var item in Model.Data)
+        {
+            <div class="accordion-item accordian-back">
+                <h2 class="accordi on-header">
+                    <button class="accordion-button collapsed accordian-back d-block" type="button" data-bs-toggle="collapse" data-bs-target="#flush-@i" aria-expanded="false" aria-controls="flush-collapseOne">
+                        <div class="container ">
+                            <div class="row row-cols-2 lh-sm" style="font-size:1em">
+                                <div class="d-flex">
+                                    
+                                    @item.ProviderName
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+
+                    </button>
+
+                    @*<hr class="m-0">*@
+
+                </h2>
+
+                <div id="flush-@i" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+
+                    <div class="accordion-body d-flex flex-column gap-1 ">
+                        <div class="d-flex">
+                            <div style="width:40px">
+                                <span class="accordian-span align-items-center">
+                                    <span class="fa-solid fa-check text-info"></span>
+                                </span>
+                            </div>
+                            <span class="align-self-center">Status: <span class="fw-semibold"> @((RequestStatus)item.Status)</span></span>
+                        </div>
+
+                        <br />
+                        <div class="d-flex justify-content-end">
+
+                            <a class="btn btn-outline-info" onclick="SendMessageModal(@item.PhysicianId)">Contact</a>
+                            <a asp-action="EditProviderAccount" asp-controller="Admin" asp-route-physicianId="@item.PhysicianId" class="btn btn-outline-info">Edit</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            i++;
+        }
+    </div>
 </div>
 <partial name="_Pagination" />
 

@@ -182,65 +182,6 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminLogin", "Admin");
         }
 
-        [AllowAnonymous]
-        public IActionResult ResetPwd()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> ResetPwd(LoginDTO data)
-        {
-            if (aspNetUserService.isUserPresent(data))
-            {
-                string email = data.Email;
-                string subject = "Reset Password";
-                string message = $"Tap the link to reset the password: <a href=\"https://localhost:44396/admin/changepassword/{data.Email}\">Reset now</a>";
-
-                bool isEmailSent = false;
-                try
-                {
-                    await emailSender.SendEmailAsync(email, subject, message);
-                    isEmailSent = true;
-                }
-                catch (Exception ex)
-                {
-                }
-                await emailLogService.AddEmailLog(email, message, subject, isEmailSent);
-                return RedirectToAction("AdminLogin", "Admin");
-            }
-            else
-            {
-                ModelState.AddModelError(nameof(data.Email), "An account with this email does not exists.");
-                return View(data);
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpGet("{email}")]
-        public IActionResult ChangePassword(string email)
-        {
-            ViewBag.email = email;
-            return View();
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        public IActionResult ChangePassword(LoginDTO data)
-        {
-            string email = ViewBag.email;
-
-            if (aspNetUserService.isUserPresent(data))
-            {
-                aspNetUserService.ChnagePassword(data);
-                return RedirectToAction("PatientLogin");
-            }
-
-            ModelState.AddModelError(nameof(data.ConfirmPassword), "An account with this email does not exists.");
-            return View(data);
-        }
-
         [CustomAuthorization("Dashboard")]
         public IActionResult Table(int requestTypeId, int status, int pageIndex, int pageSize, string searchQuery, int regionId)
         {
@@ -380,7 +321,7 @@ namespace HalloDoc_Project.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        [CustomAuthorization("RequestData,Provider MySchedule")]
+        [CustomAuthorization("RequestData")]
         public List<Region> FetchRegions()
         {
             List<Region>? regions = regionService.GetRegion();
@@ -1368,10 +1309,18 @@ namespace HalloDoc_Project.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBusiness(EditBusinessDTO model)
         {
-            //error : duplicate key violates
             await healthProfessionalsService.AddBusiness(model);
             return RedirectToAction("Partners", "Admin");
         }
+
+        [CustomAuthorization("Vendorsinfo")]
+        [HttpPost("{vendorId}")]
+        public async Task<IActionResult> DeleteVendor(int vendorId)
+        {
+            await healthProfessionalsService.DeleteVendor(vendorId);
+            return RedirectToAction("Partners", "Admin");
+        }
+
 
         [CustomAuthorization("PatientRecords")]
         public async Task<IActionResult> PatientHistory()

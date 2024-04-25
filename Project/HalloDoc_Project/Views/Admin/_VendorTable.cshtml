@@ -1,59 +1,121 @@
 ﻿@model Pagination<VendorsDTO>
 
-<table class="table mt-3">
-    <thead class="table-light">
-        <tr>
-            <th class="col">
-                Profession
-            </th>
-            <th class="col text-center">
-                Business Name
-            </th>
-            <th class="col text-center pe-5">
-                Email
-            </th>
-            <th class="col text-center">
-                Fax Number
-            </th>
-            <th class="col text-center">
-                Phone Number
-            </th>
-            <th class="col text-center">
-                Business Contact
-            </th>
-            <th class="col text-center">
-                Actions
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Data)
-        {
+<div class="d-lg-block d-none ps-0 pe-0">
+    <table class="table mt-3">
+        <thead class="table-light">
             <tr>
-                <td>
-                    @item.Profession
-                </td>
-                <td class="text-center">
-                    @item.BusinessName
-                </td>
-                <td class="text-center">
-                    @item.Email
-                </td>
-                <td class="text-center">
-                    @item.FaxNumber
-                </td>
-                <td class="text-center">
-                    @item.PhoneNumber
-                </td>
-                <td class="text-center">
-                    @item.BusinessContact
-                </td>
-                <td class="text-end">
-                    <a class="btn btn-outline-info" asp-action="EditBusiness" asp-route-vendorId="@item.VendorId">Edit</a>
-                    <a class="btn btn-outline-info">Delete</a>
-                </td>
+                <th class="col">
+                    Profession
+                </th>
+                <th class="col text-center">
+                    Business Name
+                </th>
+                <th class="col text-center pe-5">
+                    Email
+                </th>
+                <th class="col text-center">
+                    Fax Number
+                </th>
+                <th class="col text-center">
+                    Phone Number
+                </th>
+                <th class="col text-center">
+                    Business Contact
+                </th>
+                <th class="col text-center">
+                    Actions
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td>
+                        @item.Profession
+                    </td>
+                    <td class="text-center">
+                        @item.BusinessName
+                    </td>
+                    <td class="text-center">
+                        @item.Email
+                    </td>
+                    <td class="text-center">
+                        @item.FaxNumber
+                    </td>
+                    <td class="text-center">
+                        @item.PhoneNumber
+                    </td>
+                    <td class="text-center">
+                        @item.BusinessContact
+                    </td>
+                    <td class="text-end">
+                        <a class="btn btn-outline-info" asp-action="EditBusiness" asp-route-vendorId="@item.VendorId">Edit</a>
+                        <button class="btn btn-outline-info" data-bs-target="#deleteModal_@item.VendorId" data-bs-toggle="modal" data-item-id="@item.VendorId">Delete</button>
+
+                        <div class="modal fade" id="deleteModal_@item.VendorId" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class=" p-2 py-3 modal-content text-center justify-content-center">
+                                    <div class="modal-body px-5 pt-5 text-center">
+                                        <form method="post" asp-action="DeleteVendor" asp-controller="Admin" asp-route-vendorId="@item.VendorId">
+                                            <div class="warning_icon" style="color:#f7ad00;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="85" height="85" fill="currentColor" class="bi bi-exclamation-circle-fill war-i" viewBox="0 0 16 16">
+                                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4m.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2"></path>
+                                                </svg>
+                                            </div>
+                                            <h4 class="text-center pt-3">Confirmation for deleting the vendor</h4>
+                                            <p class="text-center fs-7 pt-2 text-secondary">
+                                                Are sure you want to deete this vendor ?
+                                            </p>
+                                            <button type="submit" class="mb-3 btn btn-info text-white" data-bs-dismiss="modal">Delete</button>
+                                            <button type="button" class="mb-3 btn border border-info text-info ms-2" data-bs-dismiss="modal">Cancel</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="d-lg-none">
+    @foreach (var item in Model.Data)
+    {
+        <div class="border-3 py-3" style="border-top:1px solid grey;">
+            <div class="px-4">
+                <div class="mb-3">
+                    <span class="fw-medium fs-5 ">Profession: </span>
+                    <span class="fw-medium fs-5 ">@item.Profession</span>
+                </div>
+                <div class="mb-3">
+                    <span class="fw-semibold fs-5 ">Bussiness Name: </span>
+                    <span class="fw-medium fs-5 ">@item.BusinessName</span>
+                </div>
+                <div class="mb-3">
+                    <span class="fw-semibold fs-5 ">Email: </span>
+                    <span class="fw-medium fs-5 ">@item.Email</span>
+                </div>
+                <div class="mb-3">
+                    <span class="fw-semibold fs-5 ">Fax Number: </span>
+                    <span class="fw-medium fs-5 ">@item.FaxNumber</span>
+                </div>
+                <div class="mb-3">
+                    <span class="fw-semibold fs-5 ">Phone: </span>
+                    <span class="fw-medium fs-5 ">@item.PhoneNumber</span>
+                </div>
+                <div class="mb-3">
+                    <span class="fw-semibold fs-5 ">Bussiness Contact: </span>
+                    <span class="fw-medium fs-5 ">@item.BusinessContact</span>
+                </div>
+
+
+                <a class="btn btn-outline-info me-2" asp-action="EditBusiness" asp-route-vendorId="@item.VendorId">Edit</a>
+                <button class="btn btn-outline-info">Delete</button>
+            </div>
+        </div>
+
+    }
+</div>
 <partial name="_Pagination" />

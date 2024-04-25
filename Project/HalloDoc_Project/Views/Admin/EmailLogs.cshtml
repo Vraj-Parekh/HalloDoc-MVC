@@ -15,21 +15,21 @@
 
         <div class="bg-white rounded shadow p-3 mb-5">
             <div class="row align-items-center mb-3">
-                <div class="col-lg-2">
-                    <div class="form-floating">
-                        <select class="form-select" id="role" asp-for="Role">
-                            <option selected value="0">Select Role</option>
-                            @foreach (var item in Model.Roles)
-                            {
-                                <option value="@item.Roleid">@item.Name</option>
-                            }
-                        </select>
-                        <label for="role" class="form-label">Role</label>
-                    </div>
+                @*   <div class="col-lg-2">
+                <div class="form-floating">
+                <select class="form-select" id="role" asp-for="Role">
+                <option selected value="0">Select Role</option>
+                @foreach (var item in Model.Roles)
+                {
+                <option value="@item.Roleid">@item.Name</option>
+                }
+                </select>
+                <label for="role" class="form-label">Role</label>
+                </div>
                 </div>
                 <div class="col-lg-2">
-                    <input type="text" placeholder="Receiver Name" class="form-control p-2 px-4 w-100" id="receivername" style="height:58px;">
-                </div>
+                <input type="text" placeholder="Receiver Name" class="form-control p-2 px-4 w-100" id="receivername" style="height:58px;">
+                </div> *@
                 <div class="col-lg-2">
                     <input type="text" placeholder="Email Id" class="form-control p-2 px-4 w-100" id="emailid" style="height:58px;">
                 </div>
@@ -51,10 +51,11 @@
                         <label for="sentDate" class="px-4">Sent Date</label>
                     </div>
                 </div>
+                <div class="col-lg-4"></div> 
                 <div class="col-lg-2">
-                    <div class="row justify-content-end">
+                    <div class="justify-content-end">
                         <div class="col-auto">
-                            <button type="button" class="btn btn-info text-white" id="searchButton"> Search </button>
+                            <button type="button" class="btn btn-info text-white" id="searchButton">Search</button>
                             <button class="btn btn-outline-info text-info bg-white" id="clearButton">Clear</button>
                         </div>
                     </div>

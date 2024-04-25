@@ -17,24 +17,21 @@
 }
 
 $(document).ready(function () {
-    // Handle click event on the Add New Shift button
-    console.log("clalled bhai");
     $('#openShiftModalBtn').click(function () {
         // Trigger the display of the modal
         $('#createShiftModal').modal('show');
-        console.log("ander hu me");
     });
     var regionsFetched = false;
 
     if (!regionsFetched) {
         // Trigger the AJAX call for fetching regions
         $.ajax({
-            url: '/Admin/FetchRegions',
+            url: '/Provider/FetchRegions',
             method: 'GET',
             success: function (response) {
                 response.forEach(function (res) {
-                    console.log("calls region");
-                    $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
+                    console.log(res);
+                    $('.regionDropDown').append("<option value='" + res.regionId + "'>" + res.regionName + "</option>");
                 });
                 regionsFetched = true;
             }
@@ -461,12 +458,7 @@ $(document).ready(function () {
                                                 </select>
                                                  <label class="form-label" for="selectregion">Region</label>
                                             </div>
-                                                    <div class="form-floating mb-3 mt-3">
-                                                                    <select class="form-select physicianDropdown" asp-for="Physicianid" id="physicianSelect" aria-label="Default select example" disabled>
-                                                                    <option value="" selected disabled>${event.title.substring(event.title.lastIndexOf('/') + 1).trim()}</option>
-                                                                </select>
-                                                    <label class="form-label" for="physicianSelect">Physician</label>
-                                                            </div>
+                                                   
                                                                     <div class="col-md-12 form-floating mb-3">
                                                     <input id="StartDateView" class="form-control rounded vcs" name="Startdate" type="date" placeholder="Suchtext" autocomplete="off" value="${formatDate(event.start)}" disabled>
                                             <label for="StartDate">Shifted Date</label>
@@ -481,10 +473,8 @@ $(document).ready(function () {
                                         </div>
                                         </div>
                                             <div class="d-flex justify-content-end gap-2">
-                                        <button class="btn btn-info text-white" id="returnshift"  type="button">Return</button>
                                         <button class="btn btn-info text-white" id="editbtn" type="button">Edit</button>
                                             <button class="btn btn-success text-white d-none" id="savebtn"  type="button">Save</button>
-                                    <button class="btn btn-danger" id="deletebtn" type="button">Delete</button>
                                 </div>
                                         </form>
                                                         `;

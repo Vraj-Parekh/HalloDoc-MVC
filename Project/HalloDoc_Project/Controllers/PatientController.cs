@@ -131,14 +131,16 @@ namespace HalloDoc_Project.Controllers
             }
         }
 
-        [HttpGet("[controller]/[action]/{email}")]
+        [HttpGet("{email}")]
+        [AllowAnonymous]
         public IActionResult ChangePassword(string email)
         {
             TempData["email"] = email;
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("{email}")]
+        [AllowAnonymous]
         public IActionResult ChangePassword(LoginDTO data)
         {
             string email = TempData["email"] as string;

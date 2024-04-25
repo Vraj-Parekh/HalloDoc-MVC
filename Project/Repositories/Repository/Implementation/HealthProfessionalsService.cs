@@ -33,7 +33,7 @@ namespace Repositories.Repository.Implementation
         public async Task<Pagination<VendorsDTO>> GetFilteredHealthProfessionals(string searchVendor,int profesionType, int page, int itemsPerPage)
         {
             IQueryable<Healthprofessional> query = _context.Healthprofessionals
-                .Where(a=>a.Profession == profesionType || profesionType == 0)
+                .Where(a=>a.Profession == profesionType || profesionType == 0 && (a.Isdeleted == false || a.Isdeleted == null))
                 .Include(a=>a.ProfessionNavigation);
 
             if (!string.IsNullOrEmpty(searchVendor))
@@ -80,7 +80,7 @@ namespace Repositories.Repository.Implementation
         public async Task<EditBusinessDTO> GetHealthProfessionalInfo(int vendorId)
         {
             Healthprofessional? vendor = _context.Healthprofessionals
-                .Where(a => a.Vendorid == vendorId).FirstOrDefault();
+                .Where(a => a.Vendorid == vendorId ).FirstOrDefault();
 
             EditBusinessDTO model = new EditBusinessDTO();
             model.BusinessName = vendor.Vendorname;
@@ -143,6 +143,19 @@ namespace Repositories.Repository.Implementation
 
             _context.Add(healthProfessional);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteVendor(int vendorId)
+        {
+            Healthprofessional? vendor = _context.Healthprofessionals
+               .Where(a => a.Vendorid == vendorId).FirstOrDefault();
+
+            if(vendor is not null)
+            {
+                vendor.Isdeleted = true;
+                _context.Update(vendor);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

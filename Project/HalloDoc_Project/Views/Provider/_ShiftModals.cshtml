@@ -18,15 +18,6 @@
                     </div>
 
                     <!-- Add id and required attribute for validation -->
-                    <div class="form-floating mb-3">
-                        <select class="form-select pt-0 pb-0 physicianDropDown" id="p-id" aria-label="Floating label select example" name="phyId" required>
-                            <option selected disabled>Physician</option>
-                            <!-- Add options here -->
-                        </select>
-                        <span id="addShiftPhysicianError" class="text-danger"></span>
-                    </div>
-
-                    <!-- Add id and required attribute for validation -->
                     <div class="col-md-12 form-floating mb-3">
                         <input id="StartDate" class="form-control rounded vcs" name="Startdate" type="date" required>
                         <label for="Startdate">Starting Date</label>
@@ -59,7 +50,20 @@
                     </div>
                     <div class="col-lg-12" id="repeat_days_block">
                         <!-- Add id attribute for validation -->
-                        <!-- Repeat Day Checkboxes -->
+                        <input type="checkbox" name="Repeat_Days" id="sunday" value="0" />
+                        <label for="sunday">Every Sunday</label>
+                        <input type="checkbox" name="Repeat_Days" id="monday" value="1" />
+                        <label for="monday">Every Monday</label>
+                        <input type="checkbox" name="Repeat_Days" id="tuesday" value="2" />
+                        <label for="tuesday">Every Tuesday</label>
+                        <input type="checkbox" name="Repeat_Days" id="wednesday" value="3" />
+                        <label for="wednesday">Every Wednesday</label>
+                        <input type="checkbox" name="Repeat_Days" id="thursday" value="4" />
+                        <label for="thursday">Every Thursday</label>
+                        <input type="checkbox" name="Repeat_Days" id="friday" value="5" />
+                        <label for="friday">Every Friday</label>
+                        <input type="checkbox" name="Repeat_Days" id="saturday" value="6" />
+                        <label for="saturday">Every Saturday</label>
                     </div>
                     <div class="col-md-12 form-floating  my-2">
                         <select class="form-select form-select-sm" id="RepeatUpto" required>

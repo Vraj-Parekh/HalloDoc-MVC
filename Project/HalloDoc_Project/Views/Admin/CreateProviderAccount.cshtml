@@ -268,10 +268,9 @@
                                     <i class="bi bi-cloud-upload text-white"></i>
                                     <label for="fileLoader" class="h-100 p-2 text-white" style="cursor: pointer;">Upload</label>
                                 </label>
-                                <input asp-for="Photo" type="file" id="fileLoader" onchange="photo_validation()">
+                                <input asp-for="Photo" type="file" id="fileLoader" >
                             </div>
                         </div>
-                        <span id="photo_validation" class="text-danger" asp-validation-for="Photo"></span>
                         <img src="" id="photo_img" class="w-100 mt-4" />
                     </div>
                 </div>
@@ -286,7 +285,7 @@
                                     <i class="bi bi-cloud-upload text-white"></i>
                                     <label for="sign" class="h-100 p-2 text-white" style="cursor: pointer;">Upload</label>
                                 </label>
-                                <input asp-for="Signature" type="file" id="sign" onchange="signature_validation()">
+                                <input asp-for="Signature" type="file" id="sign" >
                             </div>
                         </div>
                         <img src="" id="sign_img" class="w-100 mt-4" />
