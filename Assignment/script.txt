@@ -1,0 +1,43 @@
+create table city (
+	Id serial4,
+	Name varchar(100),
+	primary key (id)
+)
+
+create table "User" (
+	userid serial4,
+	firstname varchar(100),
+	lastname varchar(100),
+	cityid int NOT NULL,
+	age int,
+	email varchar(255) NOT NULL unique,
+	phoneno varchar(100),
+	gender varchar(50),
+	city varchar(100),
+	country varchar(100),
+	primary key (userid),
+	foreign key (cityid) references city(id)
+)
+
+select * from city
+select * from "User"
+
+INSERT INTO city (Name) VALUES
+('Anand'),
+( 'Ahmedabad'),
+('Vadodara'),
+('Surat'),
+('Bharuch');
+
+INSERT INTO "User" (firstname, lastname, cityid, age, email, phoneno, gender, city, country) VALUES
+('John', 'Smith', 1, 30, 'john@example.com', '9875484578', 'Male', 'Anand', 'India'),
+('Alice', 'Johnson', 2, 25, 'alice@example.com', '987-654-3210', 'Female', 'Ahmedabad', 'India'),
+('Michael', 'Brown', 3, 35, 'michael@example.com', '111-222-3333', 'Male', 'Vadodara', 'India'),
+('Emily', 'Davis', 4, 28, 'emily@example.com', '444-555-6666', 'Female', 'Surat', 'India'),
+('David', 'Garcia', 5, 32, 'david@example.com', '777-888-9999', 'Male', 'Bharuch', 'India'),
+('Sarah', 'Martinez', 1, 27, 'sarah@example.com', '555-666-7777', 'Female', 'Anand', 'India'),
+('James', 'Rodriguez', 3, 40, 'james@example.com', '222-333-4444', 'Male', 'Vadodara', 'India'),
+('Jessica', 'Wilson', 2, 29, 'jessica@example.com', '888-999-0000', 'Female', 'Ahmedabad', 'India'),
+('Daniel', 'Taylor', 4, 34, 'daniel@example.com', '333-444-5555', 'Male', 'Surat', 'India'),
+('Olivia', 'Anderson', 5, 31, 'olivia@example.com', '666-777-8888', 'Female', 'Bharuch', 'India');
+
