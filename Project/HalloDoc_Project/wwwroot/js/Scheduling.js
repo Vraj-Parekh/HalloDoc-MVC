@@ -15,52 +15,38 @@
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
 }
-
-$(document).ready(function () {
-    // Handle click event on the Add New Shift button
-
-    $('#openShiftModalBtn').click(function () {
-
-        $('#createShiftModal').modal('show');
-
-    });
-    var regionsFetched = false;
-
-    if (!regionsFetched) {
-        // Trigger the AJAX call for fetching regions
-        $.ajax({
-            url: '/Admin/FetchRegions',
-            method: 'GET',
-            success: function (response) {
-                response.forEach(function (res) {
-                    console.log("calls region");
-                    $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
-                });
-                regionsFetched = true;
-            }
+$.ajax({
+    url: '/Admin/FetchRegions',
+    method: 'GET',
+    success: function (response) {
+        response.forEach(function (res) {
+            $('.regionDropDown').append("<option value='" + res.regionid + "'>" + res.name + "</option>");
         });
     }
-
-    // Add the "Select Physician" option every time the modal is shown
-    $('.physicianDropDown').empty();
-    $('.physicianDropDown').append("<option value='' selected>Physician</option>");
-
-    $('.regionDropDown').on('change', function () {
-        var regionId = $(this).val();
-        $.ajax({
-            url: '/Admin/FetchPhysicianByRegion/' + regionId,
-            method: 'GET',
-            success: function (response) {
-                $('.physicianDropDown').empty();
-                $('.physicianDropDown').append("<option value='' selected> Physician</option>");
-                response.forEach(function (res) {
-                    console.log("calls phy");
-                    $('.physicianDropDown').append("<option value='" + res.physicianid + "'>" + res.firstname + "</option>");
-                });
-            }
-        });
-    })
 });
+$('#openShiftModalBtn').click(function () {
+
+    $('#createShiftModal').modal('show');
+
+});
+$('.physicianDropDown').empty();
+$('.physicianDropDown').append("<option value='' selected>Physician</option>");
+
+$('.regionDropDown').on('change', function () {
+    var regionId = $(this).val();
+    $.ajax({
+        url: '/Admin/FetchPhysicianByRegion/' + regionId,
+        method: 'GET',
+        success: function (response) {
+            $('.physicianDropDown').empty();
+            $('.physicianDropDown').append("<option value='' selected> Physician</option>");
+            response.forEach(function (res) {
+                console.log("calls phy");
+                $('.physicianDropDown').append("<option value='" + res.physicianid + "'>" + res.firstname + "</option>");
+            });
+        }
+    });
+})
 
 $(document).ready(function () {
     // Initially hide repeat days block

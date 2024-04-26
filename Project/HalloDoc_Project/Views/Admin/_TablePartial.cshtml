@@ -16,42 +16,42 @@
 
                 @if (status != 6)
                 {
-                    <th>Date of Birth</th>
+                    <th class="text-center">Date of Birth</th>
                 }
 
                 @if (status == 5)
                 {
-                    <th>Region</th>
+                    <th class ="text-center">Region</th>
                 }
                 @if (status <= 3)
                 {
-                    <th>Requestor</th>
+                    <th class="text-center"> Requestor</th>
                 }
 
                 @if (status >= 2)
                 {
-                    <th>Physician Name</th>
+                    <th class="text-center">Physician Name</th>
                 }
 
                 @if (status == 1)
                 {
-                    <th>Requested Date</th>
+                    <th class="text-center">Requested Date</th>
                 }
 
                 @if (status >= 2)
                 {
-                    <th>Date of Service</th>
+                    <th class="text-center">Date of Service</th>
                 }
                 @if (status != 5)
                 {
-                    <th>Phone</th>
+                    <th class="text-center">Phone</th>
                 }
-                <th>Address</th>
+                <th class="text-center">Address</th>
                 @if (status != 4 && status != 6)
                 {
-                    <th>Notes</th>
+                    <th >Notes</th>
                 }
-                <th>Chat with</th>
+                <th class="text-start">Chat with</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -107,11 +107,11 @@
                     }
                     @if (status <= 3)
                     {
-                        <td class="text-break">@items.Requestor</td>
+                        <td class="text-break text-center" >@items.Requestor</td>
                     }
                     @if (status >= 2)
                     {
-                        <td>
+                        <td class="text-center">
                             @if (!string.IsNullOrEmpty(items.PhysicianName))
                             {
                                 @items.PhysicianName
@@ -124,7 +124,7 @@
                     }
                     @if (status == 1)
                     {
-                        <td>@items.RequestedDate.ToString("MMM,dd yyyy")</td>
+                        <td class="text-center">@items.RequestedDate.ToString("MMM,dd yyyy")</td>
                     }
                     @if (status >= 2)
                     {
@@ -187,11 +187,11 @@
                         </td>
                     }
 
-                    <td>@items.Address</td>
+                    <td class="text-center">@items.Address</td>
 
                     @if (status != 4 && status != 6)
                     {
-                        <td>
+                        <td class="text-center">
                             @if (!string.IsNullOrEmpty(items.Notes))
                             {
                                 @items.Notes

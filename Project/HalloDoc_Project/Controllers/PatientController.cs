@@ -32,7 +32,13 @@ namespace HalloDoc_Project.Controllers
         private readonly IHttpContextAccessor httpContext;
         private readonly IRequestWiseFilesServices requestWiseFilesServices;
 
-        public PatientController(HalloDocDbContext context, IWebHostEnvironment env, IEmailSender emailSender, IRequestServices requestServices,IAspNetUserService aspNetUserService,IHttpContextAccessor httpContext,IRequestWiseFilesServices requestWiseFilesServices)
+        public PatientController(HalloDocDbContext context,
+                                 IWebHostEnvironment env,
+                                 IEmailSender emailSender,
+                                 IRequestServices requestServices,
+                                 IAspNetUserService aspNetUserService,
+                                 IHttpContextAccessor httpContext,
+                                 IRequestWiseFilesServices requestWiseFilesServices)
         {
             _context = context;
             this.env = env;

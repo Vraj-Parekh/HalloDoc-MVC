@@ -40,6 +40,7 @@ namespace HalloDoc_Project.Attributes
                 return;
             }
 
+            //for empty constructor ""
             if (!_menus.Any(a => !string.IsNullOrEmpty(a)))
             {
                 IEnumerable<Claim>? claim = jwtSecurityToken.Claims;
@@ -59,7 +60,7 @@ namespace HalloDoc_Project.Attributes
 
             int roleId = int.Parse(jwtSecurityToken.Claims.Where(claims => claims.Type == "roleId").Select(a => a.Value).First());
 
-            GetRoles(dbContext, roleId, out List<string> menus);
+            GetMenus(dbContext, roleId, out List<string> menus);
 
             if (menus is null)
             {
@@ -81,7 +82,7 @@ namespace HalloDoc_Project.Attributes
             return;
         }
 
-        public bool GetRoles(HalloDocDbContext context, int roleId, out List<string> menus)
+        public bool GetMenus(HalloDocDbContext context, int roleId, out List<string> menus)
         {
             menus = new();
 
