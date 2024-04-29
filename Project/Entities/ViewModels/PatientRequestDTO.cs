@@ -24,12 +24,12 @@ namespace Entities.ViewModels
         [RegularExpression(@"^\+?\d+$", ErrorMessage = "Please enter a valid phone number")]
         public string PhoneNumber { get; set; }
 
-        [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&@#])[A-Za-z\d@$!%*?&@#]{8,}$", ErrorMessage = "Invalid Password")]
         [Required]
         public string Password { get; set; }
 
         [Compare("Password", ErrorMessage = "Password Not Match")]
-        [Required(ErrorMessage="Field missing")]
+        [Required(ErrorMessage = "Field missing")]
         public string ConfirmPassword { get; set; }
         [Required]
         public string Street { get; set; }

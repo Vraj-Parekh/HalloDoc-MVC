@@ -68,7 +68,7 @@ namespace HalloDoc_Project.Attributes
                 return;
             }
 
-            //Roles present and check whether the current page is in its Roles
+            
             if (!menus.Intersect(_menus).Any())
             {
                 context.HttpContext.Response.StatusCode = 403;

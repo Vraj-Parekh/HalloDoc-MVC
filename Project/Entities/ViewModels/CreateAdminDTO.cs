@@ -14,7 +14,8 @@ namespace Entities.ViewModels
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&@#])[A-Za-z\d@$!%*?&@#]{8,}$", ErrorMessage = "Invalid Password")]
+        [Required]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Role is required")]
