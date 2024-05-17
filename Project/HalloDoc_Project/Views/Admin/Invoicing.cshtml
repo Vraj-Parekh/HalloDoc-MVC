@@ -1,0 +1,128 @@
+﻿@{
+    ViewData["Title"] = "Invoicing";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string active = "#provider-tab";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Timesheets</h4>
+
+        <a class="btn btn-outline-info text-info bg-light " onclick="history.back()">
+            < Back
+        </a>
+    </div>
+    <div class="bg-white rounded shadow p-3 mb-5">
+        <div class="row mt-3">
+            <div class="col-2">
+                <select class="border rounded w-100 p-2" id="physicianDropdown" onchange="approvedtimesheetes()">
+                    <option selected="select" disabled="disable"> Select Physician</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <select id="dateDropdown" class="form-select" onchange="approvedtimesheetes()">
+                    @{
+                        DateTime dt = DateTime.Now;
+                        for (int j = 1990; j <= dt.Year; j++)
+                        {
+                            for (int i = 1; i <= 12; i++)
+                            {
+                                var lastDayOfMonth = new DateTime(j, i, DateTime.DaysInMonth(j, i));
+                                if (j == dt.Year && i == dt.Month)
+                                {
+                                    <option value="01/@i/@j" selected>01/@i/@j - 14/@i/@j</option>
+                                    <option value="15/@i/@j">15/@i/@j - @lastDayOfMonth.Day/@i/@j</option>
+                                    break;
+                                }
+                                else
+                                {
+                                    <option value="01/@i/@j">01/@i/@j - 14/@i/@j</option>
+                                    <option value="15/@i/@j">15/@i/@j - @lastDayOfMonth.Day/@i/@j</option>
+                                }
+                            }
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row my-4" id="timesheettable">
+            <p class="text-dark h5"> No Record(s) found</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded shadow p-3 mb-5">
+        <div class="row align-items-center">
+            <h5>Timesheet Reimbursement</h5>
+        </div>
+        <div class="row my-4">
+            <p class="text-dark h5"> No Record(s) found</p>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var dateDropdown = document.getElementById("dateDropdown");
+    function approvedchange() {
+        window.location.href = '/Admin/Approvetimesheet?selectedValue=' + selectedValue + '&physicianid=' + physicianid;
+    }
+    $(document).ready(function () {
+        var regionId = 0;
+        $.ajax({
+            url: '/Admin/FetchPhysicianByRegion/' + regionId,
+            method: 'GET',
+            success: function (physicians) {
+                $('#physicianDropdown').empty();
+                $.each(physicians, function (index, physician) {
+                    $('#physicianDropdown').append(`
+                                                                <option value="${physician.physicianid}">Dr.${physician.firstname}</option>`
+                    );
+                });
+            },
+            error: function (error) {
+                // Handle errors
+                console.error(error);
+            }
+        });
+    });
+    var dateDropdown = document.getElementById("dateDropdown");
+    var physicianDropdown = document.getElementById("physicianDropdown");
+    var physicianid;
+    var selectedValue;
+
+    function approvedtimesheetes() {
+        selectedValue = dateDropdown.value;
+        physicianid = physicianDropdown.value;
+        $.ajax({
+            type: "Get",
+            url: "/Admin/GetFinalizeTimesheetTable",
+            data:
+            {
+                selectedvalue: selectedValue,
+                physicianid: physicianid
+            },
+            success: function (data) {
+                console.log(data);
+                var dataRows = $(data).find('tbody tr');
+                var isFinalize = $(data).find('input#isfinalize');
+                var isfinalizevalue = isFinalize.val;
+                var physicianname = physicianDropdown.options[physicianDropdown.selectedIndex].innerHTML;
+                console.log(dataRows);
+                if (dataRows.length > 0) {
+                    $('#timesheettable').html(data);
+                } else {
+                    $('#timesheettable').html('<p class="text-dark h5">' + physicianname + ' has not finalized the timesheet in specified time period.</p>');
+                }
+
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 401) {
+
+                    location.reload();
+                }
+                console.error(error);
+            }
+        })
+    }
+</script>
+<partial name="_ActiveTabPartial" model=active />

@@ -86,5 +86,9 @@ namespace Repositories.Repository.Implementation
         {
             return _context.Physicians.Where(a => a.Aspnetuserid == GetAspNetUserId()).FirstOrDefault();
         }
+        public async Task<bool> IsAspNetUserEmailPresent(string email)
+        {
+            return await _context.Aspnetusers.Where(a => a.Email == email).AnyAsync();
+        }
      }
 }

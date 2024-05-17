@@ -1,0 +1,121 @@
+﻿@{
+    ViewData["Title"] = "Invoicing";
+    Layout = "~/Views/Shared/_ProviderLayout.cshtml";
+    string active = "#invoicing";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Timesheets</h4>
+
+        <a class="btn btn-outline-info text-info bg-light " onclick="history.back()">
+            < Back
+        </a>
+    </div>
+
+    <div class="bg-white rounded shadow p-3 mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="form-floating">
+                            <select id="dateDropdown" class="form-select" onchange="finalizetimesheetes()">
+                                @{
+                                    DateTime dt = DateTime.Now;
+                                    for (int j = 1990; j <= dt.Year; j++)
+                                    {
+                                        for (int i = 1; i <= 12; i++)
+                                        {
+                                            var lastDayOfMonth = new DateTime(j, i, DateTime.DaysInMonth(j, i));
+                                            if (j == dt.Year && i == dt.Month)
+                                            {
+                                                <option value="01/@i/@j" selected>01/@i/@j - 14/@i/@j</option>
+                                                <option value="15/@i/@j">15/@i/@j - @lastDayOfMonth.Day/@i/@j</option>
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                <option value="01/@i/@j">01/@i/@j - 14/@i/@j</option>
+                                                <option value="15/@i/@j">15/@i/@j - @lastDayOfMonth.Day/@i/@j</option>
+                                            }
+                                        }
+                                    }
+                                }
+                            </select>
+                            <label class="ms-2" for="dateDropdown">Search by Timesheet Period</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-lg-end">
+                <a id="finalizeBtn" class="btn btn-outline-info text-info rounded-2 me-2 bg-white">Finalize Timesheet</a>
+            </div>
+        </div>
+        <div class="row my-4" id="timesheettable">
+            <p class="text-dark h5"> No Record(s) found</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded shadow p-3 mb-5">
+        <div class="row align-items-center">
+            <h5>Timesheet Reimbursement</h5>
+        </div>
+        <div class="row my-4">
+            <p class="text-dark h5"> No Record(s) found</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var finalizeBtn = document.getElementById("finalizeBtn");
+        var dateDropdown = document.getElementById("dateDropdown");
+        var allRecords = $("#allrecords");
+
+        finalizeBtn.addEventListener("click", function () {
+            var selectedValue = dateDropdown.value;
+            window.location.href = '/Provider/Timesheet?selectedValue=' + selectedValue;
+        });
+    });
+
+    function finalizetimesheetes() {
+        var selectedValue = dateDropdown.value;
+        $.ajax({
+            type: "Get",
+            url: "/Provider/GetFinalizeTimesheetTable",
+            data:
+            {
+                selectedvalue: selectedValue,
+            },
+            success: function (data) {
+                var dataRows = $(data).find('tbody tr');
+                var isFinalize = $(data).find('input#isfinalize');
+                var isfinalizevalue = isFinalize.val();
+                if (dataRows.length > 0) {
+                    $('#timesheettable').html(data);
+                    if (isfinalizevalue != "True") {
+                        $('#finalizeBtn').removeClass('d-none');
+                    }
+                    else {
+                        $('#finalizeBtn').addClass('d-none');
+                    }
+                } else {
+                    $('#finalizeBtn').removeClass('d-none');
+                    $('#timesheettable').html('<p class="text-dark h5"> No Record(s) found</p>');
+                }
+
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 401) {
+
+                    location.reload();
+                }
+                console.error(error);
+            }
+        })
+    }
+</script>
+
+<partial name="_ActiveTabPartial" model=active />

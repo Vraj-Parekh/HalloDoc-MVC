@@ -41,6 +41,7 @@ namespace HalloDoc_Project.Controllers
         private readonly IEncounterFormService encounterFormService;
         private readonly IRequestWiseFilesServices requestWiseFilesServices;
         private readonly IPhysicianRegionService physicianRegionService;
+        private readonly ITimesheetService timesheetService;
 
         public ProviderController(IRegionService regionService,
                                   IRoleService roleService,
@@ -62,7 +63,8 @@ namespace HalloDoc_Project.Controllers
                                   IOrderDetailsService orderDetailsService,
                                   IEncounterFormService encounterFormService,
                                   IRequestWiseFilesServices requestWiseFilesServices,
-                                  IPhysicianRegionService physicianRegionService)
+                                  IPhysicianRegionService physicianRegionService,
+                                  ITimesheetService timesheetService)
         {
             this.regionService = regionService;
             this.roleService = roleService;
@@ -85,6 +87,7 @@ namespace HalloDoc_Project.Controllers
             this.encounterFormService = encounterFormService;
             this.requestWiseFilesServices = requestWiseFilesServices;
             this.physicianRegionService = physicianRegionService;
+            this.timesheetService = timesheetService;
         }
 
         [CustomAuthorization("Provider Dashboard")]
@@ -364,6 +367,43 @@ namespace HalloDoc_Project.Controllers
             }
             TempData["Error"] = "Mail sending fail";
             return RedirectToAction("ProviderDashboard", "Provider");
+        }
+
+        [CustomAuthorization("ProviderProfile")]
+        public async Task<IActionResult> Invoicing()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [CustomAuthorization("ProviderProfile")]
+        public async Task<IActionResult> Timesheet(string selectedValue,int physicianid)
+        {
+            FinalizeTimesheetDTO timesheet = await timesheetService.Gettimesheet(selectedValue,physicianid=0);
+            return View(timesheet);
+        }
+
+        [CustomAuthorization("ProviderProfile")]
+        public async Task<IActionResult> FinalizeTimesheet(int id)
+        {
+            await timesheetService.Finalizetimesheet(id);
+            return RedirectToAction("Invoicing", "Provider");
+        }
+
+        [HttpPost]
+        [CustomAuthorization("ProviderProfile")]
+        public async Task<IActionResult> PostTimesheet(FinalizeTimesheetDTO model)
+        {
+            await timesheetService.Posttimesheet(model);
+            return RedirectToAction("Invoicing", "Provider");
+        }
+
+        [HttpGet]
+        [CustomAuthorization("ProviderProfile")]
+        public async Task<IActionResult> GetFinalizeTimesheetTable(string selectedvalue, int physicianid)
+        {
+            FinalizeTimesheetDTO viewmodel = await timesheetService.GetFinalizeTimesheetTable(selectedvalue, physicianid);
+            return PartialView("_timesheetpartial", viewmodel);
         }
     }
 }

@@ -44,6 +44,8 @@ public partial class HalloDocDbContext : DbContext
 
     public virtual DbSet<Orderdetail> Orderdetails { get; set; }
 
+    public virtual DbSet<Payrate> Payrates { get; set; }
+
     public virtual DbSet<Physician> Physicians { get; set; }
 
     public virtual DbSet<Physicianlocation> Physicianlocations { get; set; }
@@ -84,11 +86,16 @@ public partial class HalloDocDbContext : DbContext
 
     public virtual DbSet<Smslog> Smslogs { get; set; }
 
+    public virtual DbSet<Timesheet> Timesheets { get; set; }
+
+    public virtual DbSet<TimesheetBill> TimesheetBills { get; set; }
+
+    public virtual DbSet<TimesheetDetail> TimesheetDetails { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("User ID = postgres;Password=vraj;Server=localhost;Port=5432;Database=HalloDoc;");
+        => optionsBuilder.UseNpgsql("name=HallodocDB");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -221,6 +228,13 @@ public partial class HalloDocDbContext : DbContext
         modelBuilder.Entity<Orderdetail>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("orderdetails_pkey");
+        });
+
+        modelBuilder.Entity<Payrate>(entity =>
+        {
+            entity.HasKey(e => e.PayrateId).HasName("payrates_pkey");
+
+            entity.HasOne(d => d.Physician).WithMany(p => p.Payrates).HasConstraintName("payrates_physician_id_fkey");
         });
 
         modelBuilder.Entity<Physician>(entity =>
@@ -438,6 +452,33 @@ public partial class HalloDocDbContext : DbContext
             entity.HasKey(e => e.Smslogid).HasName("smslog_pkey");
 
             entity.Property(e => e.Smslogid).HasDefaultValueSql("nextval('smslog_smslogid_seq'::regclass)");
+        });
+
+        modelBuilder.Entity<Timesheet>(entity =>
+        {
+            entity.HasKey(e => e.TimesheetId).HasName("Timesheet_pkey");
+
+            entity.HasOne(d => d.Physician).WithMany(p => p.Timesheets)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Timesheet_PhysicianId_fkey");
+        });
+
+        modelBuilder.Entity<TimesheetBill>(entity =>
+        {
+            entity.HasKey(e => e.TimesheetBillId).HasName("TimesheetBills_pkey");
+
+            entity.HasOne(d => d.TimesheetDetail).WithMany(p => p.TimesheetBills)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("TimesheetBills_TimesheetDetailId_fkey");
+        });
+
+        modelBuilder.Entity<TimesheetDetail>(entity =>
+        {
+            entity.HasKey(e => e.TimesheetDetailId).HasName("TimesheetDetail_pkey");
+
+            entity.HasOne(d => d.Timesheet).WithMany(p => p.TimesheetDetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("TimesheetDetail_TimesheetId_fkey");
         });
 
         modelBuilder.Entity<User>(entity =>

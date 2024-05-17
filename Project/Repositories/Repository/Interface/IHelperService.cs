@@ -10,6 +10,7 @@ namespace Repositories.Repository.Interface
         string GetRegionById(int regionId);
         List<string> GetRoles();
         bool IsAdmin();
+        Task<bool> IsAspNetUserEmailPresent(string email);
         bool IsPhysician();
         Task SendAttachment(int request_id, int[] files_jx, string email);
     }

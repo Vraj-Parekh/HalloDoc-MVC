@@ -44,10 +44,10 @@
                     <div class="form-floating">
                         <select class="form-select" id="role" asp-for="Role">
                             <option selected value="">Select Role</option>
-                            @foreach (var item in Model.Roles)
-                            {
-                                <option value="@item.Roleid">@item.Name</option>
-                            }
+                                @foreach (var item in Model.Roles)
+                                {
+                                    <option value="@item.Roleid">@item.Name</option>
+                                }
                         </select>
                         <label for="role" class="form-label">Role</label>
                     </div>
@@ -268,7 +268,7 @@
                                     <i class="bi bi-cloud-upload text-white"></i>
                                     <label for="fileLoader" class="h-100 p-2 text-white" style="cursor: pointer;">Upload</label>
                                 </label>
-                                <input asp-for="Photo" type="file" id="fileLoader" >
+                                <input asp-for="Photo" type="file" id="fileLoader">
                             </div>
                         </div>
                         <img src="" id="photo_img" class="w-100 mt-4" />
@@ -285,7 +285,7 @@
                                     <i class="bi bi-cloud-upload text-white"></i>
                                     <label for="sign" class="h-100 p-2 text-white" style="cursor: pointer;">Upload</label>
                                 </label>
-                                <input asp-for="Signature" type="file" id="sign" >
+                                <input asp-for="Signature" type="file" id="sign">
                             </div>
                         </div>
                         <img src="" id="sign_img" class="w-100 mt-4" />

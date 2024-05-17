@@ -1,0 +1,153 @@
+﻿@model PayrateDTO
+
+@{
+    ViewData["Title"] = "Payrate";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h4>Payrate</h4>
+
+        <a class="btn btn-outline-info text-info bg-light " onclick="history.back()">
+            < Back
+        </a>
+    </div>
+    <div class="bg-white rounded shadow p-3 mb-5">
+        <input type="number" hidden id="payrate-physid" class="d-none" value="@Model.Physicianid" />
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th class="text-center" style="text-align:center !important">
+                        Category
+                    </th>
+                    <th>
+                        Payrate
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tr>
+                <td class="text-center">
+                    NightShift_Weekend
+                </td>
+                <td>
+                    <input type="text" class="payrate-1" placeholder="Payrate" pattern="[0-9]{0,4}" asp-for="NightShift_Weekend" />
+                </td>
+                <td>
+                    <button class="payrate-edit-btn btn  btn-info" data-id="1">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">
+                    Shift
+                </td>
+                <td>
+                    <input type="text" class="payrate-2" placeholder="Payrate" pattern="[0-9]{0,4}" asp-for="Shift" />
+                </td>
+                <td>
+                    <button class="payrate-edit-btn btn  btn-info" data-id="2">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">
+                    HouseCalls_Nights_Weekend
+                </td>
+                <td>
+                    <input type="text" class="payrate-3" placeholder="Payrate" pattern="[0-9]{0,4}" asp-for="HouseCalls_Nights_Weekend" />
+                </td>
+                <td>
+                    <button class="payrate-edit-btn btn  btn-info" data-id="3">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">
+                    HouseCalls
+                </td>
+                <td>
+                    <input type="text" class="payrate-4" placeholder="Payrate" pattern="[0-9]{0,4}" asp-for="HouseCalls" />
+                </td>
+                <td>
+                    <button class="payrate-edit-btn btn  btn-info" data-id="4">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">
+                    PhoneConsults_Nights_Weekend
+                </td>
+                <td>
+                    <input type="text" class="payrate-5" placeholder="Payrate" pattern="[0-9]{0,4}" asp-for="PhoneConsults_Nights_Weekend" />
+                </td>
+                <td>
+                    <button class="payrate-edit-btn btn  btn-info" data-id="5">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">
+                    PhoneConsults
+                </td>
+                <td>
+                    <input type="text" class="payrate-6" placeholder="Payrate" pattern="[0-9]{0,4}" asp-for="PhoneConsults" />
+                </td>
+                <td>
+                    <button class="payrate-edit-btn btn  btn-info" data-id="6">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">
+                    Batch Testing
+                </td>
+                <td>
+                    <input type="text" class="payrate-7" placeholder="Payrate" pattern="[0-9]{0,4}" asp-for="BatchTesting" />
+                </td>
+                <td>
+                    <button class="payrate-edit-btn btn  btn-info" data-id="7">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(() => {
+        var payrateTypeArray = ["ShiftNightWeekend", "Shift", "HousecallNightWeekend", "Housecall", "PhoneConsultNightWeekend", "PhoneConsult", "BatchTesting"];
+        $(".payrate-edit-btn").click((e) => {
+            console.log("@Model.Physicianid");
+            var paytypeNumber = $(e.target).data("id");
+            var paytype = payrateTypeArray[paytypeNumber - 1];
+            var payvalue = $(".payrate-" + paytypeNumber).val();
+            payvalue = payvalue == 0 ? 0 : payvalue;
+
+            $.ajax({
+                url: "/Admin/Payrate",
+                method: "POST",
+                data: {
+                    "PhysicianId": "@Model.Physicianid",
+                    "value": payvalue,
+                    "paytype": paytype
+                },
+                success: function () {
+                    location.reload();
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        })
+    })
+</script>

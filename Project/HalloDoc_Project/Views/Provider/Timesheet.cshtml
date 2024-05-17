@@ -1,0 +1,68 @@
+﻿@model FinalizeTimesheetDTO;
+@{
+    ViewData["Title"] = "Invoicing";
+    Layout = "~/Views/Shared/_ProviderLayout.cshtml";
+}
+
+<div class="container ">
+    <div class="container d-flex justify-content-end align-items-center mt-5 ">
+        <button class="btn btn-outline-info bg-white text-info mt-4" onclick="history.back()"> < Back </button>
+    </div>
+    <div class=" shadow rounded">
+        <form method="post" asp-action="PostTimesheet" asp-controller="Provider">
+            <input type="text" hidden asp-for="selectedvalue" />
+            <table class="table mt-4 text-center">
+                <thead class="bg-light">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">On-Call Hours</th>
+                        <th scope="col">Total Hours</th>
+                        <th scope="col">Weekend/Holiday</th>
+                        <th scope="col">Number of Housecalls</th>
+                        <th scope="col">Number of Phonecalls</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.phytimesheet.Count; i++)
+                    {
+                        <tr>
+                            <td><input type="text" asp-for="@Model.phytimesheet[i].date" hidden>@Model.phytimesheet[i].date</td>
+                            <td>@Model.phytimesheet[i].oncallhours</td>
+                            <td><input asp-for="@Model.phytimesheet[i].totalhours" type="text" pattern="[0-9]{1,2}" /></td>
+                            <td>
+                                <input asp-for="@Model.phytimesheet[i].holiday" type="checkbox" checked="@(Model.phytimesheet[i].holiday ? "checked" : null)" />
+                            </td>
+                            <td><input asp-for="@Model.phytimesheet[i].noofhousecalls" type="text" pattern="[0-9]{1,}" /></td>
+                            <td><input asp-for="@Model.phytimesheet[i].noofphoneconsult" type="text" pattern="[0-9]{1,}" /></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="row d-flex justify-content-end">
+                <div class="col-2 p-4">
+                    <button type="submit" class="btn btn-info float-end text-white"> Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row d-flex justify-content-between">
+        <div class="col-2 p-4">
+            <button type="submit" class="btn btn-info text-white "> Add Receipts</button>
+            <div id="receipts"> </div>
+        </div> <div class="col-2 p-4">
+            <a class="btn btn-info float-end text-white" id="finalizeBtntimesheet"> Finalize</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var dateDropdown = "@Model.phytimesheet[0].date";
+        var finalizeBtn = document.getElementById("finalizeBtntimesheet");
+        finalizeBtn.addEventListener("click", function () {
+            var datearr = dateDropdown.split('/');
+
+            window.location.href = '/Provider/FinalizeTimesheet?id=' + '@Model.id' + '&date=' + datearr[0] + '&month=' + datearr[1] + '&year=' + datearr[2];
+        });
+    });
+</script>

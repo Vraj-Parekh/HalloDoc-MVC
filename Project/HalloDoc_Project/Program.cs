@@ -1,5 +1,6 @@
 using Entities.DataContext;
 using HalloDoc.Utility;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Repository.Implementation;
 using Repositories.Repository.Interface;
 
@@ -45,10 +46,13 @@ builder.Services.AddTransient<IHelperService, HelperService>();
 builder.Services.AddTransient<IPhysicianLocationService, PhysicianLocationService>();
 builder.Services.AddTransient<IHandleShiftService, HandleShiftService>();
 builder.Services.AddTransient<IHandlePhysicianService, HandlePhysicianService>();
+builder.Services.AddTransient<ITimesheetService, TimesheetService>();
+builder.Services.AddTransient<IPayrateService, PayrateService>();
 
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
+builder.Services.AddDbContext<HalloDocDbContext>(options =>
+       options.UseNpgsql(builder.Configuration.GetConnectionString("HallodocDB")));
 
 var app = builder.Build();
 

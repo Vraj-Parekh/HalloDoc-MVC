@@ -62,6 +62,8 @@ namespace HalloDoc_Project.Controllers
         private readonly IUserService userService;
         private readonly IHandleShiftService handleShiftService;
         private readonly IHandlePhysicianService handlePhysicianService;
+        private readonly ITimesheetService timesheetService;
+        private readonly IPayrateService payrateService;
 
         public AdminController(IRequestClientServices requestClientServices,
                                IRequestServices requestServices,
@@ -93,7 +95,9 @@ namespace HalloDoc_Project.Controllers
                                IHelperService helperService,
                                IUserService userService,
                                IHandleShiftService handleShiftService,
-                               IHandlePhysicianService handlePhysicianService)
+                               IHandlePhysicianService handlePhysicianService,
+                               ITimesheetService timesheetService,
+                               IPayrateService payrateService)
         {
             this.requestClientServices = requestClientServices;
             this.requestServices = requestServices;
@@ -126,6 +130,8 @@ namespace HalloDoc_Project.Controllers
             this.userService = userService;
             this.handleShiftService = handleShiftService;
             this.handlePhysicianService = handlePhysicianService;
+            this.timesheetService = timesheetService;
+            this.payrateService = payrateService;
         }
         public IActionResult Index()
         {
@@ -649,12 +655,17 @@ namespace HalloDoc_Project.Controllers
             {
                 try
                 {
-                    await adminService.UpdateAdminInfo(admin, model);
-                    TempData["Success"] = "Data Updated";
                     if (admin.Email != model.Email)
                     {
+                        if (await helperService.IsAspNetUserEmailPresent(model.Email))
+                        {
+                            TempData["Error"] = "Email already present";
+                            return RedirectToAction("MyProfile");
+                        }
                         return RedirectToAction("Logout");
                     }
+                    await adminService.UpdateAdminInfo(admin, model);
+                    TempData["Success"] = "Data Updated";
                 }
                 catch (Exception e)
                 {
@@ -943,6 +954,13 @@ namespace HalloDoc_Project.Controllers
         {
             try
             {
+                if (await helperService.IsAspNetUserEmailPresent(model.Email))
+                {
+                    ModelState.AddModelError(nameof(model.Email), "Email Already Present");
+                    model.Regions = regionService.GetRegionList();
+                    model.Roles = roleService.GetRoles();
+                    return View(model);
+                }
                 await adminService.CreateAdmin(model);
                 TempData["Success"] = "Account Created";
             }
@@ -1094,6 +1112,13 @@ namespace HalloDoc_Project.Controllers
         {
             try
             {
+                if (await helperService.IsAspNetUserEmailPresent(model.Email))
+                {
+                    ModelState.AddModelError(nameof(model.Email), "Email Already Present");
+                    model.Regions = regionService.GetRegionList();
+                    model.Roles = roleService.GetRoles();
+                    return View(model);
+                }
                 await physicianService.CreatePhysician(model);
                 TempData["Success"] = "Account created";
             }
@@ -1429,5 +1454,79 @@ namespace HalloDoc_Project.Controllers
             await handlePhysicianService.RequestDTYSupport();
             return RedirectToAction("AdminDashboard", "Admin");
         }
+
+        [CustomAuthorization("Dashboard")]
+        public async Task<IActionResult> Invoicing()
+        {
+            return View();
+        }
+
+        [CustomAuthorization("Dashboard")]
+        public async Task<IActionResult> GetFinalizeTimesheetTable(string selectedvalue, int physicianid)
+        {
+            FinalizeTimesheetDTO model = await timesheetService.GetFinalizeTimesheetTable(selectedvalue, physicianid);
+            if (model.isapproved != true && model.isfinalize == true)
+            {
+                return PartialView("_approvetablepartial", model);
+            }
+            else if (model.isfinalize == true && model.isapproved == true)
+            {
+                return PartialView("_timesheetpartial", model);
+            }
+            return PartialView("_timesheetpartial", model);
+        }
+
+        [CustomAuthorization("Dashboard")]
+        public async Task<IActionResult> Approvetimesheet(string selectedValue, int physicianid)
+        {
+            FinalizeTimesheetDTO model = await timesheetService.Gettimesheet(selectedValue, physicianid);
+            return View(model);
+        }
+
+        [CustomAuthorization("Dashboard")]
+        public async Task<IActionResult> Approvetimesheetbutton(int id)
+        {
+            await timesheetService.Approvetimesheet(id);
+            return RedirectToAction("Invoicing", "Admin");
+        }
+
+        [HttpPost]
+        [CustomAuthorization("Dashboard")]
+        public async Task<IActionResult> Posttimesheet(FinalizeTimesheetDTO model)
+        {
+            await timesheetService.Posttimesheet(model);
+            return RedirectToAction("Invoicing", "Admin");
+        }
+
+        [HttpGet]
+        [CustomAuthorization("Dashboard")]
+        public IActionResult Payrate(int Physicianid)
+        {
+            Payrate p = payrateService.GetPayrate(Physicianid);
+            PayrateDTO model = new PayrateDTO();
+            if (p != null)
+            {
+                model = new PayrateDTO
+                {
+                    Shift = p.Shift,
+                    NightShift_Weekend = p.NightshiftWeekend,
+                    HouseCalls = p.Housecall,
+                    HouseCalls_Nights_Weekend = p.HousecallnightWeekend,
+                    PhoneConsults = p.PhoneConsult,
+                    PhoneConsults_Nights_Weekend = p.PhoneConsultNightWeekend,
+                    BatchTesting = p.BatchTesting
+                };
+            }
+            model.Physicianid = Physicianid;
+            return View(model);
+        }
+
+        [HttpPost]
+        [CustomAuthorization("Dashboard")]
+        public void Payrate(int Physicianid, int value, string paytype)
+        {
+            Payrate model = payrateService.SetPayrate(Physicianid, value, paytype);
+        }
+
     }
 }
